@@ -16,19 +16,7 @@ def split(x):
 def grid_transform(x, size):
     a, b = split(x.shape[0])
     h, w, c = size[0], size[1], size[2]
-    print('X:')
-    print(x)
-    print('\na:')
-    print(a)
-    print('\nb:')
-    print(b)
-    print('\nh:')
-    print(h)
-    print('\nw:')
-    print(w)
-    print('\nc:')
-    print(c)
-    x = np.reshape(x, [a, b, h, w, c])
+    x = np.reshape(x, [a, int(b), h, w, c])
     x = np.transpose(x, [0, 2, 1, 3, 4])
     x = np.reshape(x, [a * h, b * w, c])
     if x.shape[2] == 1:
