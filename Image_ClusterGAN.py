@@ -261,6 +261,9 @@ class clusGAN(object):
         print(' #Points = {}, K = {}, Purity = {},  NMI = {}, ARI = {},  '
               .format(latent_rep.shape[0], self.num_classes, purity, nmi, ari))
 
+        if not os.path.exists('logs'):
+            os.makedirs('logs')
+
         with open('logs/Res_{}_{}.txt'.format(self.data, self.model), 'a+') as f:
             f.write(
                 '{}, {} : K = {}, z_dim = {}, beta_label = {}, beta_gen = {}, sampler = {}, Purity = {}, NMI = {}, ARI = {}\n'
