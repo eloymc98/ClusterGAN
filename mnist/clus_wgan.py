@@ -8,17 +8,23 @@ def leaky_relu(x, alpha=0.2):
 
 
 class Discriminator(object):
+    # x_dim = 28*28
     def __init__(self, x_dim = 784):
         self.x_dim = x_dim
         self.name = 'mnist/clus_wgan/d_net'
 
+    # Every time the discriminator is called, we obtain a new output
     def __call__(self, x, reuse=True):
+        # Variable scope allows you to create new variables and to share already created ones
+        # while providing checks to not create or share by accident
         with tf.variable_scope(self.name) as vs:
             if reuse:
                 vs.reuse_variables()
             bs = tf.shape(x)[0]
-
+            # Reshape to 3d
             x = tf.reshape(x, [bs, 28, 28, 1])
+            # output = conv2d(input, num_outputs, kernel_size, stride)
+            # tf.indetity -> Return a tensor with the same shape and contents as input
             conv1 = tc.layers.convolution2d(
                 x, 64, [4, 4], [2, 2],
                 weights_initializer=tf.random_normal_initializer(stddev=0.02),
@@ -32,7 +38,9 @@ class Discriminator(object):
             )
             conv2 = leaky_relu(conv2)
             conv2 = tcl.flatten(conv2)
+            # Flatten conv2 output to use it as input for fc.
 
+            # fc = fully_connected(input, num_outputs)
             fc1 = tc.layers.fully_connected(
                 conv2, 1024,
                 weights_initializer=tf.random_normal_initializer(stddev=0.02),
