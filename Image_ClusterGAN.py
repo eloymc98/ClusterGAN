@@ -9,6 +9,7 @@ import tensorflow as tf
 from imageio import imwrite
 import numpy as np
 from sklearn.cluster import KMeans
+from sklearn.manifold import TSNE
 from sklearn.metrics.cluster import normalized_mutual_info_score, adjusted_rand_score
 
 import metric
@@ -48,14 +49,13 @@ class clusGAN(object):
 
         # Generate x_ from generator
         self.x_ = self.g_net(self.z)
-        # From x^_ predict z_enc
+        # Encode generated images
         self.z_enc_gen, self.z_enc_label, self.z_enc_logits = self.enc_net(self.x_, reuse=False)
-        # From x, predict z_infer
+        # Encode inferred images
         self.z_infer_gen, self.z_infer_label, self.z_infer_logits = self.enc_net(self.x)
 
         self.d = self.d_net(self.x, reuse=False)
         self.d_ = self.d_net(self.x_)
-
 
         self.g_loss = tf.reduce_mean(self.d_) + \
                       self.beta_cycle_gen * tf.reduce_mean(tf.square(self.z_gen - self.z_enc_gen)) + \
@@ -142,8 +142,8 @@ class clusGAN(object):
                 bx = grid_transform(bx, xs.shape)
 
                 imwrite('logs/{}/{}/{}_z{}_cyc{}_gen{}/{}.png'.format(self.data, self.model, self.sampler,
-                                                                     self.z_dim, self.beta_cycle_label,
-                                                                     self.beta_cycle_gen, (t + 1) / 100), bx)
+                                                                      self.z_dim, self.beta_cycle_label,
+                                                                      self.beta_cycle_gen, (t + 1) / 100), bx)
 
         self.recon_enc(timestamp, val=True)
         self.save(timestamp)
@@ -212,8 +212,8 @@ class clusGAN(object):
                 mode_bx = grid_transform(mode_bx, xs.shape)
 
                 imwrite('logs/{}/{}/{}_z{}_cyc{}_gen{}/mode{}_samples.png'.format(self.data, self.model, self.sampler,
-                                                                                 self.z_dim, self.beta_cycle_label,
-                                                                                 self.beta_cycle_gen, m), mode_bx)
+                                                                                  self.z_dim, self.beta_cycle_label,
+                                                                                  self.beta_cycle_gen, m), mode_bx)
 
     def recon_enc(self, timestamp, val=True):
 
@@ -268,14 +268,17 @@ class clusGAN(object):
         print(' #Points = {}, K = {}, Purity = {},  NMI = {}, ARI = {}, Latent space shape = {} '
               .format(latent_rep.shape[0], self.num_classes, purity, nmi, ari, latent_rep.shape))
 
+        # TODO: Plot latent space with respective labels and clusters if possible.
+
         if not os.path.exists('logs'):
             os.makedirs('logs')
 
         with open('logs/Res_{}_{}.txt'.format(self.data, self.model), 'a+') as f:
             f.write(
                 '{}, {} : K = {}, z_dim = {}, beta_label = {}, beta_gen = {}, sampler = {}, Purity = {}, NMI = {}, ARI = {}\n'
-                .format(timestamp, data_split, self.num_classes, self.z_dim, self.beta_cycle_label, self.beta_cycle_gen,
-                        self.sampler, purity, nmi, ari))
+                    .format(timestamp, data_split, self.num_classes, self.z_dim, self.beta_cycle_label,
+                            self.beta_cycle_gen,
+                            self.sampler, purity, nmi, ari))
             f.flush()
 
 
