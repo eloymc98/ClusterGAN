@@ -46,12 +46,16 @@ class clusGAN(object):
         self.z_gen = self.z[:, 0:self.dim_gen]
         self.z_hot = self.z[:, self.dim_gen:]
 
+        # Generate x_ from generator
         self.x_ = self.g_net(self.z)
+        # From x^_ predict z_enc
         self.z_enc_gen, self.z_enc_label, self.z_enc_logits = self.enc_net(self.x_, reuse=False)
+        # From x, predict z_infer
         self.z_infer_gen, self.z_infer_label, self.z_infer_logits = self.enc_net(self.x)
 
         self.d = self.d_net(self.x, reuse=False)
         self.d_ = self.d_net(self.x_)
+
 
         self.g_loss = tf.reduce_mean(self.d_) + \
                       self.beta_cycle_gen * tf.reduce_mean(tf.square(self.z_gen - self.z_enc_gen)) + \
@@ -108,14 +112,16 @@ class clusGAN(object):
             d_iters = 5
 
             for _ in range(0, d_iters):
+                # We optimize discriminator loss for 5 iterations
                 bx = self.x_sampler.train(batch_size)
                 bz = self.z_sampler(batch_size, self.z_dim, self.sampler, self.num_classes, self.n_cat)
                 self.sess.run(self.d_adam, feed_dict={self.x: bx, self.z: bz})
-
+            # Then we only optimize generator loss for 1 iteration
             bz = self.z_sampler(batch_size, self.z_dim, self.sampler, self.num_classes, self.n_cat)
             self.sess.run(self.g_adam, feed_dict={self.z: bz})
 
             if (t + 1) % 100 == 0:
+                # Every 100 iter, print d and g losses
                 bx = self.x_sampler.train(batch_size)
                 bz = self.z_sampler(batch_size, self.z_dim, self.sampler, self.num_classes, self.n_cat)
 
@@ -129,6 +135,7 @@ class clusGAN(object):
                       (t + 1, time.time() - start_time, d_loss, g_loss))
 
             if (t + 1) % 5000 == 0:
+                # Every 5000 iter, save an image of a batch of x_
                 bz = self.z_sampler(batch_size, self.z_dim, self.sampler, self.num_classes, self.n_cat)
                 bx = self.sess.run(self.x_, feed_dict={self.z: bz})
                 bx = xs.data2img(bx)
@@ -258,8 +265,8 @@ class clusGAN(object):
 
         print('Data = {}, Model = {}, sampler = {}, z_dim = {}, beta_label = {}, beta_gen = {} '
               .format(self.data, self.model, self.sampler, self.z_dim, self.beta_cycle_label, self.beta_cycle_gen))
-        print(' #Points = {}, K = {}, Purity = {},  NMI = {}, ARI = {},  '
-              .format(latent_rep.shape[0], self.num_classes, purity, nmi, ari))
+        print(' #Points = {}, K = {}, Purity = {},  NMI = {}, ARI = {}, Latent space shape = {} '
+              .format(latent_rep.shape[0], self.num_classes, purity, nmi, ari, latent_rep.shape))
 
         if not os.path.exists('logs'):
             os.makedirs('logs')
@@ -301,7 +308,9 @@ if __name__ == '__main__':
     d_net = model.Discriminator()
     g_net = model.Generator(z_dim=z_dim)
     enc_net = model.Encoder(z_dim=z_dim, dim_gen=dim_gen)
+    # x_sampler
     xs = data.DataSampler()
+    # z_sampler
     zs = util.sample_Z
 
     cl_gan = clusGAN(g_net, d_net, enc_net, xs, zs, args.data, args.model, args.sampler,

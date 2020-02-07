@@ -10,6 +10,9 @@ class DataSampler(object):
         self.shape = [28, 28, 1]
 
     def train(self, batch_size, label=False):
+        # mnist.train.next_batch(batch_size) returns a tuple of two arrays, where the first represents
+        # a batch of batch_size MNIST images, and the second represents a batch of batch-size labels
+        # corresponding to those images.
         if label:
            return mnist.train.next_batch(batch_size)
         else:
