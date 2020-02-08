@@ -275,9 +275,13 @@ class clusGAN(object):
         # Esto es un punto en el espacio n-dim.
         print(latent_rep[0])
         print('Label_pred')
-        print(labels_pred[0])
+        print(labels_pred[547])
         print('Label_true')
-        print(labels_true[0])
+        print(labels_true[547])
+
+
+
+
 
 
         if not os.path.exists('logs'):
