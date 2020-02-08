@@ -2,6 +2,7 @@ import os
 
 import numpy as np
 import matplotlib
+import matplotlib.cm as cm
 from sklearn.manifold import TSNE
 
 matplotlib.use('Agg')
@@ -57,17 +58,8 @@ def latent_space(latent_pts, labels_true, labels_pred, K):
         fig_title = "Perplexity = $%d$" % perplexity
         figname = 'tsne-plex%i.png' % perplexity
 
-    # Encode real images
-    enc_zn, enc_zc, enc_zc_logits = encoder(c_imgs)
-    # Stack latent space encoding
-    enc = np.hstack((enc_zn.cpu().detach().numpy(), enc_zc_logits.cpu().detach().numpy()))
-    # enc = np.hstack((enc_zn.cpu().detach().numpy(), enc_zc.cpu().detach().numpy()))
-
     # Cluster with TSNE
-    tsne_enc = tsne.fit_transform(enc)
-
-    # Convert to numpy for indexing purposes
-    labels = labels.cpu().data.numpy()
+    tsne_enc = tsne.fit_transform(latent_pts)
 
     # Color and marker for each true class
     colors = cm.rainbow(np.linspace(0, 1, n_c))
@@ -77,7 +69,7 @@ def latent_space(latent_pts, labels_true, labels_pred, K):
     fig, ax = plt.subplots(figsize=(16, 10))
     for iclass in range(0, n_c):
         # Get indices for each class
-        idxs = labels == iclass
+        idxs = labels_true == iclass
         # Scatter those points in tsne dims
         ax.scatter(tsne_enc[idxs, 0],
                    tsne_enc[idxs, 1],

@@ -279,6 +279,8 @@ class clusGAN(object):
         print('Label_true')
         print(labels_true[547])
 
+        latent_space(latent_rep, labels_true, labels_pred, 10)
+
 
 
 
