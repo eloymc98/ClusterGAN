@@ -268,7 +268,10 @@ class clusGAN(object):
         print(' #Points = {}, K = {}, Purity = {},  NMI = {}, ARI = {}, Latent space shape = {} '
               .format(latent_rep.shape[0], self.num_classes, purity, nmi, ari, latent_rep.shape))
 
-        # TODO: Plot latent space with respective labels and clusters if possible.
+        # TODO: Plot latent space with respective labels and clusters if possible. latent_rep, labels_pred, labels_true
+        print('Latent')
+        print(latent_rep[0])
+
 
         if not os.path.exists('logs'):
             os.makedirs('logs')
