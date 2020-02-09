@@ -146,7 +146,7 @@ class clusGAN(object):
                                                                       self.beta_cycle_gen, (t + 1) / 100), bx)
 
             if (t + 1) % 50000 == 0:
-                self.save(timestamp + '_' + str(t+1))
+                self.save(timestamp + '_' + str(t + 1))
 
         self.recon_enc(timestamp, val=True)
         self.save(timestamp)
@@ -284,11 +284,6 @@ class clusGAN(object):
 
         latent_space(latent_rep, labels_true, labels_pred, 10)
 
-
-
-
-
-
         if not os.path.exists('logs'):
             os.makedirs('logs')
 
@@ -299,6 +294,11 @@ class clusGAN(object):
                             self.beta_cycle_gen,
                             self.sampler, purity, nmi, ari))
             f.flush()
+
+    def label_img(self):
+        # TODO: Load pre-trained model, get query image latent representation (infer image to encoder)
+        # TODO: Get Kmeans points and labels, apply closest node function and assign label.
+        pass
 
 
 if __name__ == '__main__':
@@ -313,6 +313,7 @@ if __name__ == '__main__':
     parser.add_argument('--beta_c', type=float, default=10.0)
     parser.add_argument('--timestamp', type=str, default='')
     parser.add_argument('--train', type=str, default='False')
+    parser.add_argument('--label', type=str, default='False')
 
     args = parser.parse_args()
     data = importlib.import_module(args.data)
@@ -339,6 +340,8 @@ if __name__ == '__main__':
                      num_classes, dim_gen, n_cat, batch_size, beta_cycle_gen, beta_cycle_label)
     if args.train == 'True':
         cl_gan.train()
+    elif args.label == 'True':
+        cl_gan.label_img()
     else:
 
         print('Attempting to Restore Model ...')
