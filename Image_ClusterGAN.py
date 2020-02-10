@@ -328,6 +328,7 @@ class clusGAN(object):
             # print(latent_pt[0])
             # print(f'index {index}')
             # print(f'label {labels[index]}')
+            print(zhats_label)
             label = np.argmax(zhats_label, axis=1)
             print(label)
 
