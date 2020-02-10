@@ -261,7 +261,9 @@ class clusGAN(object):
         km = KMeans(n_clusters=max(self.num_classes, len(np.unique(labels_true))), random_state=0, verbose=1).fit(
             latent_rep)
         labels_pred = km.labels_
-
+        print(type(labels_true))
+        print(type(labels_pred))
+        # type labels_predicted np.ndarray
         purity = metric.compute_purity(labels_pred, labels_true)
         ari = adjusted_rand_score(labels_true, labels_pred)
         nmi = normalized_mutual_info_score(labels_true, labels_pred)
