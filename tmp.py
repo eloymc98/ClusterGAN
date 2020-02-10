@@ -15,13 +15,17 @@
 # if ima.is_dir():
 #     print('Dir')
 
-import cv2
+# import cv2
 import numpy as np
-img = cv2.imread('/Users/eloymarinciudad/Downloads/300.0.png', cv2.IMREAD_GRAYSCALE)
-res = cv2.resize(img, dsize=(28, 28), interpolation=cv2.INTER_CUBIC)
-res = res.flatten()/255
-latent = np.zeros(shape=(1, 40))
-x = np.zeros(shape=(1, res.shape[0]))
-x[0, :] = res
+# img = cv2.imread('/Users/eloymarinciudad/Downloads/300.0.png', cv2.IMREAD_GRAYSCALE)
+# res = cv2.resize(img, dsize=(28, 28), interpolation=cv2.INTER_CUBIC)
+# res = res.flatten()/255
+# latent = np.zeros(shape=(1, 40))
+# x = np.zeros(shape=(1, res.shape[0]))
+# x[0, :] = res
+#
+# print(x[0])
+import util
 
-print(x[0])
+index = util.closest(np.array([[0.3, 0.5, 0.5], [0, 0,0.3], [0.8, 0.9,0.2]]), np.array([0.8, 0.8, 0.1]))
+print(index)

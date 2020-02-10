@@ -244,10 +244,10 @@ class clusGAN(object):
             latent[pt_indx, :] = np.concatenate((zhats_gen, zhats_label), axis=1)
 
         if self.beta_cycle_gen == 0:
-            km, labels_pred = self._eval_cluster(latent[:, self.dim_gen:], label_recon, timestamp, val)
+            km = self._eval_cluster(latent[:, self.dim_gen:], label_recon, timestamp, val)
         else:
-            km, labels_pred = self._eval_cluster(latent, label_recon, timestamp, val)
-        return km, labels_pred
+            km = self._eval_cluster(latent, label_recon, timestamp, val)
+        return km, latent
 
     def _eval_cluster(self, latent_rep, labels_true, timestamp, val):
 
@@ -291,10 +291,9 @@ class clusGAN(object):
                             self.sampler, purity, nmi, ari))
             f.flush()
 
-        return km, labels_pred
+        return km
 
-    def label_img(self, path, km, labels_pred):
-        # TODO: Get Kmeans points and labels, apply closest node function and assign label.
+    def label_img(self, path, km, latent):
         from pathlib import Path
         import cv2
         query = Path(path)
@@ -312,10 +311,12 @@ class clusGAN(object):
             latent_pt[0, :] = np.concatenate((zhats_gen, zhats_label), axis=1)
 
             clusters = km.cluster_centers_  # (n_clusters, features)
-            index = util.closest(clusters, latent_pt[0])
-            print(clusters)
+            labels = km.labels_
+            index = util.closest(latent, latent_pt[0])
+            print(f'latent idx {latent[index]}')
             print(latent_pt[0])
             print(f'index {index}')
+            print(f'label {labels[index]}')
         elif query.is_dir():
             return None
 
@@ -371,7 +372,7 @@ if __name__ == '__main__':
 
         if args.label == 'True':
             print('Labeling query image...')
-            km, labels_pred = cl_gan.recon_enc(timestamp, val=False)
-            cl_gan.label_img(args.path, km, labels_pred)
+            km, latent = cl_gan.recon_enc(timestamp, val=False)
+            cl_gan.label_img(args.path, km, latent)
         else:
             cl_gan.recon_enc(timestamp, val=False)
