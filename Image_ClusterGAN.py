@@ -230,7 +230,7 @@ class clusGAN(object):
         num_pts_to_plot = data_recon.shape[0]  # num of images
         recon_batch_size = self.batch_size
         latent = np.zeros(shape=(num_pts_to_plot, self.z_dim))
-
+        labelsss = np.zeros(shape=(num_pts_to_plot, 1))
         print('Data Shape = {}, Labels Shape = {}'.format(data_recon.shape, label_recon.shape))
         for b in range(int(np.ceil(num_pts_to_plot * 1.0 / recon_batch_size))):
             if (b + 1) * recon_batch_size > num_pts_to_plot:
@@ -240,9 +240,11 @@ class clusGAN(object):
             xtrue = data_recon[pt_indx, :]
 
             zhats_gen, zhats_label = self.sess.run([self.z_infer_gen, self.z_infer_label], feed_dict={self.x: xtrue})
-
+            # zhats_label
+            labelsss[pt_indx, :] = zhats_label.index(1)
             if b == 1:
                 print(f'zhats_label {zhats_label}')
+                print(f'labels {labelsss}')
             latent[pt_indx, :] = np.concatenate((zhats_gen, zhats_label), axis=1)
 
         if self.beta_cycle_gen == 0:
