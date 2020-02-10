@@ -313,7 +313,9 @@ class clusGAN(object):
 
             clusters = km.cluster_centers_  # (n_clusters, features)
             index = util.closest(clusters, latent_pt[0])
-            print(index)
+            print(clusters)
+            print(latent_pt[0])
+            print(f'index {index}')
         elif query.is_dir():
             return None
 
