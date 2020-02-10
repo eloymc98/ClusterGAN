@@ -247,12 +247,12 @@ class clusGAN(object):
             latent[pt_indx, :] = np.concatenate((zhats_gen, zhats_label), axis=1)
 
         if self.beta_cycle_gen == 0:
-            km = self._eval_cluster(latent[:, self.dim_gen:], label_recon, timestamp, val)
+            km = self._eval_cluster(latent[:, self.dim_gen:], label_recon, timestamp, val, labelsss)
         else:
-            km = self._eval_cluster(latent, label_recon, timestamp, val)
+            km = self._eval_cluster(latent, label_recon, timestamp, val, labelsss)
         return km, latent
 
-    def _eval_cluster(self, latent_rep, labels_true, timestamp, val):
+    def _eval_cluster(self, latent_rep, labels_true, timestamp, val, labels_predicted):
 
         if self.data == 'fashion' and self.num_classes == 5:
             map_labels = {0: 0, 1: 1, 2: 2, 3: 0, 4: 2, 5: 3, 6: 2, 7: 3, 8: 4, 9: 3}
@@ -261,6 +261,9 @@ class clusGAN(object):
         km = KMeans(n_clusters=max(self.num_classes, len(np.unique(labels_true))), random_state=0, verbose=1).fit(
             latent_rep)
         labels_pred = km.labels_
+
+
+        print(labels_true)
 
         purity = metric.compute_purity(labels_pred, labels_true)
         ari = adjusted_rand_score(labels_true, labels_pred)
