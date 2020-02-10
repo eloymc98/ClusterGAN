@@ -263,7 +263,8 @@ class clusGAN(object):
         labels_pred = km.labels_
 
 
-        print(labels_true)
+        print(type(labels_true))
+        print(type(labels_predicted))
 
         purity = metric.compute_purity(labels_pred, labels_true)
         ari = adjusted_rand_score(labels_true, labels_pred)
