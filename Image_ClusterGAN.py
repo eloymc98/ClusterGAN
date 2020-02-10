@@ -321,13 +321,16 @@ class clusGAN(object):
 
             latent_pt[0, :] = np.concatenate((zhats_gen, zhats_label), axis=1)
 
-            clusters = km.cluster_centers_  # (n_clusters, features)
-            labels = km.labels_
-            index = util.closest(latent, latent_pt[0])
-            print(f'latent idx {latent[index]}')
-            print(latent_pt[0])
-            print(f'index {index}')
-            print(f'label {labels[index]}')
+            # clusters = km.cluster_centers_  # (n_clusters, features)
+            # labels = km.labels_
+            # index = util.closest(latent, latent_pt[0])
+            # print(f'latent idx {latent[index]}')
+            # print(latent_pt[0])
+            # print(f'index {index}')
+            # print(f'label {labels[index]}')
+            label = np.argmax(zhats_label, axis=1)
+            print(label)
+
         elif query.is_dir():
             return None
 
