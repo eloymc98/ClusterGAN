@@ -30,7 +30,7 @@ import numpy as np
 #
 # index = util.closest(np.array([[0.3, 0.5, 0.5], [0, 0, 0.3], [0.8, 0.9, 0.2]]), np.array([0.8, 0.8, 0.1]))
 # print(index)
-
+labelsss = np.zeros(shape=(8, 1))
 zhats = np.array([[2.78456683e-25, 1.13403173e-28, 2.55347444e-21, 1.00000000e+00
                       , 1.50863351e-17, 7.60306297e-26, 2.45780154e-26, 1.14293015e-21
                       , 1.95183931e-33, 8.89012444e-36],
@@ -55,5 +55,6 @@ zhats = np.array([[2.78456683e-25, 1.13403173e-28, 2.55347444e-21, 1.00000000e+0
                   [1.04932895e-19, 3.38904427e-20, 3.01676636e-18, 3.98609977e-21
                       , 1.28237738e-20, 1.01557589e-25, 5.24041828e-25, 5.87892852e-21
                       , 1.00000000e+00, 8.37501629e-20]])
-
-print(np.argmax(zhats, axis=1))
+print(np.argmax(zhats, axis=1).shape)
+labelsss[np.arange(0,8), 0] = np.argmax(zhats, axis=1)
+print(labelsss)

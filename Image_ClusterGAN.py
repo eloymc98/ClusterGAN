@@ -241,7 +241,7 @@ class clusGAN(object):
 
             zhats_gen, zhats_label = self.sess.run([self.z_infer_gen, self.z_infer_label], feed_dict={self.x: xtrue})
 
-            labelsss[pt_indx, :] = np.argmax(zhats_label, axis=1)
+            labelsss[pt_indx, 0] = np.argmax(zhats_label, axis=1)
             if b == 1:
                 print(f'labels {labelsss}')
             latent[pt_indx, :] = np.concatenate((zhats_gen, zhats_label), axis=1)
