@@ -244,9 +244,10 @@ class clusGAN(object):
             latent[pt_indx, :] = np.concatenate((zhats_gen, zhats_label), axis=1)
 
         if self.beta_cycle_gen == 0:
-            self._eval_cluster(latent[:, self.dim_gen:], label_recon, timestamp, val)
+            km, labels_pred = self._eval_cluster(latent[:, self.dim_gen:], label_recon, timestamp, val)
         else:
-            self._eval_cluster(latent, label_recon, timestamp, val)
+            km, labels_pred = self._eval_cluster(latent, label_recon, timestamp, val)
+        return km, labels_pred
 
     def _eval_cluster(self, latent_rep, labels_true, timestamp, val):
 
@@ -273,15 +274,9 @@ class clusGAN(object):
         print(' #Points = {}, K = {}, Purity = {},  NMI = {}, ARI = {}, Latent space shape = {} '
               .format(latent_rep.shape[0], self.num_classes, purity, nmi, ari, latent_rep.shape))
 
-        print(labels_pred.shape)
-        print(labels_true.shape)
         print('Latent')
         # Esto es un punto en el espacio n-dim.
         print(latent_rep[0])
-        print('Label_pred')
-        print(labels_pred[547])
-        print('Label_true')
-        print(labels_true[547])
 
         latent_space(latent_rep, labels_true, labels_pred, 10)
 
@@ -295,7 +290,7 @@ class clusGAN(object):
                             self.beta_cycle_gen,
                             self.sampler, purity, nmi, ari))
             f.flush()
-        print(km.cluster_centers_)
+
         return km, labels_pred
 
     def label_img(self, path, km, labels_pred):
@@ -318,6 +313,7 @@ class clusGAN(object):
 
             clusters = km.cluster_centers_  # (n_clusters, features)
             index = util.closest(clusters, latent_pt[0])
+            print(index)
         elif query.is_dir():
             return None
 
@@ -373,6 +369,7 @@ if __name__ == '__main__':
 
         if args.label == 'True':
             print('Labeling query image...')
-            cl_gan.label_img(args.path)
+            km, labels_pred = cl_gan.recon_enc(timestamp, val=False)
+            cl_gan.label_img(args.path, km, labels_pred)
         else:
             cl_gan.recon_enc(timestamp, val=False)
