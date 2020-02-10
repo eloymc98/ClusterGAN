@@ -230,7 +230,7 @@ class clusGAN(object):
         num_pts_to_plot = data_recon.shape[0]  # num of images
         recon_batch_size = self.batch_size
         latent = np.zeros(shape=(num_pts_to_plot, self.z_dim))
-        labelsss = np.zeros(shape=(num_pts_to_plot, 1))
+        labelsss = np.zeros(shape=(num_pts_to_plot))
         print('Data Shape = {}, Labels Shape = {}'.format(data_recon.shape, label_recon.shape))
         for b in range(int(np.ceil(num_pts_to_plot * 1.0 / recon_batch_size))):
             if (b + 1) * recon_batch_size > num_pts_to_plot:
@@ -241,7 +241,7 @@ class clusGAN(object):
 
             zhats_gen, zhats_label = self.sess.run([self.z_infer_gen, self.z_infer_label], feed_dict={self.x: xtrue})
 
-            labelsss[pt_indx, 0] = np.argmax(zhats_label, axis=1)
+            labelsss[pt_indx] = np.argmax(zhats_label, axis=1)
             if b == 1:
                 print(f'labels {labelsss}')
             latent[pt_indx, :] = np.concatenate((zhats_gen, zhats_label), axis=1)
@@ -281,8 +281,9 @@ class clusGAN(object):
 
         print('Data = {}, Model = {}, sampler = {}, z_dim = {}, beta_label = {}, beta_gen = {} '
               .format(self.data, self.model, self.sampler, self.z_dim, self.beta_cycle_label, self.beta_cycle_gen))
-        print(' #Points = {}, K = {}, Purity = {},  NMI = {}, ARI = {}, Latent space shape = {}, P2={}, nmi2={}, ari2={} '
-              .format(latent_rep.shape[0], self.num_classes, purity, nmi, ari, latent_rep.shape, purity2, nmi2, ari2))
+        print(
+            ' #Points = {}, K = {}, Purity = {},  NMI = {}, ARI = {}, Latent space shape = {}, P2={}, nmi2={}, ari2={} '
+            .format(latent_rep.shape[0], self.num_classes, purity, nmi, ari, latent_rep.shape, purity2, nmi2, ari2))
 
         print('Latent')
         # Esto es un punto en el espacio n-dim.
