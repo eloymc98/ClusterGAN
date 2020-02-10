@@ -8,6 +8,11 @@ def closest_node(node, nodes):
     return dist_2.argsort()
 
 
+def closest(X, p):
+    disp = X - p
+    return np.argmin((disp * disp).sum(1))
+
+
 def sample_Z(batch, z_dim, sampler='one_hot', num_class=10, n_cat=1, label_index=None):
     if sampler == 'mul_cat':
         if label_index is None:
