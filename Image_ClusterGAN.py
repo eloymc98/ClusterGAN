@@ -227,7 +227,7 @@ class clusGAN(object):
             data_recon, label_recon = self.x_sampler.test()
             # data_recon, label_recon = self.x_sampler.load_all()
 
-        num_pts_to_plot = data_recon.shape[0] # num of images
+        num_pts_to_plot = data_recon.shape[0]  # num of images
         recon_batch_size = self.batch_size
         latent = np.zeros(shape=(num_pts_to_plot, self.z_dim))
 
@@ -239,14 +239,10 @@ class clusGAN(object):
                 pt_indx = np.arange(b * recon_batch_size, (b + 1) * recon_batch_size)
             xtrue = data_recon[pt_indx, :]
 
-            if b == 1:
-                print(f'pt_indx shape: {pt_indx.shape}')
-                print(f'xtrue shape: {xtrue.shape}')
-
             zhats_gen, zhats_label = self.sess.run([self.z_infer_gen, self.z_infer_label], feed_dict={self.x: xtrue})
 
             latent[pt_indx, :] = np.concatenate((zhats_gen, zhats_label), axis=1)
-
+        print(xtrue[0])
         if self.beta_cycle_gen == 0:
             self._eval_cluster(latent[:, self.dim_gen:], label_recon, timestamp, val)
         else:
@@ -303,11 +299,17 @@ class clusGAN(object):
         # TODO: Check if path is a folder or an image, get query image latent representation (infer image to encoder)
         # TODO: Get Kmeans points and labels, apply closest node function and assign label.
         from pathlib import Path
-
+        import cv2
         query = Path(path)
 
         if query.is_file():
-            # Como cargar la imagen?
+            # Como cargar la imagen? hacer resize 28x28 y pasarla con shape (1,784)
+            img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
+            res = cv2.resize(img, dsize=(28, 28), interpolation=cv2.INTER_CUBIC)
+            res = res.flatten()
+            latent = np.zeros(shape=(1, self.z_dim))
+            x = np.zeros(shape=(1, res.shape[0]))
+            x[0, :] = res
             return None
         elif query.is_dir():
             return None
