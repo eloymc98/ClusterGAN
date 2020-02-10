@@ -5,16 +5,17 @@ import datetime
 import argparse
 import importlib
 import tensorflow as tf
-# from scipy.misc import imsave
 from imageio import imwrite
 import numpy as np
 from sklearn.cluster import KMeans
-from sklearn.manifold import TSNE
 from sklearn.metrics.cluster import normalized_mutual_info_score, adjusted_rand_score
 
 import metric
 from visualize import *
 import util
+import logging
+
+logger = logging.getLogger()
 
 tf.set_random_seed(0)
 
@@ -231,12 +232,18 @@ class clusGAN(object):
         latent = np.zeros(shape=(num_pts_to_plot, self.z_dim))
 
         print('Data Shape = {}, Labels Shape = {}'.format(data_recon.shape, label_recon.shape))
+        logger.info(f'Num pts to plot: {num_pts_to_plot}')
+        logger.info(f'Recon batch size: {recon_batch_size}')
         for b in range(int(np.ceil(num_pts_to_plot * 1.0 / recon_batch_size))):
             if (b + 1) * recon_batch_size > num_pts_to_plot:
                 pt_indx = np.arange(b * recon_batch_size, num_pts_to_plot)
             else:
                 pt_indx = np.arange(b * recon_batch_size, (b + 1) * recon_batch_size)
             xtrue = data_recon[pt_indx, :]
+
+            if b == 1:
+                logger.info(f'pt_indx: {pt_indx}')
+                logger.info(f'xtrue: {xtrue}')
 
             zhats_gen, zhats_label = self.sess.run([self.z_infer_gen, self.z_infer_label], feed_dict={self.x: xtrue})
 
@@ -295,10 +302,18 @@ class clusGAN(object):
                             self.sampler, purity, nmi, ari))
             f.flush()
 
-    def label_img(self):
-        # TODO: Load pre-trained model, get query image latent representation (infer image to encoder)
+    def label_img(self, path):
+        # TODO: Check if path is a folder or an image, get query image latent representation (infer image to encoder)
         # TODO: Get Kmeans points and labels, apply closest node function and assign label.
-        pass
+        from pathlib import Path
+
+        query = Path(path)
+
+        if query.is_file():
+            # Como cargar la imagen?
+            return None
+        elif query.is_dir():
+            return None
 
 
 if __name__ == '__main__':
@@ -314,6 +329,7 @@ if __name__ == '__main__':
     parser.add_argument('--timestamp', type=str, default='')
     parser.add_argument('--train', type=str, default='False')
     parser.add_argument('--label', type=str, default='False')
+    parser.add_argument('--path', type=str, default='')
 
     args = parser.parse_args()
     data = importlib.import_module(args.data)
@@ -340,8 +356,6 @@ if __name__ == '__main__':
                      num_classes, dim_gen, n_cat, batch_size, beta_cycle_gen, beta_cycle_label)
     if args.train == 'True':
         cl_gan.train()
-    elif args.label == 'True':
-        cl_gan.label_img()
     else:
 
         print('Attempting to Restore Model ...')
@@ -351,4 +365,8 @@ if __name__ == '__main__':
         else:
             cl_gan.load(pre_trained=False, timestamp=timestamp)
 
-        cl_gan.recon_enc(timestamp, val=False)
+        if args.label == 'True':
+            print('Labeling query image...')
+            cl_gan.label_img(args.path)
+        else:
+            cl_gan.recon_enc(timestamp, val=False)
