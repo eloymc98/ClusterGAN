@@ -232,8 +232,8 @@ class clusGAN(object):
         latent = np.zeros(shape=(num_pts_to_plot, self.z_dim))
 
         print('Data Shape = {}, Labels Shape = {}'.format(data_recon.shape, label_recon.shape))
-        logger.info(f'Num pts to plot: {num_pts_to_plot}')
-        logger.info(f'Recon batch size: {recon_batch_size}')
+        print(f'Num pts to plot: {num_pts_to_plot}')
+        print(f'Recon batch size: {recon_batch_size}')
         for b in range(int(np.ceil(num_pts_to_plot * 1.0 / recon_batch_size))):
             if (b + 1) * recon_batch_size > num_pts_to_plot:
                 pt_indx = np.arange(b * recon_batch_size, num_pts_to_plot)
@@ -242,8 +242,8 @@ class clusGAN(object):
             xtrue = data_recon[pt_indx, :]
 
             if b == 1:
-                logger.info(f'pt_indx: {pt_indx}')
-                logger.info(f'xtrue: {xtrue}')
+                print(f'pt_indx: {pt_indx}')
+                print(f'xtrue: {xtrue}')
 
             zhats_gen, zhats_label = self.sess.run([self.z_infer_gen, self.z_infer_label], feed_dict={self.x: xtrue})
 
@@ -278,7 +278,6 @@ class clusGAN(object):
         print(' #Points = {}, K = {}, Purity = {},  NMI = {}, ARI = {}, Latent space shape = {} '
               .format(latent_rep.shape[0], self.num_classes, purity, nmi, ari, latent_rep.shape))
 
-        # TODO: Plot latent space with respective labels and clusters if possible. latent_rep, labels_pred, labels_true
         print(labels_pred.shape)
         print(labels_true.shape)
         print('Latent')
