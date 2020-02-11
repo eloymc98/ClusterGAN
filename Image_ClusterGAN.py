@@ -289,7 +289,7 @@ class clusGAN(object):
         # Esto es un punto en el espacio n-dim.
         print(latent_rep[0])
 
-        latent_space(latent_rep, labels_true, labels_pred, 10)
+        latent_space(latent_rep, labels_true, labels_pred, self.num_classes)
 
         if not os.path.exists('logs'):
             os.makedirs('logs')
