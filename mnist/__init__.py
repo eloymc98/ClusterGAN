@@ -2,6 +2,7 @@ import numpy as np
 from tensorflow.examples.tutorials.mnist import input_data
 from sklearn.decomposition import PCA
 from sklearn.cluster import KMeans
+
 mnist = input_data.read_data_sets('./data/mnist')
 
 
@@ -14,9 +15,9 @@ class DataSampler(object):
         # a batch of batch_size MNIST images, and the second represents a batch of batch-size labels
         # corresponding to those images.
         if label:
-           return mnist.train.next_batch(batch_size)
+            return mnist.train.next_batch(batch_size)
         else:
-           return mnist.train.next_batch(batch_size)[0]
+            return mnist.train.next_batch(batch_size)[0]
 
     def test(self):
         return mnist.test.images, mnist.test.labels
@@ -24,8 +25,8 @@ class DataSampler(object):
     def validation(self):
         return mnist.validation.images, mnist.validation.labels
 
-
     def data2img(self, data):
+        print(f'Data2img: Data shape = {data.shape[0]}, Self shape = {self.shape}')
         return np.reshape(data, [data.shape[0]] + self.shape)
 
     def load_all(self):
@@ -46,7 +47,7 @@ class DataSampler(object):
 
 class NoiseSampler(object):
 
-    def __init__(self, z_dim = 100, mode='uniform'):
+    def __init__(self, z_dim=100, mode='uniform'):
         self.mode = mode
         self.z_dim = z_dim
         self.K = 10
@@ -63,7 +64,7 @@ class NoiseSampler(object):
         elif self.mode == 'pca_kmeans':
 
             data_x = mnist.train.images
-            feature_mean = np.mean(data_x, axis = 0)
+            feature_mean = np.mean(data_x, axis=0)
             data_x -= feature_mean
             data_embed = PCA(n_components=self.z_dim, random_state=0).fit_transform(data_x)
             data_x += feature_mean
@@ -72,25 +73,20 @@ class NoiseSampler(object):
             self.mu_mat = kmeans.cluster_centers_
             shift = np.min(self.mu_mat)
             scale = np.max(self.mu_mat - shift)
-            self.mu_mat = (self.mu_mat - shift)/scale
+            self.mu_mat = (self.mu_mat - shift) / scale
             self.sig = 0.15
-
 
     def __call__(self, batch_size, z_dim):
         if self.mode == 'uniform':
             return np.random.uniform(-1.0, 1.0, [batch_size, z_dim])
         elif self.mode == 'normal':
-            return 0.15*np.random.randn(batch_size, z_dim)
+            return 0.15 * np.random.randn(batch_size, z_dim)
         elif self.mode == 'mix_gauss':
-            k = np.random.randint(low = 0, high = self.K, size=batch_size)
-            return self.sig*np.random.randn(batch_size, z_dim) + self.mu_mat[k]
+            k = np.random.randint(low=0, high=self.K, size=batch_size)
+            return self.sig * np.random.randn(batch_size, z_dim) + self.mu_mat[k]
         elif self.mode == 'pca_kmeans':
             k = np.random.randint(low=0, high=self.K, size=batch_size)
             return self.sig * np.random.randn(batch_size, z_dim) + self.mu_mat[k]
         elif self.mode == 'one_hot':
             k = np.random.randint(low=0, high=self.K, size=batch_size)
-            return np.hstack((self.sig * np.random.randn(batch_size, z_dim-self.K), self.mu_mat[k]))
-
-
-
-
+            return np.hstack((self.sig * np.random.randn(batch_size, z_dim - self.K), self.mu_mat[k]))
