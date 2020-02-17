@@ -147,7 +147,7 @@ class clusGAN(object):
                                                                       self.z_dim, self.beta_cycle_label,
                                                                       self.beta_cycle_gen, (t + 1) / 100), bx)
 
-            if (t + 1) % 1000 == 0:
+            if (t + 1) % 300 == 0:
                 self.save(timestamp + '_' + str(t + 1))
 
         self.recon_enc(timestamp, val=True)
@@ -167,7 +167,7 @@ class clusGAN(object):
 
         from shutil import copyfile
         copyfile(os.path.join(checkpoint_dir, 'model.ckpt'),
-                 f'./gdrive/My\ Drive/model_{datetime.datetime.utcnow().strftime("%Y/%m/%d")}.')
+                 f'/gdrive/My\ Drive/model_{datetime.datetime.utcnow().strftime("%Y/%m/%d")}.')
 
     def load(self, pre_trained=False, timestamp=''):
 
