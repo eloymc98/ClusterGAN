@@ -73,7 +73,7 @@ class DataSampler(object):
         return features, labels
 
     def train(self, batch_size, label=False):
-        print(f'Type: {type(self.batch1)}')
+
         features = None
         labels = None
         self.count += 1
@@ -82,6 +82,7 @@ class DataSampler(object):
             labels = self.batch['labels'][self.index:batch_size + self.index]
         else:
             print('Ha entraooo')
+            self.count = 1
             self.index = 0
             self.batch_number += 1
             if self.batch_number == 2:
