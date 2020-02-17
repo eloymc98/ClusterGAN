@@ -31,7 +31,7 @@ def copytree(src, dst, symlinks=False, ignore=None):
         if os.path.isdir(s):
             shutil.copytree(src=s, dst=d, symlinks=symlinks, ignore=ignore)
         else:
-            shutil.copy2(src=s, dst=dst + '/')
+            shutil.copy2(src=s, dst=dst)
 
 
 class clusGAN(object):
@@ -186,7 +186,7 @@ class clusGAN(object):
         os.makedirs(f'/content/gdrive/My Drive/ClusterGAN/checkpoints/{args.data}/{date}')
         print(os.path.exists(f'/content/gdrive/My Drive/ClusterGAN/checkpoints/{args.data}/{date}'))
         copytree(checkpoint_dir,
-                 f'/content/gdrive/My\ Drive/ClusterGAN/checkpoints/{args.data}/{date}')
+                 f'/content/gdrive/My\ Drive/ClusterGAN/checkpoints/{args.data}')
 
     def load(self, pre_trained=False, timestamp=''):
 

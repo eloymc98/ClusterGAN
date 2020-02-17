@@ -58,3 +58,23 @@ import numpy as np
 # print(np.argmax(zhats, axis=1).shape)
 # labelsss[np.arange(0,8), 0] = np.argmax(zhats, axis=1)
 # print(labelsss)
+
+
+import os
+import shutil
+
+
+def copytree(src, dst, symlinks=False, ignore=None):
+    for item in os.listdir(src):
+        print(item)
+        s = os.path.join(src, item)
+        print(s)
+        d = os.path.join(dst, item)
+        print(d)
+        if os.path.isdir(s):
+            shutil.copytree(src=s, dst=d, symlinks=symlinks, ignore=ignore)
+        else:
+            shutil.copy2(src=s, dst=dst)
+
+
+copytree('/Users/eloymarinciudad/Downloads/prueba', '/Users/eloymarinciudad/Downloads')
