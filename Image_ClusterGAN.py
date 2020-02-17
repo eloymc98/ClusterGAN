@@ -14,10 +14,21 @@ import metric
 from visualize import *
 import util
 import logging
+import shutil
 
 logger = logging.getLogger()
 
 tf.set_random_seed(0)
+
+
+def copytree(src, dst, symlinks=False, ignore=None):
+    for item in os.listdir(src):
+        s = os.path.join(src, item)
+        d = os.path.join(dst, item)
+        if os.path.isdir(s):
+            shutil.copytree(s, d, symlinks, ignore)
+        else:
+            shutil.copy2(s, d)
 
 
 class clusGAN(object):
@@ -165,9 +176,12 @@ class clusGAN(object):
 
         self.saver.save(self.sess, os.path.join(checkpoint_dir, 'model.ckpt'))
 
-        from shutil import copyfile
-        copyfile(os.path.join(checkpoint_dir, 'model.ckpt'),
-                 f'/content/gdrive/My\ Drive/model_{datetime.datetime.utcnow().strftime("%Y/%m/%d")}.')
+        if not os.path.exists('/content/gdrive/My\ Drive/ClusterGAN/checkpoints'):
+            os.makedirs('/content/gdrive/My\ Drive/ClusterGAN/checkpoints')
+            os.makedirs(f'/content/gdrive/My\ Drive/ClusterGAN/checkpoints/{args.data}')
+
+        copytree(checkpoint_dir,
+                 f'/content/gdrive/My\ Drive/ClusterGAN/checkpoints/{args.data}')
 
     def load(self, pre_trained=False, timestamp=''):
 
