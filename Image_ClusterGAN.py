@@ -147,7 +147,7 @@ class clusGAN(object):
                                                                       self.z_dim, self.beta_cycle_label,
                                                                       self.beta_cycle_gen, (t + 1) / 100), bx)
 
-            if (t + 1) % 50000 == 0:
+            if (t + 1) % 1000 == 0:
                 self.save(timestamp + '_' + str(t + 1))
 
         self.recon_enc(timestamp, val=True)
@@ -164,6 +164,10 @@ class clusGAN(object):
             os.makedirs(checkpoint_dir)
 
         self.saver.save(self.sess, os.path.join(checkpoint_dir, 'model.ckpt'))
+
+        from shutil import copyfile
+        copyfile(os.path.join(checkpoint_dir, 'model.ckpt'),
+                 f'./gdrive/My\ Drive/model_{datetime.datetime.utcnow().strftime("%Y/%m/%d")}.')
 
     def load(self, pre_trained=False, timestamp=''):
 
@@ -284,7 +288,7 @@ class clusGAN(object):
               .format(self.data, self.model, self.sampler, self.z_dim, self.beta_cycle_label, self.beta_cycle_gen))
         print(
             ' #Points = {}, K = {}, Purity = {},  NMI = {}, ARI = {}, Latent space shape = {}, P2={}, nmi2={}, ari2={} '
-            .format(latent_rep.shape[0], self.num_classes, purity, nmi, ari, latent_rep.shape, purity2, nmi2, ari2))
+                .format(latent_rep.shape[0], self.num_classes, purity, nmi, ari, latent_rep.shape, purity2, nmi2, ari2))
 
         print('Latent')
         # Esto es un punto en el espacio n-dim.
