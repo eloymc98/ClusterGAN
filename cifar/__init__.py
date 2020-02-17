@@ -18,6 +18,7 @@ class DataSampler(object):
         self.shape = [32, 32, 3]
         self.batch_number = 1
         self.index = 0
+        self.count = 0
         cifar10_dataset_folder_path = './data/cifar-10-batches-py'
 
         with open(cifar10_dataset_folder_path + '/data_batch_1', mode='rb') as file:
@@ -35,6 +36,8 @@ class DataSampler(object):
         with open(cifar10_dataset_folder_path + '/data_batch_5', mode='rb') as file:
             # note the encoding type is 'latin1'
             self.batch5 = pickle.load(file, encoding='latin1')
+        self.batch = self.batch1
+
 
     def load_label_names(self):
         return ['airplane', 'automobile', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck']
@@ -73,6 +76,25 @@ class DataSampler(object):
         print(f'Type: {type(self.batch1)}')
         features = None
         labels = None
+        self.count += 1
+        if self.count < 157:
+            features = self.batch['data'][self.index:batch_size + self.index]
+            labels = self.batch['labels'][self.index:batch_size + self.index]
+        else:
+            print('Ha entraooo')
+            self.index = 0
+            self.batch_number += 1
+            if self.batch_number == 2:
+                self.batch = self.batch2
+            elif self.batch_number == 3:
+                self.batch = self.batch3
+            elif self.batch_number == 4:
+                self.batch = self.batch4
+            elif self.batch_number == 5:
+                self.batch = self.batch5
+            features = self.batch['data'][self.index:batch_size + self.index]
+            labels = self.batch['labels'][self.index:batch_size + self.index]
+
         if label:
             return features, labels
         else:
