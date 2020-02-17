@@ -70,7 +70,7 @@ class DataSampler(object):
         return features, labels
 
     def train(self, batch_size, label=False):
-        print(f'Type: {self.batch1.type}')
+        print(f'Type: {type(self.batch1)}')
         features = None
         labels = None
         if label:
