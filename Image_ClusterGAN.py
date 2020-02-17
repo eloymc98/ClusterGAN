@@ -176,9 +176,9 @@ class clusGAN(object):
 
         self.saver.save(self.sess, os.path.join(checkpoint_dir, 'model.ckpt'))
 
-        if not os.path.exists('/content/gdrive/My\ Drive/ClusterGAN/checkpoints'):
-            os.makedirs('/content/gdrive/My\ Drive/ClusterGAN/checkpoints')
-            os.makedirs(f'/content/gdrive/My\ Drive/ClusterGAN/checkpoints/{args.data}')
+        if not os.path.exists('/content/gdrive/My Drive/ClusterGAN/checkpoints'):
+            os.makedirs('/content/gdrive/My Drive/ClusterGAN/checkpoints')
+            os.makedirs(f'/content/gdrive/My Drive/ClusterGAN/checkpoints/{args.data}')
 
         copytree(checkpoint_dir,
                  f'/content/gdrive/My\ Drive/ClusterGAN/checkpoints/{args.data}')
