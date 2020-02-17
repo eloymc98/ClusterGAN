@@ -80,6 +80,7 @@ class Generator(object):
     def __call__(self, z):
         with tf.variable_scope(self.name) as vs:
             bs = tf.shape(z)[0]
+            print(f'Generator bs : {bs}')
             fc1 = tc.layers.fully_connected(
                 z, 2 * 2 * 448,
                 weights_initializer=tf.random_normal_initializer(stddev=0.02),
