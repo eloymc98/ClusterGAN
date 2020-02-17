@@ -18,32 +18,47 @@ class DataSampler(object):
         self.shape = [32, 32, 3]
         self.batch_number = 1
         self.index = 0
+        cifar10_dataset_folder_path = './data/cifar-10-batches-py'
+
+        with open(cifar10_dataset_folder_path + '/data_batch_1', mode='rb') as file:
+            # note the encoding type is 'latin1'
+            self.batch1 = pickle.load(file, encoding='latin1')
+        with open(cifar10_dataset_folder_path + '/data_batch_2', mode='rb') as file:
+            # note the encoding type is 'latin1'
+            self.batch2 = pickle.load(file, encoding='latin1')
+        with open(cifar10_dataset_folder_path + '/data_batch_3', mode='rb') as file:
+            # note the encoding type is 'latin1'
+            self.batch3 = pickle.load(file, encoding='latin1')
+        with open(cifar10_dataset_folder_path + '/data_batch_4', mode='rb') as file:
+            # note the encoding type is 'latin1'
+            self.batch4 = pickle.load(file, encoding='latin1')
+        with open(cifar10_dataset_folder_path + '/data_batch_5', mode='rb') as file:
+            # note the encoding type is 'latin1'
+            self.batch5 = pickle.load(file, encoding='latin1')
 
     def load_label_names(self):
         return ['airplane', 'automobile', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck']
 
-    def load_cfar10_batch(self, cifar10_dataset_folder_path, batch_id, batch_size):
-        with open(cifar10_dataset_folder_path + '/data_batch_' + str(batch_id), mode='rb') as file:
-            # note the encoding type is 'latin1'
-            batch = pickle.load(file, encoding='latin1')
+    def load_cfar10_batch(self, cifar10_dataset_folder_path):
+        pass
 
-        # features = batch['data'].reshape((len(batch['data']), 3, 32, 32)).transpose(0, 2, 3, 1)
-        # labels = batch['labels']
-        if self.index + batch_size <= floor(len(batch['data'] / batch_size)) * batch_size:
-            features = batch['data'][self.index:batch_size + self.index]
-            labels = batch['labels'][self.index:batch_size + self.index]
-            self.index += batch_size
-        else:
-            self.batch_number += 1
-            self.index = 0
-            with open(cifar10_dataset_folder_path + '/data_batch_' + str(self.batch_number), mode='rb') as file:
-                # note the encoding type is 'latin1'
-                batch = pickle.load(file, encoding='latin1')
-            features = batch['data'][self.index:batch_size + self.index]
-            labels = batch['labels'][self.index:batch_size + self.index]
-            self.index += batch_size
+        # # features = batch['data'].reshape((len(batch['data']), 3, 32, 32)).transpose(0, 2, 3, 1)
+        # # labels = batch['labels']
+        # if self.index + batch_size <= floor(len(batch['data'] / batch_size)) * batch_size:
+        #     features = batch['data'][self.index:batch_size + self.index]
+        #     labels = batch['labels'][self.index:batch_size + self.index]
+        #     self.index += batch_size
+        # else:
+        #     self.batch_number += 1
+        #     self.index = 0
+        #     with open(cifar10_dataset_folder_path + '/data_batch_' + str(self.batch_number), mode='rb') as file:
+        #         # note the encoding type is 'latin1'
+        #         batch = pickle.load(file, encoding='latin1')
+        #     features = batch['data'][self.index:batch_size + self.index]
+        #     labels = batch['labels'][self.index:batch_size + self.index]
+        #     self.index += batch_size
 
-        return features, labels
+        #return batch1, batch2, batch3, batch4, batch5
 
     def load_cfar10_test(self, cifar10_dataset_folder_path):
         with open(cifar10_dataset_folder_path + '/test_batch', mode='rb') as file:
@@ -55,8 +70,7 @@ class DataSampler(object):
         return features, labels
 
     def train(self, batch_size, label=False):
-        features, labels = self.load_cfar10_batch(batch_id=self.batch_number, batch_size=batch_size,
-                                                  cifar10_dataset_folder_path='./data/cifar-10-batches-py')
+        print(f'Type: {self.batch1.type}')
 
         if label:
             return features, labels
