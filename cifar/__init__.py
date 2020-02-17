@@ -81,7 +81,7 @@ class DataSampler(object):
             features = self.batch['data'][self.index:batch_size + self.index]
             labels = self.batch['labels'][self.index:batch_size + self.index]
         else:
-            print('Ha entraooo')
+
             self.count = 1
             self.index = 0
             self.batch_number += 1
@@ -93,6 +93,9 @@ class DataSampler(object):
                 self.batch = self.batch4
             elif self.batch_number == 5:
                 self.batch = self.batch5
+            elif self.batch_number == 6:
+                self.batch = self.batch1
+                self.batch_number = 1
             features = self.batch['data'][self.index:batch_size + self.index]
             labels = self.batch['labels'][self.index:batch_size + self.index]
 
