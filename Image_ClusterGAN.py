@@ -184,7 +184,7 @@ class clusGAN(object):
             os.makedirs('/content/gdrive/My Drive/ClusterGAN/checkpoints')
             os.makedirs(f'/content/gdrive/My Drive/ClusterGAN/checkpoints/{args.data}')
         os.makedirs(f'/content/gdrive/My Drive/ClusterGAN/checkpoints/{args.data}/{date}')
-
+        print(os.path.exists(f'/content/gdrive/My Drive/ClusterGAN/checkpoints/{args.data}/{date}'))
         copytree(checkpoint_dir,
                  f'/content/gdrive/My\ Drive/ClusterGAN/checkpoints/{args.data}/{date}')
 
