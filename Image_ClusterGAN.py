@@ -66,6 +66,7 @@ class clusGAN(object):
         self.d_loss = tf.reduce_mean(self.d) - tf.reduce_mean(self.d_)
 
         epsilon = tf.random_uniform([], 0.0, 1.0)
+        print(f'Self.x.shape = {self.x.shape}, Self x_ = {self.x_.shape}')
         x_hat = epsilon * self.x + (1 - epsilon) * self.x_
         d_hat = self.d_net(x_hat)
 
