@@ -167,7 +167,7 @@ class clusGAN(object):
 
         from shutil import copyfile
         copyfile(os.path.join(checkpoint_dir, 'model.ckpt'),
-                 f'/gdrive/My\ Drive/model_{datetime.datetime.utcnow().strftime("%Y/%m/%d")}.')
+                 f'/content/gdrive/My\ Drive/model_{datetime.datetime.utcnow().strftime("%Y/%m/%d")}.')
 
     def load(self, pre_trained=False, timestamp=''):
 
