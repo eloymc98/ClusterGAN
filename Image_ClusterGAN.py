@@ -109,7 +109,6 @@ class clusGAN(object):
                                                              self.beta_cycle_label, self.beta_cycle_gen)
         if not os.path.exists(im_save_dir):
             os.makedirs(im_save_dir)
-        count = 0
         for t in range(0, num_batches):
             d_iters = 5
 
@@ -117,8 +116,7 @@ class clusGAN(object):
                 # We optimize discriminator loss for 5 iterations
                 bx = self.x_sampler.train(batch_size)
                 bz = self.z_sampler(batch_size, self.z_dim, self.sampler, self.num_classes, self.n_cat)
-                count += 1
-                print(count)
+
                 self.sess.run(self.d_adam, feed_dict={self.x: bx, self.z: bz})
             # Then we only optimize generator loss for 1 iteration
             bz = self.z_sampler(batch_size, self.z_dim, self.sampler, self.num_classes, self.n_cat)
