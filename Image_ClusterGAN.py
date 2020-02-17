@@ -29,9 +29,9 @@ def copytree(src, dst, symlinks=False, ignore=None):
         d = os.path.join(dst, item)
         print(d)
         if os.path.isdir(s):
-            shutil.copytree(s, dst, symlinks, ignore)
+            shutil.copytree(src=s, dst=d, symlinks=symlinks, ignore=ignore)
         else:
-            shutil.copy2(s, dst)
+            shutil.copy2(src=s, dst=d)
 
 
 class clusGAN(object):
