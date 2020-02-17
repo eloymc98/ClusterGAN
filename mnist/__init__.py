@@ -26,7 +26,7 @@ class DataSampler(object):
         return mnist.validation.images, mnist.validation.labels
 
     def data2img(self, data):
-        print(f'Data2img: Data shape = {data.shape[0]}, Self shape = {self.shape}')
+        print(f'Data2img: Data shape = {data.shape}, Self shape = {self.shape}')
         return np.reshape(data, [data.shape[0]] + self.shape)
 
     def load_all(self):
