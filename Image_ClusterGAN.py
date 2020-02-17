@@ -117,6 +117,8 @@ class clusGAN(object):
                 # We optimize discriminator loss for 5 iterations
                 bx = self.x_sampler.train(batch_size)
                 bz = self.z_sampler(batch_size, self.z_dim, self.sampler, self.num_classes, self.n_cat)
+                print(f'Self.x.shape = {self.x.shape}, Self x_ = {self.x_.shape}')
+                print(bx.shape)
                 self.sess.run(self.d_adam, feed_dict={self.x: bx, self.z: bz})
             # Then we only optimize generator loss for 1 iteration
             bz = self.z_sampler(batch_size, self.z_dim, self.sampler, self.num_classes, self.n_cat)
