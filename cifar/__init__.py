@@ -56,7 +56,7 @@ class DataSampler(object):
 
     def train(self, batch_size, label=False):
         features, labels = self.load_cfar10_batch(batch_id=self.batch_number, batch_size=batch_size,
-                                                  cifar10_dataset_folder_path='cifar-10-batches-py')
+                                                  cifar10_dataset_folder_path='./data/cifar-10-batches-py')
 
         if label:
             return features, labels
@@ -64,13 +64,14 @@ class DataSampler(object):
             return features
 
     def test(self):
-        features, labels = self.load_cfar10_test('cifar-10-batches-py')
+        features, labels = self.load_cfar10_test('./data/cifar-10-batches-py')
         return features, labels
 
     def validation(self):
         pass
 
     def data2img(self, data):
+        #                        batch size       [32,32,3]
         return np.reshape(data, [data.shape[0]] + self.shape)
 
     def load_all(self):
