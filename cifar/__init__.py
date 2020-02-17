@@ -58,7 +58,7 @@ class DataSampler(object):
         #     labels = batch['labels'][self.index:batch_size + self.index]
         #     self.index += batch_size
 
-        #return batch1, batch2, batch3, batch4, batch5
+        # return batch1, batch2, batch3, batch4, batch5
 
     def load_cfar10_test(self, cifar10_dataset_folder_path):
         with open(cifar10_dataset_folder_path + '/test_batch', mode='rb') as file:
@@ -71,7 +71,8 @@ class DataSampler(object):
 
     def train(self, batch_size, label=False):
         print(f'Type: {self.batch1.type}')
-
+        features = None
+        labels = None
         if label:
             return features, labels
         else:
