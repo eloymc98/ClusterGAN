@@ -11,6 +11,7 @@ class DataSampler(object):
         self.dataset_path = '/content/ClusterGAN/termisk/termisk_dataset'
         self.labels = ['0', '1', '2', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16']
         self.df = pd.read_csv('/content/ClusterGAN/termisk/dataset.csv')
+        print(self.df.head())
 
     def load_image(self, path):
         img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
@@ -24,7 +25,7 @@ class DataSampler(object):
         first = True
         for label_num in self.labels:
             # leer del csv donde label sea x y este en train, coger n aleatorias
-            label_df = self.df['label'] == label_num
+            label_df = self.df['label'] == int(label_num)
             df = self.df[train_df & label_df]
             nums = np.random.randint(low=0, high=len(df), size=round(batch_size / len(self.labels)))
             df = df.iloc[nums]
