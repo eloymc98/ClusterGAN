@@ -73,7 +73,7 @@ class DataSampler(object):
         return features, labels
 
     def train(self, batch_size, label=False):
-
+        # normalizar valores entre 0 y 1!!!!!!!!!!!!
         features = None
         labels = None
         self.count += 1

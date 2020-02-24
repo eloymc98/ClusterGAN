@@ -16,7 +16,7 @@
 #     print('Dir')
 
 # import cv2
-import numpy as np
+# import numpy as np
 
 # img = cv2.imread('/Users/eloymarinciudad/Downloads/300.0.png', cv2.IMREAD_GRAYSCALE)
 # res = cv2.resize(img, dsize=(28, 28), interpolation=cv2.INTER_CUBIC)
@@ -60,21 +60,83 @@ import numpy as np
 # print(labelsss)
 
 
-import os
-import shutil
+# import os
+# import shutil
+#
+#
+# def copytree(src, dst, symlinks=False, ignore=None):
+#     for item in os.listdir(src):
+#         print(item)
+#         s = os.path.join(src, item)
+#         print(s)
+#         d = os.path.join(dst, item)
+#         print(d)
+#         if os.path.isdir(s):
+#             shutil.copytree(src=s, dst=d, symlinks=symlinks, ignore=ignore)
+#         else:
+#             shutil.copy2(src=s, dst=dst)
+#
+#
+# copytree('/Users/eloymarinciudad/Downloads/prueba', '/Users/eloymarinciudad/Downloads')
+
+# import cv2
+# import numpy as np
+# import matplotlib.pyplot as plt
+#
+# img = cv2.imread('/Users/eloymarinciudad/Downloads/20190625R15S96/train/2/26837_240_0_0.png', cv2.IMREAD_GRAYSCALE)
+# img = cv2.resize(img, (28, 28), interpolation=cv2.INTER_AREA)
+# print(img.shape)
+# #print(img)
+#
+# img = np.reshape(img, 28 * 28)
+# print(img.shape)
+# img = img / 255
+# print(img)
+#
+# batch = np.ndarray(shape=(64, 28 * 28), dtype=float)
+#
+# batch[0] = img
+# print(batch)
 
 
-def copytree(src, dst, symlinks=False, ignore=None):
-    for item in os.listdir(src):
-        print(item)
-        s = os.path.join(src, item)
-        print(s)
-        d = os.path.join(dst, item)
-        print(d)
-        if os.path.isdir(s):
-            shutil.copytree(src=s, dst=d, symlinks=symlinks, ignore=ignore)
-        else:
-            shutil.copy2(src=s, dst=dst)
+import pandas as pd
+import numpy as np
+import cv2
 
 
-copytree('/Users/eloymarinciudad/Downloads/prueba', '/Users/eloymarinciudad/Downloads')
+def load_image(path):
+    img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
+    img = cv2.resize(img, (28, 28), interpolation=cv2.INTER_AREA)
+    img = np.reshape(img, 28 * 28)
+    img = img / 255
+    return img
+
+# test: 95 imagenes por clase
+
+df = pd.read_csv('termisk/dataset.csv')
+
+train_df = df['train'] == 1
+
+val_df = df['train'] == 0
+print(len(df))
+print(len(df[train_df]))
+print(len(df[val_df]))
+# df = df[train_df & label_df]
+#
+# nums = np.random.randint(low=0, high=len(df), size=4)
+#
+# df = df.iloc[nums]
+# print(df.head())
+# first = True
+# for row in df.iterrows():
+#     img = load_image('/Users/eloymarinciudad/Downloads/20190625R15S96' + row[1]['path'])
+#     label = row[1]['label']
+#     if first:
+#         batch = img
+#         labels = np.array([label])
+#         first = False
+#     else:
+#         batch = np.vstack((batch, img))
+#         labels = np.append(labels, label)
+#     print(batch.shape)
+#     print(labels.shape)
