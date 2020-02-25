@@ -23,11 +23,8 @@ tf.set_random_seed(0)
 
 def copytree(src, dst, symlinks=False, ignore=None):
     for item in os.listdir(src):
-        print(item)
         s = os.path.join(src, item)
-        print(s)
         d = os.path.join(dst, item)
-        print(d)
         if os.path.isdir(s):
             shutil.copytree(src=s, dst=d, symlinks=symlinks, ignore=ignore)
         else:
@@ -161,7 +158,7 @@ class clusGAN(object):
                                                                       self.z_dim, self.beta_cycle_label,
                                                                       self.beta_cycle_gen, (t + 1) / 100), bx)
 
-            if (t + 1) % 200 == 0:
+            if (t + 1) % 20000 == 0:
                 self.save(timestamp + '_' + str(t + 1))
 
         self.recon_enc(timestamp, val=True)
@@ -183,8 +180,6 @@ class clusGAN(object):
         if not os.path.exists('/content/gdrive/My Drive/ClusterGAN/checkpoints'):
             os.makedirs('/content/gdrive/My Drive/ClusterGAN/checkpoints')
             os.makedirs(f'/content/gdrive/My Drive/ClusterGAN/checkpoints/{self.data}')
-        os.makedirs(f'/content/gdrive/My Drive/ClusterGAN/checkpoints/{self.data}/{date}')
-        print(os.path.exists(f'/content/gdrive/My Drive/ClusterGAN/checkpoints/{self.data}/{date}'))
         copytree(checkpoint_dir,
                  f'/content/gdrive/My Drive/ClusterGAN/checkpoints/{self.data}')
 
