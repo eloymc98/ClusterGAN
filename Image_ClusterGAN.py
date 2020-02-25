@@ -179,14 +179,14 @@ class clusGAN(object):
 
         self.saver.save(self.sess, os.path.join(checkpoint_dir, 'model.ckpt'))
 
-        # date = datetime.datetime.utcnow().strftime("%Y-%m-%d-%H-M-%S")
-        # if not os.path.exists('/content/gdrive/My Drive/ClusterGAN/checkpoints'):
-        #     os.makedirs('/content/gdrive/My Drive/ClusterGAN/checkpoints')
-        #     os.makedirs(f'/content/gdrive/My Drive/ClusterGAN/checkpoints/{args.data}')
-        # os.makedirs(f'/content/gdrive/My Drive/ClusterGAN/checkpoints/{args.data}/{date}')
-        # print(os.path.exists(f'/content/gdrive/My Drive/ClusterGAN/checkpoints/{args.data}/{date}'))
-        # copytree(checkpoint_dir,
-        #          f'/content/gdrive/My\ Drive/ClusterGAN/checkpoints/{args.data}')
+        date = datetime.datetime.utcnow().strftime("%Y-%m-%d-%H-M-%S")
+        if not os.path.exists('/content/gdrive/My Drive/ClusterGAN/checkpoints'):
+            os.makedirs('/content/gdrive/My Drive/ClusterGAN/checkpoints')
+            os.makedirs(f'/content/gdrive/My Drive/ClusterGAN/checkpoints/{self.data}')
+        os.makedirs(f'/content/gdrive/My Drive/ClusterGAN/checkpoints/{self.data}/{date}')
+        print(os.path.exists(f'/content/gdrive/My Drive/ClusterGAN/checkpoints/{self.data}/{date}'))
+        copytree(checkpoint_dir,
+                 f'/content/gdrive/My\ Drive/ClusterGAN/checkpoints/{self.data}')
 
     def load(self, pre_trained=False, timestamp=''):
 
