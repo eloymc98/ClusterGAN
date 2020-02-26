@@ -224,6 +224,7 @@ class clusGAN(object):
         if self.sampler == 'one_hot':
             batch_size = 1000
             label_index = np.tile(np.arange(self.num_classes), int(np.ceil(batch_size * 1.0 / self.num_classes)))
+            print(f'Label index {label_index.shape}')
 
             bz = self.z_sampler(batch_size, self.z_dim, self.sampler, num_class=self.num_classes,
                                 n_cat=self.n_cat, label_index=label_index)
