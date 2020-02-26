@@ -68,12 +68,14 @@ def latent_space(latent_pts, labels_true, labels_pred, K):
     # Save TSNE figure to file
     fig, ax = plt.subplots(figsize=(16, 10))
     for iclass in range(0, n_c):
+        if iclass>11:
+            index_class = '.'
         # Get indices for each class
         idxs = labels_true == iclass
         # Scatter those points in tsne dims
         ax.scatter(tsne_enc[idxs, 0],
                    tsne_enc[idxs, 1],
-                   marker=markers[iclass],
+                   marker=markers[index_class],
                    c=colors[iclass],
                    edgecolor=None,
                    label=r'$%i$' % iclass)

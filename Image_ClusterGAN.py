@@ -371,6 +371,7 @@ if __name__ == '__main__':
     parser.add_argument('--train', type=str, default='False')
     parser.add_argument('--label', type=str, default='False')
     parser.add_argument('--path', type=str, default='')
+    parser.add_argument('--modes', type=str, default='False')
 
     args = parser.parse_args()
     data = importlib.import_module(args.data)
@@ -410,5 +411,7 @@ if __name__ == '__main__':
             print('Labeling query image...')
             km, latent = cl_gan.recon_enc(timestamp, val=False)
             cl_gan.label_img(args.path, km, latent)
+        elif args.modes == 'True':
+            pass
         else:
             cl_gan.recon_enc(timestamp, val=False)
