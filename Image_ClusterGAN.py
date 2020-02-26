@@ -237,9 +237,10 @@ class clusGAN(object):
                 mode_bx = xs.data2img(mode_bx)
                 mode_bx = grid_transform(mode_bx, xs.shape)
 
-                imwrite('logs/{}/{}/{}_z{}_cyc{}_gen{}/mode{}_samples.png'.format(self.data, self.model, self.sampler,
-                                                                                  self.z_dim, self.beta_cycle_label,
-                                                                                  self.beta_cycle_gen, m), mode_bx)
+                if not os.path.exists('logs/'):
+                    os.makedirs('logs/')
+
+                imwrite('logs/{}_mode{}_samples.png'.format(self.data, m), mode_bx)
 
     def recon_enc(self, timestamp, val=True):
 
