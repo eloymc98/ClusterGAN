@@ -412,6 +412,6 @@ if __name__ == '__main__':
             km, latent = cl_gan.recon_enc(timestamp, val=False)
             cl_gan.label_img(args.path, km, latent)
         elif args.modes == 'True':
-            pass
+            cl_gan.gen_from_all_modes()
         else:
             cl_gan.recon_enc(timestamp, val=False)
