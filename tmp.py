@@ -99,28 +99,28 @@
 # print(batch)
 
 
-import pandas as pd
-import numpy as np
-import cv2
-
-
-def load_image(path):
-    img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
-    img = cv2.resize(img, (28, 28), interpolation=cv2.INTER_AREA)
-    img = np.reshape(img, 28 * 28)
-    img = img / 255
-    return img
-
-# test: 95 imagenes por clase
-
-df = pd.read_csv('termisk/dataset.csv')
-
-train_df = df['train'] == 1
-
-val_df = df['train'] == 0
-print(len(df))
-print(len(df[train_df]))
-print(len(df[val_df]))
+# import pandas as pd
+# import numpy as np
+# import cv2
+#
+#
+# def load_image(path):
+#     img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
+#     img = cv2.resize(img, (28, 28), interpolation=cv2.INTER_AREA)
+#     img = np.reshape(img, 28 * 28)
+#     img = img / 255
+#     return img
+#
+# # test: 95 imagenes por clase
+#
+# df = pd.read_csv('termisk/dataset.csv')
+#
+# train_df = df['train'] == 1
+#
+# val_df = df['train'] == 0
+# print(len(df))
+# print(len(df[train_df]))
+# print(len(df[val_df]))
 # df = df[train_df & label_df]
 #
 # nums = np.random.randint(low=0, high=len(df), size=4)
@@ -140,3 +140,10 @@ print(len(df[val_df]))
 #         labels = np.append(labels, label)
 #     print(batch.shape)
 #     print(labels.shape)
+
+import numpy as np
+num_classes = 16
+batch_size = 1008
+label_index = np.tile(np.arange(num_classes), int(np.ceil(batch_size * 1.0 / num_classes)))
+print(label_index.shape)
+print(int(np.ceil(batch_size * 1.0 / num_classes)))
