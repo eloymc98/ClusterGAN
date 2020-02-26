@@ -70,6 +70,8 @@ def latent_space(latent_pts, labels_true, labels_pred, K):
     for iclass in range(0, n_c):
         if iclass>11:
             index_class = '.'
+        else:
+            index_class = iclass
         # Get indices for each class
         idxs = labels_true == iclass
         # Scatter those points in tsne dims
