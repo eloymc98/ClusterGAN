@@ -99,51 +99,44 @@
 # print(batch)
 
 
-# import pandas as pd
-# import numpy as np
-# import cv2
-#
-#
-# def load_image(path):
-#     img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
-#     img = cv2.resize(img, (28, 28), interpolation=cv2.INTER_AREA)
-#     img = np.reshape(img, 28 * 28)
-#     img = img / 255
-#     return img
-#
-# # test: 95 imagenes por clase
-#
-# df = pd.read_csv('termisk/dataset.csv')
-#
-# train_df = df['train'] == 1
-#
-# val_df = df['train'] == 0
-# print(len(df))
-# print(len(df[train_df]))
-# print(len(df[val_df]))
-# df = df[train_df & label_df]
-#
-# nums = np.random.randint(low=0, high=len(df), size=4)
-#
-# df = df.iloc[nums]
-# print(df.head())
-# first = True
-# for row in df.iterrows():
-#     img = load_image('/Users/eloymarinciudad/Downloads/20190625R15S96' + row[1]['path'])
-#     label = row[1]['label']
-#     if first:
-#         batch = img
-#         labels = np.array([label])
-#         first = False
-#     else:
-#         batch = np.vstack((batch, img))
-#         labels = np.append(labels, label)
-#     print(batch.shape)
-#     print(labels.shape)
-
+import pandas as pd
 import numpy as np
-num_classes = 16
-batch_size = 1008
-label_index = np.tile(np.arange(num_classes), int(np.ceil(batch_size * 1.0 / num_classes)))
-print(label_index.shape)
-print(int(np.ceil(batch_size * 1.0 / num_classes)))
+import cv2
+
+# test: 95 imagenes por clase
+
+df = pd.read_csv('termisk/dataset.csv')
+
+df1 = df['label'] == 0
+df2 = df['label'] == 1
+df3 = df['label'] == 2
+df4 = df['label'] == 4
+df5 = df['label'] == 5
+df6 = df['label'] == 6
+df7 = df['label'] == 7
+df8 = df['label'] == 8
+df9 = df['label'] == 9
+df10 = df['label'] == 10
+df11 = df['label'] == 11
+df12 = df['label'] == 12
+df13 = df['label'] == 13
+df14 = df['label'] == 14
+df15 = df['label'] == 15
+df16 = df['label'] == 16
+print(f'Total images: {len(df)}')
+print(f'Label 0 size: {len(df[df1])}')
+print(f'Label 1 size: {len(df[df2])}')
+print(f'Label 2 size: {len(df[df3])}')
+print(f'Label 4 size: {len(df[df4])}')
+print(f'Label 5 size: {len(df[df5])}')
+print(f'Label 6 size: {len(df[df6])}')
+print(f'Label 7 size: {len(df[df7])}')
+print(f'Label 8 size: {len(df[df8])}')
+print(f'Label 9 size: {len(df[df9])}')
+print(f'Label 10 size: {len(df[df10])}')
+print(f'Label 11 size: {len(df[df11])}')
+print(f'Label 12 size: {len(df[df12])}')
+print(f'Label 13 size: {len(df[df13])}')
+print(f'Label 14 size: {len(df[df14])}')
+print(f'Label 15 size: {len(df[df15])}')
+print(f'Label 16 size: {len(df[df16])}')
