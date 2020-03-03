@@ -222,7 +222,12 @@ class clusGAN(object):
     def gen_from_all_modes(self):
 
         if self.sampler == 'one_hot':
-            batch_size = 1008
+            if self.num_classes == 16:
+                batch_size = 1008
+            elif self.num_classes == 5:
+                batch_size = 1010
+            else:
+                batch_size = 1000
             label_index = np.tile(np.arange(self.num_classes), int(np.ceil(batch_size * 1.0 / self.num_classes)))
             print(f'Label index {label_index.shape}')
 
