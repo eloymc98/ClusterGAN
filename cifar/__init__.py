@@ -69,9 +69,7 @@ class DataSampler(object):
             batch = pickle.load(file, encoding='latin1')
 
         features = batch['data']
-        print(features[0])
-        features /= 255
-        print(features[0])
+        features = features[:]/255
         labels = batch['labels']
         return features, labels
 
@@ -82,7 +80,7 @@ class DataSampler(object):
         self.count += 1
         if self.count < 157:
             features = self.batch['data'][self.index:batch_size + self.index]
-            features /= 255
+            features = features[:] / 255
             labels = self.batch['labels'][self.index:batch_size + self.index]
         else:
 
@@ -101,7 +99,7 @@ class DataSampler(object):
                 self.batch = self.batch1
                 self.batch_number = 1
             features = self.batch['data'][self.index:batch_size + self.index]
-            features /= 255
+            features = features[:] / 255
             labels = self.batch['labels'][self.index:batch_size + self.index]
 
         if label:
@@ -114,7 +112,8 @@ class DataSampler(object):
         return features, labels
 
     def validation(self):
-        pass
+        features, labels = self.test()
+        return features, labels
 
     def data2img(self, data):
         #                        batch size       [32,32,3]
