@@ -69,7 +69,9 @@ class DataSampler(object):
             batch = pickle.load(file, encoding='latin1')
 
         features = batch['data']
+        print(features[0])
         features /= 255
+        print(features[0])
         labels = batch['labels']
         return features, labels
 
