@@ -1,10 +1,9 @@
-# import numpy as np
-#
-# label = np.random.randint(low=0, high=10, size=50)
-# print(label)
-# # print(np.eye(10)[label])
-#
-# print(np.hstack((0.10 * np.random.randn(50, 10 - 9), np.eye(10)[label])))
+import numpy as np
+label = np.tile(np.arange(5), int(np.ceil(1000 * 1.0 / 5)))
+print(label.shape)
+# print(np.eye(10)[label])
+
+print(np.hstack((0.10 * np.random.randn(1000, 55-10), np.eye(10)[label])).shape)
 
 # from pathlib import Path
 #
@@ -99,44 +98,44 @@
 # print(batch)
 
 
-import pandas as pd
-import numpy as np
-import cv2
-
-# test: 95 imagenes por clase
-
-df = pd.read_csv('termisk/dataset.csv')
-
-df1 = df['label'] == 0
-df2 = df['label'] == 1
-df3 = df['label'] == 2
-df4 = df['label'] == 4
-df5 = df['label'] == 5
-df6 = df['label'] == 6
-df7 = df['label'] == 7
-df8 = df['label'] == 8
-df9 = df['label'] == 9
-df10 = df['label'] == 10
-df11 = df['label'] == 11
-df12 = df['label'] == 12
-df13 = df['label'] == 13
-df14 = df['label'] == 14
-df15 = df['label'] == 15
-df16 = df['label'] == 16
-print(f'Total images: {len(df)}')
-print(f'Label 0 size: {len(df[df1])}')
-print(f'Label 1 size: {len(df[df2])}')
-print(f'Label 2 size: {len(df[df3])}')
-print(f'Label 4 size: {len(df[df4])}')
-print(f'Label 5 size: {len(df[df5])}')
-print(f'Label 6 size: {len(df[df6])}')
-print(f'Label 7 size: {len(df[df7])}')
-print(f'Label 8 size: {len(df[df8])}')
-print(f'Label 9 size: {len(df[df9])}')
-print(f'Label 10 size: {len(df[df10])}')
-print(f'Label 11 size: {len(df[df11])}')
-print(f'Label 12 size: {len(df[df12])}')
-print(f'Label 13 size: {len(df[df13])}')
-print(f'Label 14 size: {len(df[df14])}')
-print(f'Label 15 size: {len(df[df15])}')
-print(f'Label 16 size: {len(df[df16])}')
+# import pandas as pd
+# import numpy as np
+# import cv2
+#
+# # test: 95 imagenes por clase
+#
+# df = pd.read_csv('termisk/dataset.csv')
+#
+# df1 = df['label'] == 0
+# df2 = df['label'] == 1
+# df3 = df['label'] == 2
+# df4 = df['label'] == 4
+# df5 = df['label'] == 5
+# df6 = df['label'] == 6
+# df7 = df['label'] == 7
+# df8 = df['label'] == 8
+# df9 = df['label'] == 9
+# df10 = df['label'] == 10
+# df11 = df['label'] == 11
+# df12 = df['label'] == 12
+# df13 = df['label'] == 13
+# df14 = df['label'] == 14
+# df15 = df['label'] == 15
+# df16 = df['label'] == 16
+# print(f'Total images: {len(df)}')
+# print(f'Label 0 size: {len(df[df1])}')
+# print(f'Label 1 size: {len(df[df2])}')
+# print(f'Label 2 size: {len(df[df3])}')
+# print(f'Label 4 size: {len(df[df4])}')
+# print(f'Label 5 size: {len(df[df5])}')
+# print(f'Label 6 size: {len(df[df6])}')
+# print(f'Label 7 size: {len(df[df7])}')
+# print(f'Label 8 size: {len(df[df8])}')
+# print(f'Label 9 size: {len(df[df9])}')
+# print(f'Label 10 size: {len(df[df10])}')
+# print(f'Label 11 size: {len(df[df11])}')
+# print(f'Label 12 size: {len(df[df12])}')
+# print(f'Label 13 size: {len(df[df13])}')
+# print(f'Label 14 size: {len(df[df14])}')
+# print(f'Label 15 size: {len(df[df15])}')
+# print(f'Label 16 size: {len(df[df16])}')
