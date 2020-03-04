@@ -225,7 +225,7 @@ class clusGAN(object):
             if self.num_classes == 16:
                 batch_size = 1008
             elif self.num_classes == 5:
-                batch_size = 1010
+                batch_size = 1010/2
             else:
                 batch_size = 1000
             label_index = np.tile(np.arange(self.num_classes), int(np.ceil(batch_size * 1.0 / self.num_classes)))
