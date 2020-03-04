@@ -1,9 +1,4 @@
-import numpy as np
-label = np.tile(np.arange(5), int(np.ceil(1000 * 1.0 / 5)))
-print(label.shape)
-# print(np.eye(10)[label])
 
-print(np.hstack((0.10 * np.random.randn(1000, 55-10), np.eye(10)[label])).shape)
 
 # from pathlib import Path
 #
