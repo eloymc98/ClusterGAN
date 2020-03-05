@@ -17,7 +17,7 @@ class DataSampler(object):
     def load_image(self, path):
         bgr = cv2.imread(path)
         img = cv2.cvtColor(bgr, cv2.COLOR_BGR2LAB)
-        img = cv2.resize(img, (32, 32), interpolation=cv2.INTER_AREA)
+        # img = cv2.resize(img, (32, 32), interpolation=cv2.INTER_AREA)
         img = np.reshape(img, 32 * 32 * 3)
         img = img / 255
         return img
@@ -49,7 +49,7 @@ class DataSampler(object):
             img_label = df['label']
             batch = np.vstack((batch, img))
             labels = np.append(labels, img_label)
-            
+
         if label:
             return batch, labels
         else:
