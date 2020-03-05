@@ -134,12 +134,14 @@
 # print(f'Label 16 size: {len(df[df16])}')
 
 
-import cv2
+import pandas as pd
+import random
 import numpy as np
-bgr = cv2.imread('/Users/eloymarinciudad/Downloads/google_colors/pink/064.jpg')
-img = cv2.cvtColor(bgr, cv2.COLOR_BGR2LAB)
-# img = cv2.resize(img, (64, 64), interpolation=cv2.INTER_AREA)
-# img2 = np.reshape(img, 64 * 64 * 3)
-# img2 = img2 / 255
-# print(img.shape)
-cv2.imwrite('test.jpg', img)
+
+df = pd.read_csv('colors/dataset.csv')
+train_df = df['train'] == 1
+
+label_df = df['label'] == random.choice(['black', 'blue', 'brown', 'green', 'grey', 'orange', 'pink', 'purple', 'red', 'white', 'yellow'])
+df2 = df[train_df & label_df]
+df2 = df2.iloc[np.random.randint(low=0, high=len(df2))]
+print(df2['path'])

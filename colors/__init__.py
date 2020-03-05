@@ -4,6 +4,7 @@ import pandas as pd
 import random
 from math import floor
 
+
 class DataSampler(object):
     def __init__(self):
         self.shape = [32, 32, 3]
@@ -44,11 +45,11 @@ class DataSampler(object):
             label_df = self.df['label'] == random.choice(self.load_label_names())
             df = self.df[train_df & label_df]
             df = df.iloc[np.random.randint(low=0, high=len(df))]
-            for row in df.iterrows():
-                img = self.load_image(self.dataset_path + row[1]['path'])
-                img_label = row[1]['label']
-                batch = np.vstack((batch, img))
-                labels = np.append(labels, img_label)
+            img = self.load_image(self.dataset_path + df['path'])
+            img_label = df['label']
+            batch = np.vstack((batch, img))
+            labels = np.append(labels, img_label)
+            
         if label:
             return batch, labels
         else:
@@ -58,7 +59,7 @@ class DataSampler(object):
         test_df = self.df['train'] == 0
         df = self.df[test_df]
         first = True
-        for row in df.iterrows():
+        for row in df.iteritems():
             img = self.load_image(self.dataset_path + row[1]['path'])
             img_label = row[1]['label']
             if first:
