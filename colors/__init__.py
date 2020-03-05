@@ -1,42 +1,80 @@
+import  cv2
 import numpy as np
-import pickle
-
-from sklearn.decomposition import PCA
-from sklearn.cluster import KMeans
-from math import floor
-
-
-def unpickle(file):
-    import pickle
-    with open(file, 'rb') as fo:
-        dict = pickle.load(fo, encoding='bytes')
-    return dict
+import pandas as pd
 
 
 class DataSampler(object):
     def __init__(self):
         self.shape = [32, 32, 3]
+        self.dataset_path = '/content/ClusterGAN/colors/colors_dataset'
+        self.df = pd.read_csv('/content/ClusterGAN/colors/dataset.csv')
 
     def load_label_names(self):
         return ['black', 'blue', 'brown', 'green', 'grey', 'orange', 'pink', 'purple', 'red', 'white', 'yellow']
 
-    def train(self, batch_size, label=False):
-        # normalizar valores entre 0 y 1!!!!!!!!!!!!
-        features = None
-        labels = None
+    def load_image(self, path):
+        bgr = cv2.imread(path)
+        img = cv2.cvtColor(bgr, cv2.COLOR_BGR2LAB)
+        img = cv2.resize(img, (32, 32), interpolation=cv2.INTER_AREA)
+        img = np.reshape(img, 32 * 32 * 3)
+        img = img / 255
+        return img
 
+    def train(self, batch_size, label=False):
+        train_df = self.df['train'] == 1
+        first = True
+        for label_name in self.load_label_names():
+            # leer del csv donde label sea x y este en train, coger n aleatorias
+            label_df = self.df['label'] == label_name
+            df = self.df[train_df & label_df]
+            nums = np.random.randint(low=0, high=len(df), size=round(batch_size / len(self.load_label_names())))
+            df = df.iloc[nums]
+            for row in df.iterrows():
+                img = self.load_image(self.dataset_path + row[1]['path'])
+                img_label = row[1]['label']
+                if first:
+                    batch = img
+                    labels = np.array([img_label])
+                    first = False
+                else:
+                    batch = np.vstack((batch, img))
+                    labels = np.append(labels, img_label)
         if label:
-            return features, labels
+            return batch, labels
         else:
-            return features
+            return batch
 
     def test(self):
-        features, labels = self.load_cfar10_test('./data/cifar-10-batches-py')
-        return features, labels
+        test_df = self.df['train'] == 0
+        df = self.df[test_df]
+        first = True
+        for row in df.iterrows():
+            img = self.load_image(self.dataset_path + row[1]['path'])
+            img_label = row[1]['label']
+            if first:
+                batch = img
+                labels = np.array([img_label])
+                first = False
+            else:
+                batch = np.vstack((batch, img))
+                labels = np.append(labels, img_label)
+        return batch, labels
 
     def validation(self):
-        features, labels = self.test()
-        return features, labels
+        test_df = self.df['train'] == 0
+        df = self.df[test_df]
+        first = True
+        for row in df.iterrows():
+            img = self.load_image(self.dataset_path + row[1]['path'])
+            img_label = row[1]['label']
+            if first:
+                batch = img
+                labels = np.array([img_label])
+                first = False
+            else:
+                batch = np.vstack((batch, img))
+                labels = np.append(labels, img_label)
+        return batch, labels
 
     def data2img(self, data):
         #                        batch size       [32,32,3]

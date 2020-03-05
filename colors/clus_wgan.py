@@ -11,7 +11,7 @@ class Discriminator(object):
     # x_dim = 28*28
     def __init__(self, x_dim=3072):
         self.x_dim = x_dim
-        self.name = 'cifar/clus_wgan/d_net'
+        self.name = 'colors/clus_wgan/d_net'
 
     # Every time the discriminator is called, we obtain a new output
     def __call__(self, x, reuse=True):
@@ -75,7 +75,7 @@ class Generator(object):
     def __init__(self, z_dim=50, x_dim=3072):
         self.z_dim = z_dim
         self.x_dim = x_dim
-        self.name = 'cifar/clus_wgan/g_net'
+        self.name = 'colors/clus_wgan/g_net'
 
     def __call__(self, z):
         with tf.variable_scope(self.name) as vs:
@@ -137,7 +137,7 @@ class Encoder(object):
         self.z_dim = z_dim
         self.dim_gen = dim_gen
         self.x_dim = x_dim
-        self.name = 'cifar/clus_wgan/enc_net'
+        self.name = 'colors/clus_wgan/enc_net'
 
     def __call__(self, x, reuse=True):
         with tf.variable_scope(self.name) as vs:

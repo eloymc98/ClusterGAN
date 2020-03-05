@@ -1,5 +1,3 @@
-
-
 # from pathlib import Path
 #
 # ima = Path('/Users/eloymarinciudad/Downloads/')
@@ -134,3 +132,14 @@
 # print(f'Label 14 size: {len(df[df14])}')
 # print(f'Label 15 size: {len(df[df15])}')
 # print(f'Label 16 size: {len(df[df16])}')
+
+
+import cv2
+import numpy as np
+bgr = cv2.imread('/Users/eloymarinciudad/Downloads/google_colors/pink/064.jpg')
+img = cv2.cvtColor(bgr, cv2.COLOR_BGR2LAB)
+# img = cv2.resize(img, (64, 64), interpolation=cv2.INTER_AREA)
+# img2 = np.reshape(img, 64 * 64 * 3)
+# img2 = img2 / 255
+# print(img.shape)
+cv2.imwrite('test.jpg', img)
