@@ -12,8 +12,8 @@ def resize_google_colors(size):
         print(subdir)
         if os.path.isdir(subdir):
             for image in os.listdir(subdir):
+                print(image)
                 if os.path.isfile(image):
-                    print(image)
                     bgr = cv2.imread(image)
                     # img = cv2.cvtColor(bgr, cv2.COLOR_BGR2LAB)
                     img = cv2.resize(bgr, (size, size), interpolation=cv2.INTER_AREA)
