@@ -15,7 +15,7 @@ class DataSampler(object):
 
     def load_image(self, path):
         img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
-        img = cv2.resize(img, (28, 28), interpolation=cv2.INTER_AREA)
+        # img = cv2.resize(img, (28, 28), interpolation=cv2.INTER_AREA)
         img = np.reshape(img, 28 * 28)
         img = img / 255
         return img
