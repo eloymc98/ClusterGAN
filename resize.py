@@ -30,7 +30,7 @@ def resize_termisk(size):
                 subdir2 = subdir + '/' + item2
                 if os.path.isdir(subdir2):
                     for image in os.listdir(subdir2):
-                        if os.path.isfile(subdir2 + '/' + image):
+                        if os.path.isfile(subdir2 + '/' + image) and image.endswith('.png'):
                             grey = cv2.imread(subdir2 + '/' + image, cv2.IMREAD_GRAYSCALE)
                             img = cv2.resize(grey, (size, size), interpolation=cv2.INTER_AREA)
                             cv2.imwrite(subdir2 + '/' + image, img)
