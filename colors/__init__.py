@@ -6,7 +6,7 @@ import pandas as pd
 class DataSampler(object):
     def __init__(self):
         self.shape = [32, 32, 3]
-        self.dataset_path = '/content/ClusterGAN/colors/colors_dataset'
+        self.dataset_path = '/content/ClusterGAN/colors/google_colors'
         self.df = pd.read_csv('/content/ClusterGAN/colors/dataset.csv')
 
     def load_label_names(self):
