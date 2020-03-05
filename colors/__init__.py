@@ -1,7 +1,8 @@
-import  cv2
+import cv2
 import numpy as np
 import pandas as pd
-
+import random
+from math import floor
 
 class DataSampler(object):
     def __init__(self):
@@ -27,7 +28,7 @@ class DataSampler(object):
             # leer del csv donde label sea x y este en train, coger n aleatorias
             label_df = self.df['label'] == label_name
             df = self.df[train_df & label_df]
-            nums = np.random.randint(low=0, high=len(df), size=round(batch_size / len(self.load_label_names())))
+            nums = np.random.randint(low=0, high=len(df), size=floor(batch_size / len(self.load_label_names())))
             df = df.iloc[nums]
             for row in df.iterrows():
                 img = self.load_image(self.dataset_path + row[1]['path'])
@@ -39,6 +40,15 @@ class DataSampler(object):
                 else:
                     batch = np.vstack((batch, img))
                     labels = np.append(labels, img_label)
+        while batch.shape[0] < 64:
+            label_df = self.df['label'] == random.choice(self.load_label_names())
+            df = self.df[train_df & label_df]
+            df = df.iloc[np.random.randint(low=0, high=len(df))]
+            for row in df.iterrows():
+                img = self.load_image(self.dataset_path + row[1]['path'])
+                img_label = row[1]['label']
+                batch = np.vstack((batch, img))
+                labels = np.append(labels, img_label)
         if label:
             return batch, labels
         else:
