@@ -134,14 +134,9 @@
 # print(f'Label 16 size: {len(df[df16])}')
 
 
-import pandas as pd
-import random
-import numpy as np
+import cv2
 
-df = pd.read_csv('colors/dataset.csv')
-train_df = df['train'] == 1
+# bgr
+img = cv2.imread('/Users/eloymarinciudad/Downloads/descarga.png')
 
-label_df = df['label'] == random.choice(['black', 'blue', 'brown', 'green', 'grey', 'orange', 'pink', 'purple', 'red', 'white', 'yellow'])
-df2 = df[train_df & label_df]
-df2 = df2.iloc[np.random.randint(low=0, high=len(df2))]
-print(df2['path'])
+print(img)

@@ -1,9 +1,8 @@
 import numpy as np
-from sklearn.decomposition import PCA
-from sklearn.cluster import KMeans
 import cv2
 import pandas as pd
-
+from math import floor
+import random
 
 class DataSampler(object):
     def __init__(self):
@@ -27,7 +26,7 @@ class DataSampler(object):
             # leer del csv donde label sea x y este en train, coger n aleatorias
             label_df = self.df['label'] == int(label_num)
             df = self.df[train_df & label_df]
-            nums = np.random.randint(low=0, high=len(df), size=round(batch_size / len(self.labels)))
+            nums = np.random.randint(low=0, high=len(df), size=floor(batch_size / len(self.labels)))
             df = df.iloc[nums]
             for row in df.iterrows():
                 img = self.load_image(self.dataset_path + row[1]['path'])
@@ -39,6 +38,14 @@ class DataSampler(object):
                 else:
                     batch = np.vstack((batch, img))
                     labels = np.append(labels, img_label)
+        while batch.shape[0] < 64:
+            label_df = self.df['label'] == random.choice(self.labels)
+            df = self.df[train_df & label_df]
+            df = df.iloc[np.random.randint(low=0, high=len(df))]
+            img = self.load_image(self.dataset_path + df['path'])
+            img_label = df['label']
+            batch = np.vstack((batch, img))
+            labels = np.append(labels, img_label)
         if label:
             return batch, labels
         else:

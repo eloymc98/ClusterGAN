@@ -8,7 +8,6 @@ def leaky_relu(x, alpha=0.2):
 
 
 class Discriminator(object):
-    # x_dim = 28*28
     def __init__(self, x_dim=3072):
         self.x_dim = x_dim
         self.name = 'cifar/clus_wgan/d_net'
