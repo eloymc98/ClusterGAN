@@ -158,7 +158,7 @@ class clusGAN(object):
                                                                       self.z_dim, self.beta_cycle_label,
                                                                       self.beta_cycle_gen, (t + 1) / 100), bx)
 
-            if (t + 1) % 20000 == 0:
+            if (t + 1) % 5000 == 0:
                 self.save(timestamp + '_' + str(t + 1))
 
         self.recon_enc(timestamp, val=True)
