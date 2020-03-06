@@ -71,6 +71,8 @@ class DataSampler(object):
         features = batch['data']
         features = features[:]/255
         labels = batch['labels']
+        features = features.reshape((len(features), 3, 32, 32)).transpose(0, 2, 3, 1)
+        features = features.reshape((len(features), 32 * 32 * 3))
         return features, labels
 
     def train(self, batch_size, label=False):
@@ -102,6 +104,8 @@ class DataSampler(object):
             features = features[:] / 255
             labels = self.batch['labels'][self.index:batch_size + self.index]
 
+        features = features.reshape((batch_size, 3, 32, 32)).transpose(0, 2, 3, 1)
+        features = features.reshape((batch_size, 32 * 32 * 3))
         if label:
             return features, labels
         else:
