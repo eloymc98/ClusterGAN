@@ -110,7 +110,9 @@ class clusGAN(object):
 
         batch_size = self.batch_size
         plt.ion()
-        self.sess.run(tf.global_variables_initializer())
+        if args.from_checkpoint == 'False':
+            self.sess.run(tf.global_variables_initializer())
+            print('Initialized global variables!!!')
         start_time = time.time()
         print(
             'Training {} on {}, sampler = {}, z = {} dimension, beta_n = {}, beta_c = {}'.
