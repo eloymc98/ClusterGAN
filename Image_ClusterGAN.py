@@ -149,7 +149,8 @@ class clusGAN(object):
 
             if (t + 1) % 5000 == 0:
                 # Every 5000 iter, save an image of a batch of x_
-                bz = self.z_sampler(batch_size, self.z_dim, self.sampler, self.num_classes, self.n_cat)
+                bz, labels_indexx = self.z_sampler(batch_size, self.z_dim, self.sampler, self.num_classes, self.n_cat,
+                                                   save_label=True)
                 bx = self.sess.run(self.x_, feed_dict={self.z: bz})
                 bx = xs.data2img(bx)
                 bx = grid_transform(bx, xs.shape)
@@ -157,6 +158,12 @@ class clusGAN(object):
                 imwrite('logs/{}/{}/{}_z{}_cyc{}_gen{}/{}.png'.format(self.data, self.model, self.sampler,
                                                                       self.z_dim, self.beta_cycle_label,
                                                                       self.beta_cycle_gen, (t + 1) / 100), bx)
+                with open('logs/{}/{}/{}_z{}_cyc{}_gen{}/{}.txt'.format(self.data, self.model, self.sampler,
+                                                                        self.z_dim, self.beta_cycle_label,
+                                                                        self.beta_cycle_gen, (t + 1) / 100), 'w') as f:
+                    for i in labels_indexx:
+                        f.write(str(i))
+                        f.write(', ')
 
             if (t + 1) % 5000 == 0:
                 self.save(timestamp + '_' + str(t + 1))

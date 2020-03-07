@@ -134,9 +134,11 @@
 # print(f'Label 16 size: {len(df[df16])}')
 
 
-import cv2
+import numpy as np
 
-# bgr
-img = cv2.imread('/Users/eloymarinciudad/Downloads/descarga.png')
-
-print(img)
+label_index = np.random.randint(low=0, high=10, size=3)
+print(label_index)
+with open('test.txt', 'w') as f:
+    for i in label_index:
+        f.write(str(i))
+        f.write(', ')

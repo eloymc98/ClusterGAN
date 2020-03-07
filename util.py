@@ -13,7 +13,7 @@ def closest(X, p):
     return np.argmin((disp * disp).sum(1))
 
 
-def sample_Z(batch, z_dim, sampler='one_hot', num_class=10, n_cat=1, label_index=None):
+def sample_Z(batch, z_dim, sampler='one_hot', num_class=10, n_cat=1, label_index=None, save_label=False):
     if sampler == 'mul_cat':
         if label_index is None:
             label_index = np.random.randint(low=0, high=num_class, size=batch)
@@ -21,9 +21,12 @@ def sample_Z(batch, z_dim, sampler='one_hot', num_class=10, n_cat=1, label_index
                           np.tile(np.eye(num_class)[label_index], (1, n_cat))))
     elif sampler == 'one_hot':
         if label_index is None:
-            # TODO: guardar labels
             label_index = np.random.randint(low=0, high=num_class, size=batch)
-        return np.hstack((0.10 * np.random.randn(batch, z_dim - num_class), np.eye(num_class)[label_index]))
+        if save_label:
+            return np.hstack(
+                (0.10 * np.random.randn(batch, z_dim - num_class), np.eye(num_class)[label_index])), label_index
+        else:
+            return np.hstack((0.10 * np.random.randn(batch, z_dim - num_class), np.eye(num_class)[label_index]))
     elif sampler == 'uniform':
         return np.random.uniform(-1., 1., size=[batch, z_dim])
     elif sampler == 'normal':
