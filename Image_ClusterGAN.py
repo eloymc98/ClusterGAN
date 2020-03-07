@@ -365,6 +365,7 @@ class clusGAN(object):
 
 
 if __name__ == '__main__':
+    # TODO: Arreglar data samplers para ver todas las imagenes, indicar cuando ha visto todas las imagenes (1 epoch, ~n*10^3 iter)
     parser = argparse.ArgumentParser('')
     parser.add_argument('--data', type=str, default='mnist')
     parser.add_argument('--model', type=str, default='clus_wgan')

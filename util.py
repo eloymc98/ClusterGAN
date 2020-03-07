@@ -21,6 +21,7 @@ def sample_Z(batch, z_dim, sampler='one_hot', num_class=10, n_cat=1, label_index
                           np.tile(np.eye(num_class)[label_index], (1, n_cat))))
     elif sampler == 'one_hot':
         if label_index is None:
+            # TODO: guardar labels
             label_index = np.random.randint(low=0, high=num_class, size=batch)
         return np.hstack((0.10 * np.random.randn(batch, z_dim - num_class), np.eye(num_class)[label_index]))
     elif sampler == 'uniform':
