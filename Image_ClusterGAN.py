@@ -197,7 +197,7 @@ class clusGAN(object):
             checkpoint_dir = 'pre_trained_models/{}/{}_{}_z{}_cyc{}_gen{}'.format(self.data, self.model, self.sampler,
                                                                                   self.z_dim, self.beta_cycle_label,
                                                                                   self.beta_cycle_gen)
-            if self.data == 'termisk':
+            if self.data in ('termisk', 'cifar'):
                 checkpoint_dir = 'pre_trained_models/{}'.format(self.data)
         else:
             if timestamp == '':
@@ -387,6 +387,7 @@ if __name__ == '__main__':
     parser.add_argument('--label', type=str, default='False')
     parser.add_argument('--path', type=str, default='')
     parser.add_argument('--modes', type=str, default='False')
+    parser.add_argument('--from_checkpoint', type=str, default='False')
 
     args = parser.parse_args()
     data = importlib.import_module(args.data)
@@ -412,7 +413,13 @@ if __name__ == '__main__':
     cl_gan = clusGAN(g_net, d_net, enc_net, xs, zs, args.data, args.model, args.sampler,
                      num_classes, dim_gen, n_cat, batch_size, beta_cycle_gen, beta_cycle_label)
     if args.train == 'True':
-        cl_gan.train()
+        if args.from_checkpoint == 'True':
+            cl_gan.load(pre_trained=True)
+            timestamp = 'pre-trained'
+            cl_gan.train()
+        else:
+            cl_gan.train()
+
     else:
 
         print('Attempting to Restore Model ...')
