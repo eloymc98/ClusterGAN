@@ -197,13 +197,9 @@ class clusGAN(object):
             os.makedirs(f'/content/gdrive/My Drive/ClusterGAN/checkpoints/{self.data}')
         copytree(checkpoint_dir,
                  f'/content/gdrive/My Drive/ClusterGAN/checkpoints/{self.data}')
-        copytree('logs/{}/{}/{}_z{}_cyc{}_gen{}/{}.png'.format(self.data, self.model, self.sampler,
+        copytree('logs/{}/{}/{}_z{}_cyc{}_gen{}'.format(self.data, self.model, self.sampler,
                                                                self.z_dim, self.beta_cycle_label,
-                                                               self.beta_cycle_gen, (t + 1) / 100),
-                 f'/content/gdrive/My Drive/ClusterGAN/checkpoints/{self.data}')
-        copytree('logs/{}/{}/{}_z{}_cyc{}_gen{}/{}.txt'.format(self.data, self.model, self.sampler,
-                                                               self.z_dim, self.beta_cycle_label,
-                                                               self.beta_cycle_gen, (t + 1) / 100),
+                                                               self.beta_cycle_gen),
                  f'/content/gdrive/My Drive/ClusterGAN/checkpoints/{self.data}')
 
     def load(self, pre_trained=False, timestamp=''):
@@ -389,7 +385,6 @@ class clusGAN(object):
 
 
 if __name__ == '__main__':
-    # TODO: Arreglar data samplers para ver todas las imagenes, indicar cuando ha visto todas las imagenes (1 epoch, ~n*10^3 iter)
     parser = argparse.ArgumentParser('')
     parser.add_argument('--data', type=str, default='mnist')
     parser.add_argument('--model', type=str, default='clus_wgan')
