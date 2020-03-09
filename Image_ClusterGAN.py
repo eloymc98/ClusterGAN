@@ -222,7 +222,7 @@ class clusGAN(object):
                                                                                      self.beta_cycle_gen)
 
         self.saver.restore(self.sess, os.path.join(checkpoint_dir, 'model.ckpt'))
-        print(self.sess.run('w1:0'))
+
         print('Restored model weights.')
 
     def _gen_samples(self, num_images):
