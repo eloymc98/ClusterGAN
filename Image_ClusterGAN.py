@@ -9,7 +9,7 @@ from imageio import imwrite
 import numpy as np
 from sklearn.cluster import KMeans
 from sklearn.metrics.cluster import normalized_mutual_info_score, adjusted_rand_score
-
+from math import floor
 import metric
 from visualize import *
 import util
@@ -106,6 +106,7 @@ class clusGAN(object):
     def train(self, num_batches=500000):
 
         now = datetime.datetime.now(dateutil.tz.tzlocal())
+        epoch = 0
         timestamp = now.strftime('%Y_%m_%d_%H_%M_%S')
 
         batch_size = self.batch_size
@@ -134,6 +135,11 @@ class clusGAN(object):
             # Then we only optimize generator loss for 1 iteration
             bz = self.z_sampler(batch_size, self.z_dim, self.sampler, self.num_classes, self.n_cat)
             self.sess.run(self.g_adam, feed_dict={self.z: bz})
+
+            if (t + 1) % floor(50000/(batch_size*d_iters)):
+                print(f'Epoch {epoch}')
+                epoch += 1
+
 
             if (t + 1) % 100 == 0:
                 # Every 100 iter, print d and g losses
@@ -168,12 +174,12 @@ class clusGAN(object):
                         f.write(', ')
 
             if (t + 1) % 5000 == 0:
-                self.save(timestamp + '_' + str(t + 1))
+                self.save(timestamp + '_' + str(t + 1), t=t)
 
         self.recon_enc(timestamp, val=True)
         self.save(timestamp)
 
-    def save(self, timestamp):
+    def save(self, timestamp, t=None):
 
         checkpoint_dir = 'checkpoint_dir/{}/{}_{}_{}_z{}_cyc{}_gen{}'.format(self.data, timestamp, self.model,
                                                                              self.sampler,
@@ -190,6 +196,14 @@ class clusGAN(object):
             os.makedirs('/content/gdrive/My Drive/ClusterGAN/checkpoints')
             os.makedirs(f'/content/gdrive/My Drive/ClusterGAN/checkpoints/{self.data}')
         copytree(checkpoint_dir,
+                 f'/content/gdrive/My Drive/ClusterGAN/checkpoints/{self.data}')
+        copytree('logs/{}/{}/{}_z{}_cyc{}_gen{}/{}.png'.format(self.data, self.model, self.sampler,
+                                                               self.z_dim, self.beta_cycle_label,
+                                                               self.beta_cycle_gen, (t + 1) / 100),
+                 f'/content/gdrive/My Drive/ClusterGAN/checkpoints/{self.data}')
+        copytree('logs/{}/{}/{}_z{}_cyc{}_gen{}/{}.txt'.format(self.data, self.model, self.sampler,
+                                                               self.z_dim, self.beta_cycle_label,
+                                                               self.beta_cycle_gen, (t + 1) / 100),
                  f'/content/gdrive/My Drive/ClusterGAN/checkpoints/{self.data}')
 
     def load(self, pre_trained=False, timestamp=''):
@@ -212,6 +226,7 @@ class clusGAN(object):
                                                                                      self.beta_cycle_gen)
 
         self.saver.restore(self.sess, os.path.join(checkpoint_dir, 'model.ckpt'))
+        print(self.sess.run('w1:0'))
         print('Restored model weights.')
 
     def _gen_samples(self, num_images):
