@@ -63,7 +63,7 @@ class DataSampler(object):
 
         features = batch['data']
         features = features[:] / 255
-        labels = np.array([batch['labels']])
+        labels = np.asarray(batch['labels'])
         features = features.reshape((len(features), 3, 32, 32)).transpose(0, 2, 3, 1)
         features = features.reshape((len(features), 32 * 32 * 3))
         return features, labels
