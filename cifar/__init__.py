@@ -80,6 +80,7 @@ class DataSampler(object):
             l2 = self.train_labels[:batch_size * self.count - self.train_features.shape[0]]
             features = np.vstack((features1, f2))
             labels = np.append(labels1, l2)
+            self.count = 0
 
         features = features[:] / 255
         features = features.reshape((batch_size, 3, 32, 32)).transpose(0, 2, 3, 1)
