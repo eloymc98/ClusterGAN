@@ -16,52 +16,45 @@ def unpickle(file):
 class DataSampler(object):
     def __init__(self):
         self.shape = [32, 32, 3]
-        self.batch_number = 1
-        self.index = 0
-        self.count = 0
         cifar10_dataset_folder_path = './data/cifar-10-batches-py'
-
+        self.count = 0
         with open(cifar10_dataset_folder_path + '/data_batch_1', mode='rb') as file:
             # note the encoding type is 'latin1'
-            self.batch1 = pickle.load(file, encoding='latin1')
+            batch1 = pickle.load(file, encoding='latin1')
+        f1 = batch1['data']
+        l1 = np.array([batch1['labels']])
         with open(cifar10_dataset_folder_path + '/data_batch_2', mode='rb') as file:
             # note the encoding type is 'latin1'
-            self.batch2 = pickle.load(file, encoding='latin1')
+            batch2 = pickle.load(file, encoding='latin1')
+        f2 = batch2['data']
+        l2 = np.array([batch2['labels']])
         with open(cifar10_dataset_folder_path + '/data_batch_3', mode='rb') as file:
             # note the encoding type is 'latin1'
-            self.batch3 = pickle.load(file, encoding='latin1')
+            batch3 = pickle.load(file, encoding='latin1')
+        f3 = batch3['data']
+        l3 = np.array([batch3['labels']])
         with open(cifar10_dataset_folder_path + '/data_batch_4', mode='rb') as file:
             # note the encoding type is 'latin1'
-            self.batch4 = pickle.load(file, encoding='latin1')
+            batch4 = pickle.load(file, encoding='latin1')
+        f4 = batch4['data']
+        l4 = np.array([batch4['labels']])
         with open(cifar10_dataset_folder_path + '/data_batch_5', mode='rb') as file:
             # note the encoding type is 'latin1'
-            self.batch5 = pickle.load(file, encoding='latin1')
-        self.batch = self.batch1
+            batch5 = pickle.load(file, encoding='latin1')
+        f5 = batch5['data']
+        l5 = np.array([batch5['labels']])
+        self.train_features = np.vstack((f1, f2))
+        self.train_features = np.vstack((self.train_features, f3))
+        self.train_features = np.vstack((self.train_features, f4))
+        self.train_labels = np.append(l1, l2)
+        self.train_labels = np.append(self.train_labels, l3)
+        self.train_labels = np.append(self.train_labels, l4)
 
+        self.val_features = f5
+        self.val_labels = l5
 
     def load_label_names(self):
         return ['airplane', 'automobile', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck']
-
-    def load_cfar10_batch(self, cifar10_dataset_folder_path):
-        pass
-
-        # # features = batch['data'].reshape((len(batch['data']), 3, 32, 32)).transpose(0, 2, 3, 1)
-        # # labels = batch['labels']
-        # if self.index + batch_size <= floor(len(batch['data'] / batch_size)) * batch_size:
-        #     features = batch['data'][self.index:batch_size + self.index]
-        #     labels = batch['labels'][self.index:batch_size + self.index]
-        #     self.index += batch_size
-        # else:
-        #     self.batch_number += 1
-        #     self.index = 0
-        #     with open(cifar10_dataset_folder_path + '/data_batch_' + str(self.batch_number), mode='rb') as file:
-        #         # note the encoding type is 'latin1'
-        #         batch = pickle.load(file, encoding='latin1')
-        #     features = batch['data'][self.index:batch_size + self.index]
-        #     labels = batch['labels'][self.index:batch_size + self.index]
-        #     self.index += batch_size
-
-        # return batch1, batch2, batch3, batch4, batch5
 
     def load_cfar10_test(self, cifar10_dataset_folder_path):
         with open(cifar10_dataset_folder_path + '/test_batch', mode='rb') as file:
@@ -69,41 +62,26 @@ class DataSampler(object):
             batch = pickle.load(file, encoding='latin1')
 
         features = batch['data']
-        features = features[:]/255
-        labels = batch['labels']
+        features = features[:] / 255
+        labels = np.array([batch['labels']])
         features = features.reshape((len(features), 3, 32, 32)).transpose(0, 2, 3, 1)
         features = features.reshape((len(features), 32 * 32 * 3))
         return features, labels
 
     def train(self, batch_size, label=False):
-        # normalizar valores entre 0 y 1!!!!!!!!!!!!
-        features = None
-        labels = None
         self.count += 1
-        if self.count < 157:
-            features = self.batch['data'][self.index:batch_size + self.index]
-            features = features[:] / 255
-            labels = self.batch['labels'][self.index:batch_size + self.index]
+        if batch_size * self.count <= self.train_features.shape[0]:
+            features = self.train_features[(self.count - 1) * batch_size:batch_size * self.count]
+            labels = self.train_labels[(self.count - 1) * batch_size:batch_size * self.count]
         else:
+            features1 = self.train_features[(self.count - 1) * batch_size:]
+            labels1 = self.train_labels[(self.count - 1) * batch_size:]
+            f2 = self.train_features[:batch_size * self.count - self.train_features.shape[0]]
+            l2 = self.train_labels[:batch_size * self.count - self.train_features.shape[0]]
+            features = np.vstack((features1, f2))
+            labels = np.append(labels1, l2)
 
-            self.count = 1
-            self.index = 0
-            self.batch_number += 1
-            if self.batch_number == 2:
-                self.batch = self.batch2
-            elif self.batch_number == 3:
-                self.batch = self.batch3
-            elif self.batch_number == 4:
-                self.batch = self.batch4
-            elif self.batch_number == 5:
-                self.batch = self.batch5
-            elif self.batch_number == 6:
-                self.batch = self.batch1
-                self.batch_number = 1
-            features = self.batch['data'][self.index:batch_size + self.index]
-            features = features[:] / 255
-            labels = self.batch['labels'][self.index:batch_size + self.index]
-
+        features = features[:] / 255
         features = features.reshape((batch_size, 3, 32, 32)).transpose(0, 2, 3, 1)
         features = features.reshape((batch_size, 32 * 32 * 3))
         if label:
@@ -116,7 +94,11 @@ class DataSampler(object):
         return features, labels
 
     def validation(self):
-        features, labels = self.test()
+        features = self.val_features
+        labels = self.val_labels
+        features = features[:] / 255
+        features = features.reshape((self.val_features.shape[0], 3, 32, 32)).transpose(0, 2, 3, 1)
+        features = features.reshape((self.val_features.shape[0], 32 * 32 * 3))
         return features, labels
 
     def data2img(self, data):
