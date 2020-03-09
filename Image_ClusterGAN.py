@@ -136,7 +136,7 @@ class clusGAN(object):
             bz = self.z_sampler(batch_size, self.z_dim, self.sampler, self.num_classes, self.n_cat)
             self.sess.run(self.g_adam, feed_dict={self.z: bz})
 
-            if (t + 1) % floor(50000/(batch_size*d_iters)):
+            if (t + 1) % floor(40000/(batch_size*d_iters)) == 0:
                 print(f'Epoch {epoch}')
                 epoch += 1
 
