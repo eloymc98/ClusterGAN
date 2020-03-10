@@ -3,13 +3,32 @@ import numpy as np
 import pandas as pd
 import random
 from math import floor
+from util import load_google_colors
 
 
 class DataSampler(object):
     def __init__(self):
         self.shape = [32, 32, 3]
+        self.count = 0
         self.dataset_path = '/content/ClusterGAN/colors/google_colors'
-        self.df = pd.read_csv('/content/ClusterGAN/colors/dataset.csv')
+        # self.df = pd.read_csv('/content/ClusterGAN/colors/dataset.csv')
+        # np array de shape (len(dataset), 32*32*3)
+        data, labels = load_google_colors()
+        # split into train, validation, test
+        size = data.shape[0]
+        test_index = random.sample(range(0, data.shape[0]), floor(size * 0.1))
+        self.test_data = data[test_index]
+        self.test_labels = labels[test_index]
+
+        data = np.delete(data, test_index, axis=0)
+        labels = np.delete(labels, test_index)
+
+        val_index = random.sample(range(0, data.shape[0]), floor(size * 0.1))
+        self.val_data = data[val_index]
+        self.val_labels = labels[val_index]
+
+        self.train_data = np.delete(data, val_index, axis=0)
+        self.train_labels = np.delete(labels, val_index)
 
     def load_label_names(self):
         return ['black', 'blue', 'brown', 'green', 'grey', 'orange', 'pink', 'purple', 'red', 'white', 'yellow']
@@ -23,69 +42,29 @@ class DataSampler(object):
         return img
 
     def train(self, batch_size, label=False):
-        train_df = self.df['train'] == 1
-        first = True
-        for label_name in self.load_label_names():
-            # leer del csv donde label sea x y este en train, coger n aleatorias
-            label_df = self.df['label'] == label_name
-            df = self.df[train_df & label_df]
-            nums = np.random.randint(low=0, high=len(df), size=floor(batch_size / len(self.load_label_names())))
-            df = df.iloc[nums]
-            for row in df.iterrows():
-                img = self.load_image(self.dataset_path + row[1]['path'])
-                img_label = row[1]['label']
-                if first:
-                    batch = img
-                    labels = np.array([img_label])
-                    first = False
-                else:
-                    batch = np.vstack((batch, img))
-                    labels = np.append(labels, img_label)
-        while batch.shape[0] < 64:
-            label_df = self.df['label'] == random.choice(self.load_label_names())
-            df = self.df[train_df & label_df]
-            df = df.iloc[np.random.randint(low=0, high=len(df))]
-            img = self.load_image(self.dataset_path + df['path'])
-            img_label = df['label']
-            batch = np.vstack((batch, img))
-            labels = np.append(labels, img_label)
+        self.count += 1
+        if batch_size * self.count <= self.train_data.shape[0]:
+            features = self.train_data[(self.count - 1) * batch_size:batch_size * self.count]
+            labels = self.train_labels[(self.count - 1) * batch_size:batch_size * self.count]
+        else:
+            features1 = self.train_data[(self.count - 1) * batch_size:]
+            labels1 = self.train_labels[(self.count - 1) * batch_size:]
+            f2 = self.train_data[:batch_size * self.count - self.train_data.shape[0]]
+            l2 = self.train_labels[:batch_size * self.count - self.train_data.shape[0]]
+            features = np.vstack((features1, f2))
+            labels = np.append(labels1, l2)
+            self.count = 0
 
         if label:
-            return batch, labels
+            return features, labels
         else:
-            return batch
+            return features
 
     def test(self):
-        test_df = self.df['train'] == 0
-        df = self.df[test_df]
-        first = True
-        for row in df.iteritems():
-            img = self.load_image(self.dataset_path + row[1]['path'])
-            img_label = row[1]['label']
-            if first:
-                batch = img
-                labels = np.array([img_label])
-                first = False
-            else:
-                batch = np.vstack((batch, img))
-                labels = np.append(labels, img_label)
-        return batch, labels
+        return self.test_data, self.test_labels
 
     def validation(self):
-        test_df = self.df['train'] == 0
-        df = self.df[test_df]
-        first = True
-        for row in df.iterrows():
-            img = self.load_image(self.dataset_path + row[1]['path'])
-            img_label = row[1]['label']
-            if first:
-                batch = img
-                labels = np.array([img_label])
-                first = False
-            else:
-                batch = np.vstack((batch, img))
-                labels = np.append(labels, img_label)
-        return batch, labels
+        return self.val_data, self.val_labels
 
     def data2img(self, data):
         #                        batch size       [32,32,3]

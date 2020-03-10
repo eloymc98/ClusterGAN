@@ -1,4 +1,35 @@
 import numpy as np
+import os
+import cv2
+
+
+def load_google_colors():
+    path = "/content/ClusterGAN/colors/google_colors"
+    dirs = os.listdir(path)
+    print(dirs)
+    labels = []
+    index_label = 0
+    first = True
+    for item in dirs:
+        subdir = path + '/' + item
+        print(subdir)
+        if os.path.isdir(subdir):
+            for image in os.listdir(subdir):
+                if os.path.isfile(subdir + '/' + image):
+                    bgr = cv2.imread(subdir + '/' + image)
+                    # img = cv2.cvtColor(img, cv2.COLOR_BGR2LAB)
+                    img = bgr[:, :, [2, 1, 0]]
+                    img = np.reshape(img, 32 * 32 * 3)
+                    img = img / 255
+                    labels.append(index_label)
+                    if first:
+                        dataset = img
+                        first = False
+                    else:
+                        dataset = np.vstack((dataset, img))
+            index_label += 1
+    labels = np.asarray(labels)
+    return dataset, labels
 
 
 def closest_node(node, nodes):

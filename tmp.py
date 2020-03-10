@@ -133,12 +133,66 @@
 # print(f'Label 15 size: {len(df[df15])}')
 # print(f'Label 16 size: {len(df[df16])}')
 
-
+import os
+import cv2
 import numpy as np
+from math import floor
 
-label_index = np.random.randint(low=0, high=10, size=3)
-print(label_index)
-with open('test.txt', 'w') as f:
-    for i in label_index:
-        f.write(str(i))
-        f.write(', ')
+
+def load_google_colors():
+    path = "/Users/eloymarinciudad/Downloads/google_colors"
+    dirs = os.listdir(path)
+    print(dirs)
+    labels = []
+    index_label = 0
+    first = True
+    for item in dirs:
+        subdir = path + '/' + item
+        print(subdir)
+        if os.path.isdir(subdir):
+            for image in os.listdir(subdir):
+                if os.path.isfile(subdir + '/' + image):
+                    bgr = cv2.imread(subdir + '/' + image)
+                    # img = cv2.cvtColor(img, cv2.COLOR_BGR2LAB)
+                    img = bgr[:, :, [2, 1, 0]]
+                    img = cv2.resize(img, (32, 32), interpolation=cv2.INTER_AREA)
+                    img = np.reshape(img, 32 * 32 * 3)
+                    img = img / 255
+                    labels.append(index_label)
+                    if first:
+                        dataset = img
+                        first = False
+                    else:
+                        dataset = np.vstack((dataset, img))
+            index_label += 1
+    labels = np.asarray(labels)
+    return dataset, labels
+
+import random
+data, labels = load_google_colors()
+# test_index = np.random.randint(low=0, high=data.shape[0], size=floor(data.shape[0] * 0.1))
+size = data.shape[0]
+test_index = random.sample(range(0, data.shape[0]), floor(size * 0.1))
+
+print(data.shape)
+print(data.shape[0])
+test_data = data[test_index]
+test_labels = labels[test_index]
+print(len(test_index))
+print(test_data.shape)
+
+data = np.delete(data, test_index, axis=0)
+labels = np.delete(labels, test_index)
+print(data.shape)
+print(labels.shape)
+print(test_index)
+
+val_index = random.sample(range(0, data.shape[0]), floor(size * 0.1))
+val_data = data[val_index]
+val_labels = labels[val_index]
+print(val_data.shape)
+
+data = np.delete(data, val_index, axis=0)
+labels = np.delete(labels, val_index)
+print(data.shape)
+print(labels.shape)
