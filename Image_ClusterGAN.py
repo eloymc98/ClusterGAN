@@ -74,6 +74,11 @@ class clusGAN(object):
                       self.beta_cycle_label * tf.reduce_mean(
             tf.nn.softmax_cross_entropy_with_logits(logits=self.z_enc_logits, labels=self.z_hot))
 
+        self.g_loss_reduce_mean = tf.reduce_mean(self.d_)
+        self.g_loss_beta_cycle_gen = self.beta_cycle_gen * tf.reduce_mean(tf.square(self.z_gen - self.z_enc_gen))
+        self.g_loss_beta_cycle_label = self.beta_cycle_label * tf.reduce_mean(
+            tf.nn.softmax_cross_entropy_with_logits(logits=self.z_enc_logits, labels=self.z_hot))
+
         self.d_loss = tf.reduce_mean(self.d) - tf.reduce_mean(self.d_)
 
         epsilon = tf.random_uniform([], 0.0, 1.0)
@@ -123,6 +128,12 @@ class clusGAN(object):
                                                              self.beta_cycle_label, self.beta_cycle_gen)
         if not os.path.exists(im_save_dir):
             os.makedirs(im_save_dir)
+
+        if args.data == 'cifar':
+            train_size = 40000
+        elif args.data == 'colors':
+            train_size = 880
+
         for t in range(0, num_batches):
             d_iters = 5
 
@@ -135,11 +146,9 @@ class clusGAN(object):
             # Then we only optimize generator loss for 1 iteration
             bz = self.z_sampler(batch_size, self.z_dim, self.sampler, self.num_classes, self.n_cat)
             self.sess.run(self.g_adam, feed_dict={self.z: bz})
-
-            if (t + 1) % floor(40000/(batch_size*d_iters)) == 0:
+            if (t + 1) % floor(train_size / (batch_size * d_iters)) == 0:
                 print(f'Epoch {epoch}')
                 epoch += 1
-
 
             if (t + 1) % 100 == 0:
                 # Every 100 iter, print d and g losses
@@ -152,8 +161,14 @@ class clusGAN(object):
                 g_loss = self.sess.run(
                     self.g_loss, feed_dict={self.z: bz}
                 )
-                print('Iter [%8d] Time [%5.4f] d_loss [%.4f] g_loss [%.4f]' %
-                      (t + 1, time.time() - start_time, d_loss, g_loss))
+                g_loss_reduce_mean = self.sess.run(self.g_loss_reduce_mean, feed_dict={self.z: bz})
+                g_loss_beta_cycle_gen = self.sess.run(self.g_loss_beta_cycle_gen, feed_dict={self.z: bz})
+                g_loss_beta_cycle_label = self.sess.run(self.g_loss_beta_cycle_label, feed_dict={self.z: bz})
+
+                print(
+                    'Iter [%8d] Time [%5.4f] d_loss [%.4f] g_loss [%.4f] (reduce_mean [%.4f], b_n [%.4f], b_c [%.4f])' %
+                    (t + 1, time.time() - start_time, d_loss, g_loss, g_loss_reduce_mean, g_loss_beta_cycle_gen,
+                     g_loss_beta_cycle_label))
 
             if (t + 1) % 5000 == 0:
                 # Every 5000 iter, save an image of a batch of x_
@@ -198,8 +213,8 @@ class clusGAN(object):
         copytree(checkpoint_dir,
                  f'/content/gdrive/My Drive/ClusterGAN/checkpoints/{self.data}')
         copytree('logs/{}/{}/{}_z{}_cyc{}_gen{}'.format(self.data, self.model, self.sampler,
-                                                               self.z_dim, self.beta_cycle_label,
-                                                               self.beta_cycle_gen),
+                                                        self.z_dim, self.beta_cycle_label,
+                                                        self.beta_cycle_gen),
                  f'/content/gdrive/My Drive/ClusterGAN/checkpoints/{self.data}')
 
     def load(self, pre_trained=False, timestamp=''):
