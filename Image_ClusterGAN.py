@@ -79,6 +79,8 @@ class clusGAN(object):
         self.g_loss_beta_cycle_label = self.beta_cycle_label * tf.reduce_mean(
             tf.nn.softmax_cross_entropy_with_logits(logits=self.z_enc_logits, labels=self.z_hot))
 
+        self.output_d_ = self.d_
+
         self.d_loss = tf.reduce_mean(self.d) - tf.reduce_mean(self.d_)
 
         epsilon = tf.random_uniform([], 0.0, 1.0)
@@ -166,6 +168,7 @@ class clusGAN(object):
                 g_loss_reduce_mean = self.sess.run(self.g_loss_reduce_mean, feed_dict={self.z: bz})
                 g_loss_beta_cycle_gen = self.sess.run(self.g_loss_beta_cycle_gen, feed_dict={self.z: bz})
                 g_loss_beta_cycle_label = self.sess.run(self.g_loss_beta_cycle_label, feed_dict={self.z: bz})
+                out_d_ = self.sess.run(self.output_d_, feed_dict={self.z: bz})
 
                 print(
                     'Iter [%8d] Time [%5.4f] d_loss [%.4f] g_loss [%.4f] (reduce_mean [%.4f], b_n [%.4f], b_c [%.4f])' %
