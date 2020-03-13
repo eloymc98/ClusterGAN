@@ -174,6 +174,7 @@ class clusGAN(object):
                     'Iter [%8d] Time [%5.4f] d_loss [%.4f] g_loss [%.4f] (reduce_mean [%.4f], b_n [%.4f], b_c [%.4f])' %
                     (t + 1, time.time() - start_time, d_loss, g_loss, g_loss_reduce_mean, g_loss_beta_cycle_gen,
                      g_loss_beta_cycle_label))
+                print(f'd_: {out_d_}')
 
             if (t + 1) % 5000 == 0:
                 # Every 5000 iter, save an image of a batch of x_
