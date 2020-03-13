@@ -209,15 +209,23 @@ class clusGAN(object):
         self.saver.save(self.sess, os.path.join(checkpoint_dir, 'model.ckpt'))
 
         date = datetime.datetime.utcnow().strftime("%Y-%m-%d-%H-M-%S")
-        if not os.path.exists('/content/gdrive/My Drive/ClusterGAN/checkpoints'):
-            os.makedirs('/content/gdrive/My Drive/ClusterGAN/checkpoints')
-            os.makedirs(f'/content/gdrive/My Drive/ClusterGAN/checkpoints/{self.data}')
-        copytree(checkpoint_dir,
-                 f'/content/gdrive/My Drive/ClusterGAN/checkpoints/{self.data}')
-        copytree('logs/{}/{}/{}_z{}_cyc{}_gen{}'.format(self.data, self.model, self.sampler,
-                                                        self.z_dim, self.beta_cycle_label,
-                                                        self.beta_cycle_gen),
-                 f'/content/gdrive/My Drive/ClusterGAN/checkpoints/{self.data}')
+        # if not os.path.exists('/content/gdrive/My Drive/ClusterGAN/checkpoints'):
+        #     os.makedirs('/content/gdrive/My Drive/ClusterGAN/checkpoints')
+        #     os.makedirs(f'/content/gdrive/My Drive/ClusterGAN/checkpoints/{self.data}')
+        if self.data == 'fashion' and self.num_classes == 5:
+            copytree(checkpoint_dir,
+                     f'/content/gdrive/My Drive/ClusterGAN/checkpoints/fashion_5')
+            copytree('logs/{}/{}/{}_z{}_cyc{}_gen{}'.format(self.data, self.model, self.sampler,
+                                                            self.z_dim, self.beta_cycle_label,
+                                                            self.beta_cycle_gen),
+                     f'/content/gdrive/My Drive/ClusterGAN/checkpoints/fashion_5')
+        else:
+            copytree(checkpoint_dir,
+                     f'/content/gdrive/My Drive/ClusterGAN/checkpoints/{self.data}')
+            copytree('logs/{}/{}/{}_z{}_cyc{}_gen{}'.format(self.data, self.model, self.sampler,
+                                                            self.z_dim, self.beta_cycle_label,
+                                                            self.beta_cycle_gen),
+                     f'/content/gdrive/My Drive/ClusterGAN/checkpoints/{self.data}')
 
     def load(self, pre_trained=False, timestamp=''):
 
