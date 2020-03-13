@@ -234,7 +234,7 @@ class clusGAN(object):
             checkpoint_dir = 'pre_trained_models/{}/{}_{}_z{}_cyc{}_gen{}'.format(self.data, self.model, self.sampler,
                                                                                   self.z_dim, self.beta_cycle_label,
                                                                                   self.beta_cycle_gen)
-            if self.data in ('termisk', 'cifar'):
+            if self.data in ('termisk', 'cifar', 'mnist'):
                 checkpoint_dir = 'pre_trained_models/{}'.format(self.data)
         else:
             if timestamp == '':
