@@ -216,13 +216,13 @@ class clusGAN(object):
         # if not os.path.exists('/content/gdrive/My Drive/ClusterGAN/checkpoints'):
         #     os.makedirs('/content/gdrive/My Drive/ClusterGAN/checkpoints')
         #     os.makedirs(f'/content/gdrive/My Drive/ClusterGAN/checkpoints/{self.data}')
-        if self.data == 'fashion' and self.num_classes == 5:
+        if self.data == 'fashion':
             copytree(checkpoint_dir,
-                     f'/content/gdrive/My Drive/ClusterGAN/checkpoints/fashion_5')
+                     f'/content/gdrive/My Drive/ClusterGAN/checkpoints/fashion_{self.num_classes}')
             copytree('logs/{}/{}/{}_z{}_cyc{}_gen{}'.format(self.data, self.model, self.sampler,
                                                             self.z_dim, self.beta_cycle_label,
                                                             self.beta_cycle_gen),
-                     f'/content/gdrive/My Drive/ClusterGAN/checkpoints/fashion_5')
+                     f'/content/gdrive/My Drive/ClusterGAN/checkpoints/fashion_{self.num_classes}')
         else:
             copytree(checkpoint_dir,
                      f'/content/gdrive/My Drive/ClusterGAN/checkpoints/{self.data}')
