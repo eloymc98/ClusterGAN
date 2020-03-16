@@ -2,6 +2,34 @@ import numpy as np
 import os
 import cv2
 
+def load_colors_new():
+    path = "/content/ClusterGAN/CUB_200_2011/CUB_200_2011/images/"
+    classes = os.listdir(path)
+    print(classes)
+    labels = []
+    index_label = 0
+    first = True
+    for cub_class in classes:
+        subdir_class = path + '/' + cub_class
+        print(subdir_class)
+        if os.path.isdir(subdir_class):
+            for image in os.listdir(subdir_class):
+                if os.path.isfile(subdir_class + '/' + image):
+                    bgr = cv2.imread(subdir_class + '/' + image)
+                    bgr = cv2.resize(bgr, (94, 94), interpolation=cv2.INTER_AREA)
+                    img = bgr[:, :, [2, 1, 0]]
+                    img = np.reshape(img, 94 * 94 * 3)
+                    img = img / 255
+                    labels.append(index_label)
+                    if first:
+                        dataset = img
+                        first = False
+                    else:
+                        dataset = np.vstack((dataset, img))
+            index_label += 1
+    labels = np.asarray(labels)
+    return dataset, labels
+
 
 def load_cub():
     path = "/content/ClusterGAN/CUB_200_2011/CUB_200_2011/images/"
