@@ -139,23 +139,22 @@ import numpy as np
 from math import floor
 
 
-def load_google_colors():
-    path = "/Users/eloymarinciudad/Downloads/google_colors"
-    dirs = os.listdir(path)
-    print(dirs)
+def load_colors_new():
+    path = "/Users/eloymarinciudad/Downloads/colors_new"
+    classes = os.listdir(path)
+    print(classes)
     labels = []
     index_label = 0
     first = True
-    for item in dirs:
-        subdir = path + '/' + item
-        print(subdir)
-        if os.path.isdir(subdir):
-            for image in os.listdir(subdir):
-                if os.path.isfile(subdir + '/' + image):
-                    bgr = cv2.imread(subdir + '/' + image)
-                    # img = cv2.cvtColor(img, cv2.COLOR_BGR2LAB)
+    for color in classes:
+        subdir_class = path + '/' + color
+        print(subdir_class)
+        if os.path.isdir(subdir_class):
+            for image in os.listdir(subdir_class):
+                if os.path.isfile(subdir_class + '/' + image):
+                    bgr = cv2.imread(subdir_class + '/' + image)
+                    bgr = cv2.resize(bgr, (32, 32), interpolation=cv2.INTER_AREA)
                     img = bgr[:, :, [2, 1, 0]]
-                    img = cv2.resize(img, (32, 32), interpolation=cv2.INTER_AREA)
                     img = np.reshape(img, 32 * 32 * 3)
                     img = img / 255
                     labels.append(index_label)
@@ -169,7 +168,7 @@ def load_google_colors():
     return dataset, labels
 
 import random
-data, labels = load_google_colors()
+data, labels = load_colors_new()
 # test_index = np.random.randint(low=0, high=data.shape[0], size=floor(data.shape[0] * 0.1))
 size = data.shape[0]
 test_index = random.sample(range(0, data.shape[0]), floor(size * 0.1))
