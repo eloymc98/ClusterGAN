@@ -137,6 +137,8 @@ class clusGAN(object):
             train_size = 880
         elif args.data in ('mnist', 'fashion'):
             train_size = 60000
+        elif args.data == 'colors_new':
+            train_size = 2747
 
         for t in range(0, num_batches):
             d_iters = 5
