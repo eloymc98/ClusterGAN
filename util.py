@@ -4,7 +4,7 @@ import cv2
 
 
 def load_colors_new():
-    path = "/content/ClusterGAN/colors_new"
+    path = "/content/colors_new"
     classes = os.listdir(path)
     print(classes)
     labels = []
