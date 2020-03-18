@@ -139,36 +139,48 @@ import numpy as np
 from math import floor
 
 
-def load_colors_new():
-    path = "/Users/eloymarinciudad/Downloads/colors_new"
-    classes = os.listdir(path)
-    print(classes)
+def load_termisk_reduced():
+    path = "/Users/eloymarinciudad/Downloads/termisk_dataset"
+    split_paths = os.listdir(path)
+    print(split_paths)
     labels = []
-    index_label = 0
+
     first = True
-    for color in classes:
-        subdir_class = path + '/' + color
-        print(subdir_class)
-        if os.path.isdir(subdir_class):
-            for image in os.listdir(subdir_class):
-                if os.path.isfile(subdir_class + '/' + image):
-                    bgr = cv2.imread(subdir_class + '/' + image)
-                    bgr = cv2.resize(bgr, (32, 32), interpolation=cv2.INTER_AREA)
-                    img = bgr[:, :, [2, 1, 0]]
-                    img = np.reshape(img, 32 * 32 * 3)
-                    img = img / 255
-                    labels.append(index_label)
-                    if first:
-                        dataset = img
-                        first = False
-                    else:
-                        dataset = np.vstack((dataset, img))
-            index_label += 1
+    for split in split_paths:
+        subdir = path + '/' + split
+        print(subdir)
+        if os.path.isdir(subdir):
+            classes = os.listdir(subdir)
+            for label in classes:
+                class_path = subdir + '/' + label
+                if label in ('5', '6', '8', '10', '11'):
+                    print(label)
+                    for image in os.listdir(class_path):
+                        if os.path.isfile(class_path + '/' + image) and image.endswith('.png'):
+                            if label == '8':
+                                index_label = 2
+                            elif label in ('10', '11'):
+                                index_label = int(label) - 7
+                            else:
+                                index_label = int(label) - 5
+                            try:
+                                img = cv2.imread(class_path + '/' + image, cv2.IMREAD_GRAYSCALE)
+                                # img = cv2.resize(img, (28, 28), interpolation=cv2.INTER_AREA)
+                                img = np.reshape(img, 96 * 96)
+                                img = img / 255
+                            except ValueError:
+                                print(class_path + '/' + image)
+                            labels.append(index_label)
+                            if first:
+                                dataset = img
+                                first = False
+                            else:
+                                dataset = np.vstack((dataset, img))
     labels = np.asarray(labels)
     return dataset, labels
 
 import random
-data, labels = load_colors_new()
+data, labels = load_termisk_reduced()
 # test_index = np.random.randint(low=0, high=data.shape[0], size=floor(data.shape[0] * 0.1))
 size = data.shape[0]
 test_index = random.sample(range(0, data.shape[0]), floor(size * 0.1))

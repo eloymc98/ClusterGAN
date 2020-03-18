@@ -6,10 +6,11 @@ import tensorflow.contrib.layers as tcl
 def leaky_relu(x, alpha=0.2):
     return tf.maximum(tf.minimum(0.0, alpha * x), x)
 
+
 # TODO: Probar a aplicar max-pooling
 class Discriminator(object):
     # x_dim = 28*28
-    def __init__(self, x_dim=784):
+    def __init__(self, x_dim=9216):
         self.x_dim = x_dim
         self.name = 'termisk/clus_wgan/d_net'
 
@@ -22,7 +23,7 @@ class Discriminator(object):
                 vs.reuse_variables()
             bs = tf.shape(x)[0]
             # Reshape to 3d
-            x = tf.reshape(x, [bs, 28, 28, 1])
+            x = tf.reshape(x, [bs, 96, 96, 1])
             # output = conv2d(input, num_outputs, kernel_size, stride)
             # tf.indetity -> Return a tensor with the same shape and contents as input
             conv1 = tc.layers.convolution2d(
@@ -56,7 +57,7 @@ class Discriminator(object):
 
 
 class Generator(object):
-    def __init__(self, z_dim=10, x_dim=784):
+    def __init__(self, z_dim=10, x_dim=9216):
         self.z_dim = z_dim
         self.x_dim = x_dim
         self.name = 'termisk/clus_wgan/g_net'
@@ -104,7 +105,7 @@ class Generator(object):
 
 
 class Encoder(object):
-    def __init__(self, z_dim=10, dim_gen=10, x_dim=784):
+    def __init__(self, z_dim=10, dim_gen=10, x_dim=9216):
         self.z_dim = z_dim
         self.dim_gen = dim_gen
         self.x_dim = x_dim
@@ -115,7 +116,7 @@ class Encoder(object):
             if reuse:
                 vs.reuse_variables()
             bs = tf.shape(x)[0]
-            x = tf.reshape(x, [bs, 28, 28, 1])
+            x = tf.reshape(x, [bs, 96, 96, 1])
             conv1 = tc.layers.convolution2d(
                 x, 64, [4, 4], [2, 2],
                 weights_initializer=tf.random_normal_initializer(stddev=0.02),
@@ -146,7 +147,6 @@ class Encoder(object):
     @property
     def vars(self):
         return [var for var in tf.global_variables() if self.name in var.name]
-
 
 # class Discriminator(object):
 #     # x_dim = 28*28

@@ -3,6 +3,38 @@ import os
 import cv2
 
 
+def load_termisk_reduced():
+    path = "/content/termisk_dataset"
+    split_paths = os.listdir(path)
+    print(split_paths)
+    labels = []
+    index_label = 0
+    first = True
+    for split in split_paths:
+        subdir = path + '/' + split
+        print(subdir)
+        if os.path.isdir(subdir):
+            classes = os.listdir(subdir)
+            for label in classes:
+                class_path = subdir + '/' + label
+                if label in ('5', '6', '8', '10', '11'):
+                    for image in os.listdir(class_path):
+                        if os.path.isfile(class_path + '/' + image):
+                            img = cv2.imread(class_path + '/' + image, cv2.IMREAD_GRAYSCALE)
+                            # img = cv2.resize(img, (28, 28), interpolation=cv2.INTER_AREA)
+                            img = np.reshape(img, 96 * 96)
+                            img = img / 255
+                            labels.append(index_label)
+                            if first:
+                                dataset = img
+                                first = False
+                            else:
+                                dataset = np.vstack((dataset, img))
+                    index_label += 1
+    labels = np.asarray(labels)
+    return dataset, labels
+
+
 def load_colors_new():
     path = "/content/colors_new"
     classes = os.listdir(path)

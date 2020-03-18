@@ -6,7 +6,7 @@ import random
 
 class DataSampler(object):
     def __init__(self):
-        self.shape = [28, 28, 1]
+        self.shape = [96, 96, 1]
         self.dataset_path = '/content/ClusterGAN/termisk/termisk_dataset'
         self.labels = ['0', '1', '2', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16']
         self.df = pd.read_csv('/content/ClusterGAN/termisk/dataset.csv')
@@ -15,7 +15,7 @@ class DataSampler(object):
     def load_image(self, path):
         img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
         # img = cv2.resize(img, (28, 28), interpolation=cv2.INTER_AREA)
-        img = np.reshape(img, 28 * 28)
+        img = np.reshape(img, 96 * 96)
         img = img / 255
         return img
 
