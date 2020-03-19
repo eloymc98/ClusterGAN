@@ -50,7 +50,8 @@ def load_colors_new():
                 if os.path.isfile(subdir_class + '/' + image):
                     bgr = cv2.imread(subdir_class + '/' + image)
                     bgr = cv2.resize(bgr, (32, 32), interpolation=cv2.INTER_AREA)
-                    img = bgr[:, :, [2, 1, 0]]
+                    img = cv2.cvtColor(bgr, cv2.COLOR_BGR2LAB)
+                    # img = bgr[:, :, [2, 1, 0]]
                     img = np.reshape(img, 32 * 32 * 3)
                     img = img / 255
                     labels.append(index_label)
