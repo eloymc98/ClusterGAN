@@ -149,7 +149,7 @@ def load_termisk_reduced():
     for split in split_paths:
         subdir = path + '/' + split
         print(subdir)
-        if os.path.isdir(subdir):
+        if os.path.isdir(subdir) and split == 'test':
             classes = os.listdir(subdir)
             for label in classes:
                 class_path = subdir + '/' + label
@@ -179,7 +179,9 @@ def load_termisk_reduced():
     labels = np.asarray(labels)
     return dataset, labels
 
+
 import random
+
 data, labels = load_termisk_reduced()
 # test_index = np.random.randint(low=0, high=data.shape[0], size=floor(data.shape[0] * 0.1))
 size = data.shape[0]
@@ -207,3 +209,8 @@ data = np.delete(data, val_index, axis=0)
 labels = np.delete(labels, val_index)
 print(data.shape)
 print(labels.shape)
+print('-----------------------------\n')
+print(data[0])
+np.random.shuffle(data)
+print(data.shape)
+print(data[0])

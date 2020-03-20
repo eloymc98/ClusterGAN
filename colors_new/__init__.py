@@ -30,6 +30,8 @@ class DataSampler(object):
         self.train_data = np.delete(data, val_index, axis=0)
         self.train_labels = np.delete(labels, val_index)
 
+        np.random.shuffle(self.train_data)
+
     def load_label_names(self):
         return ['black', 'blue', 'brown', 'green', 'grey', 'orange', 'pink', 'purple', 'red', 'white', 'yellow']
 
@@ -45,20 +47,22 @@ class DataSampler(object):
         self.count += 1
         if batch_size * self.count <= self.train_data.shape[0]:
             features = self.train_data[(self.count - 1) * batch_size:batch_size * self.count]
-            labels = self.train_labels[(self.count - 1) * batch_size:batch_size * self.count]
+            #labels = self.train_labels[(self.count - 1) * batch_size:batch_size * self.count]
         else:
             features1 = self.train_data[(self.count - 1) * batch_size:]
-            labels1 = self.train_labels[(self.count - 1) * batch_size:]
+            #labels1 = self.train_labels[(self.count - 1) * batch_size:]
             f2 = self.train_data[:batch_size * self.count - self.train_data.shape[0]]
-            l2 = self.train_labels[:batch_size * self.count - self.train_data.shape[0]]
+            #l2 = self.train_labels[:batch_size * self.count - self.train_data.shape[0]]
             features = np.vstack((features1, f2))
-            labels = np.append(labels1, l2)
+            #labels = np.append(labels1, l2)
             self.count = 0
 
-        if label:
-            return features, labels
-        else:
-            return features
+        return features
+
+        # if label:
+        #     return features, labels
+        # else:
+        #     return features
 
     def test(self):
         return self.test_data, self.test_labels
