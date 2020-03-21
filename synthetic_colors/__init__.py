@@ -274,6 +274,7 @@ class DataSampler(object):
                                      [r, g, b],
                                      [r, g, b], [r, g, b], [r, g, b], [r, g, b], [r, g, b], [r, g, b], [r, g, b],
                                      [r, g, b]]])
+                    ima = np.reshape(ima, 32 * 32 * 3)
                     if first:
                         self.train_data = ima
                         first = False
