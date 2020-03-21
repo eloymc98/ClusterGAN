@@ -139,6 +139,8 @@ class clusGAN(object):
             train_size = 60000
         elif args.data == 'colors_new':
             train_size = 2747
+        elif args.data == 'synthetic_colors':
+            train_size = 1330
 
         for t in range(0, num_batches):
             d_iters = 5
@@ -152,9 +154,9 @@ class clusGAN(object):
             # Then we only optimize generator loss for 1 iteration
             bz = self.z_sampler(batch_size, self.z_dim, self.sampler, self.num_classes, self.n_cat)
             self.sess.run(self.g_adam, feed_dict={self.z: bz})
-            if (t + 1) % floor(train_size / (batch_size * d_iters)) == 0:
-                print(f'Epoch {epoch}')
-                epoch += 1
+            # if (t + 1) % floor(train_size / (batch_size * d_iters)) == 0:
+            #     print(f'Epoch {epoch}')
+            #     epoch += 1
 
             if (t + 1) % 100 == 0:
                 # Every 100 iter, print d and g losses
