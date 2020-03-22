@@ -149,13 +149,15 @@ def load_termisk_reduced():
     for split in split_paths:
         subdir = path + '/' + split
         print(subdir)
-        if os.path.isdir(subdir) and split == 'test':
+        if os.path.isdir(subdir):
             classes = os.listdir(subdir)
             for label in classes:
                 class_path = subdir + '/' + label
                 if label in ('5', '6', '8', '10', '11'):
                     print(label)
+                    count = 0
                     for image in os.listdir(class_path):
+
                         if os.path.isfile(class_path + '/' + image) and image.endswith('.png'):
                             if label == '8':
                                 index_label = 2
@@ -163,13 +165,14 @@ def load_termisk_reduced():
                                 index_label = int(label) - 7
                             else:
                                 index_label = int(label) - 5
-                            try:
-                                img = cv2.imread(class_path + '/' + image, cv2.IMREAD_GRAYSCALE)
-                                # img = cv2.resize(img, (28, 28), interpolation=cv2.INTER_AREA)
-                                img = np.reshape(img, 96 * 96)
-                                img = img / 255
-                            except ValueError:
-                                print(class_path + '/' + image)
+
+                            img = cv2.imread(class_path + '/' + image, cv2.IMREAD_GRAYSCALE)
+                            count += 1
+                            if count % 100 == 0:
+                                print(count)
+                            # img = cv2.resize(img, (28, 28), interpolation=cv2.INTER_AREA)
+                            img = np.reshape(img, 96 * 96)
+                            img = img / 255
                             labels.append(index_label)
                             if first:
                                 dataset = img

@@ -14,7 +14,6 @@ class DataSampler(object):
         # self.df = pd.read_csv('/content/ClusterGAN/colors/dataset.csv')
         # np array de shape (len(dataset), 32*32*3)
         first = True
-        count = 0
         for i in range(11):
             r = i * 0.1
             for j in range(11):
@@ -280,10 +279,6 @@ class DataSampler(object):
                         first = False
                     else:
                         self.train_data = np.vstack((self.train_data, ima))
-
-                    count += 1
-                    if count % 100 == 0:
-                        print(count)
 
         np.random.shuffle(self.train_data)
 
