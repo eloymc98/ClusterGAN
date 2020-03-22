@@ -281,6 +281,8 @@ class clusGAN(object):
                 batch_size = 1000
             elif self.num_classes == 11:
                 batch_size = 1001
+            elif self.num_classes == 9:
+                batch_size = 1008
             else:
                 batch_size = 1000
             label_index = np.tile(np.arange(self.num_classes), int(np.ceil(batch_size * 1.0 / self.num_classes)))
