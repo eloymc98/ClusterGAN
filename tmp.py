@@ -91,129 +91,129 @@
 # print(batch)
 
 
-# import pandas as pd
-# import numpy as np
-# import cv2
-#
-# # test: 95 imagenes por clase
-#
-# df = pd.read_csv('termisk/dataset.csv')
-#
-# df1 = df['label'] == 0
-# df2 = df['label'] == 1
-# df3 = df['label'] == 2
-# df4 = df['label'] == 4
-# df5 = df['label'] == 5
-# df6 = df['label'] == 6
-# df7 = df['label'] == 7
-# df8 = df['label'] == 8
-# df9 = df['label'] == 9
-# df10 = df['label'] == 10
-# df11 = df['label'] == 11
-# df12 = df['label'] == 12
-# df13 = df['label'] == 13
-# df14 = df['label'] == 14
-# df15 = df['label'] == 15
-# df16 = df['label'] == 16
-# print(f'Total images: {len(df)}')
-# print(f'Label 0 size: {len(df[df1])}')
-# print(f'Label 1 size: {len(df[df2])}')
-# print(f'Label 2 size: {len(df[df3])}')
-# print(f'Label 4 size: {len(df[df4])}')
-# print(f'Label 5 size: {len(df[df5])}')
-# print(f'Label 6 size: {len(df[df6])}')
-# print(f'Label 7 size: {len(df[df7])}')
-# print(f'Label 8 size: {len(df[df8])}')
-# print(f'Label 9 size: {len(df[df9])}')
-# print(f'Label 10 size: {len(df[df10])}')
-# print(f'Label 11 size: {len(df[df11])}')
-# print(f'Label 12 size: {len(df[df12])}')
-# print(f'Label 13 size: {len(df[df13])}')
-# print(f'Label 14 size: {len(df[df14])}')
-# print(f'Label 15 size: {len(df[df15])}')
-# print(f'Label 16 size: {len(df[df16])}')
-
-import os
-import cv2
+import pandas as pd
 import numpy as np
-from math import floor
+import cv2
 
+# test: 95 imagenes por clase
 
-def load_termisk_reduced():
-    path = "/Users/eloymarinciudad/Downloads/termisk_dataset"
-    split_paths = os.listdir(path)
-    print(split_paths)
-    labels = []
+df = pd.read_csv('termisk/dataset.csv')
 
-    first = True
-    for split in split_paths:
-        subdir = path + '/' + split
-        print(subdir)
-        if os.path.isdir(subdir):
-            classes = os.listdir(subdir)
-            for label in classes:
-                class_path = subdir + '/' + label
-                if label in ('5', '6', '8', '10', '11'):
-                    print(label)
-                    count = 0
-                    for image in os.listdir(class_path):
+df1 = df['label'] == 0
+df2 = df['label'] == 1
+df3 = df['label'] == 2
+df4 = df['label'] == 4
+df5 = df['label'] == 5
+df6 = df['label'] == 6
+df7 = df['label'] == 7
+df8 = df['label'] == 8
+df9 = df['label'] == 9
+df10 = df['label'] == 10
+df11 = df['label'] == 11
+df12 = df['label'] == 12
+df13 = df['label'] == 13
+df14 = df['label'] == 14
+df15 = df['label'] == 15
+df16 = df['label'] == 16
+print(f'Total images: {len(df)}')
+print(f'Label 0 size: {len(df[df1])}')
+print(f'Label 1 size: {len(df[df2])}')
+print(f'Label 2 size: {len(df[df3])}')
+print(f'Label 4 size: {len(df[df4])}')
+print(f'Label 5 size: {len(df[df5])}')
+print(f'Label 6 size: {len(df[df6])}')
+print(f'Label 7 size: {len(df[df7])}')
+print(f'Label 8 size: {len(df[df8])}')
+print(f'Label 9 size: {len(df[df9])}')
+print(f'Label 10 size: {len(df[df10])}')
+print(f'Label 11 size: {len(df[df11])}')
+print(f'Label 12 size: {len(df[df12])}')
+print(f'Label 13 size: {len(df[df13])}')
+print(f'Label 14 size: {len(df[df14])}')
+print(f'Label 15 size: {len(df[df15])}')
+print(f'Label 16 size: {len(df[df16])}')
 
-                        if os.path.isfile(class_path + '/' + image) and image.endswith('.png'):
-                            if label == '8':
-                                index_label = 2
-                            elif label in ('10', '11'):
-                                index_label = int(label) - 7
-                            else:
-                                index_label = int(label) - 5
-
-                            img = cv2.imread(class_path + '/' + image, cv2.IMREAD_GRAYSCALE)
-                            count += 1
-                            if count % 100 == 0:
-                                print(count)
-                            # img = cv2.resize(img, (28, 28), interpolation=cv2.INTER_AREA)
-                            img = np.reshape(img, 96 * 96)
-                            img = img / 255
-                            labels.append(index_label)
-                            if first:
-                                dataset = img
-                                first = False
-                            else:
-                                dataset = np.vstack((dataset, img))
-    labels = np.asarray(labels)
-    return dataset, labels
-
-
-import random
-
-data, labels = load_termisk_reduced()
-# test_index = np.random.randint(low=0, high=data.shape[0], size=floor(data.shape[0] * 0.1))
-size = data.shape[0]
-test_index = random.sample(range(0, data.shape[0]), floor(size * 0.1))
-
-print(data.shape)
-print(data.shape[0])
-test_data = data[test_index]
-test_labels = labels[test_index]
-print(len(test_index))
-print(test_data.shape)
-
-data = np.delete(data, test_index, axis=0)
-labels = np.delete(labels, test_index)
-print(data.shape)
-print(labels.shape)
-print(test_index)
-
-val_index = random.sample(range(0, data.shape[0]), floor(size * 0.1))
-val_data = data[val_index]
-val_labels = labels[val_index]
-print(val_data.shape)
-
-data = np.delete(data, val_index, axis=0)
-labels = np.delete(labels, val_index)
-print(data.shape)
-print(labels.shape)
-print('-----------------------------\n')
-print(data[0])
-np.random.shuffle(data)
-print(data.shape)
-print(data[0])
+# import os
+# import cv2
+# import numpy as np
+# from math import floor
+#
+#
+# def load_termisk_reduced():
+#     path = "/Users/eloymarinciudad/Downloads/termisk_dataset"
+#     split_paths = os.listdir(path)
+#     print(split_paths)
+#     labels = []
+#
+#     first = True
+#     for split in split_paths:
+#         subdir = path + '/' + split
+#         print(subdir)
+#         if os.path.isdir(subdir):
+#             classes = os.listdir(subdir)
+#             for label in classes:
+#                 class_path = subdir + '/' + label
+#                 if label in ('5', '6', '8', '10', '11'):
+#                     print(label)
+#                     count = 0
+#                     for image in os.listdir(class_path):
+#
+#                         if os.path.isfile(class_path + '/' + image) and image.endswith('.png'):
+#                             if label == '8':
+#                                 index_label = 2
+#                             elif label in ('10', '11'):
+#                                 index_label = int(label) - 7
+#                             else:
+#                                 index_label = int(label) - 5
+#
+#                             img = cv2.imread(class_path + '/' + image, cv2.IMREAD_GRAYSCALE)
+#                             count += 1
+#                             if count % 100 == 0:
+#                                 print(count)
+#                             # img = cv2.resize(img, (28, 28), interpolation=cv2.INTER_AREA)
+#                             img = np.reshape(img, 96 * 96)
+#                             img = img / 255
+#                             labels.append(index_label)
+#                             if first:
+#                                 dataset = img
+#                                 first = False
+#                             else:
+#                                 dataset = np.vstack((dataset, img))
+#     labels = np.asarray(labels)
+#     return dataset, labels
+#
+#
+# import random
+#
+# data, labels = load_termisk_reduced()
+# # test_index = np.random.randint(low=0, high=data.shape[0], size=floor(data.shape[0] * 0.1))
+# size = data.shape[0]
+# test_index = random.sample(range(0, data.shape[0]), floor(size * 0.1))
+#
+# print(data.shape)
+# print(data.shape[0])
+# test_data = data[test_index]
+# test_labels = labels[test_index]
+# print(len(test_index))
+# print(test_data.shape)
+#
+# data = np.delete(data, test_index, axis=0)
+# labels = np.delete(labels, test_index)
+# print(data.shape)
+# print(labels.shape)
+# print(test_index)
+#
+# val_index = random.sample(range(0, data.shape[0]), floor(size * 0.1))
+# val_data = data[val_index]
+# val_labels = labels[val_index]
+# print(val_data.shape)
+#
+# data = np.delete(data, val_index, axis=0)
+# labels = np.delete(labels, val_index)
+# print(data.shape)
+# print(labels.shape)
+# print('-----------------------------\n')
+# print(data[0])
+# np.random.shuffle(data)
+# print(data.shape)
+# print(data[0])
