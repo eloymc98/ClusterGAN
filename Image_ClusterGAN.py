@@ -186,18 +186,16 @@ class clusGAN(object):
                                                    save_label=True)
                 bx = self.sess.run(self.x_, feed_dict={self.z: bz})
                 bx = xs.data2img(bx)
-                if args.data == 'synthetic_colors':
-                    import cv2
-                    print(f'SYNTHETIC! Bx: {bx.shape[0]}')
-                    for i in range(bx.shape[0]):
-                        bx[i, :, :, 0] = bx[i, :, :, 0] * 100
-                        bx[i, :, :, 1] = bx[i, :, :, 1] * 256
-                        bx[i, :, :, 2] = bx[i, :, :, 2] * 256
-                        bx[i] = cv2.cvtColor(bx[i], cv2.COLOR_LAB2RGB)
-                        if i == 0:
-                            print(bx[0, :, :, :])
-                        bx[i] = bx[i] / 255
-
+                # if args.data == 'synthetic_colors':
+                #     import cv2
+                #     print(f'SYNTHETIC! Bx: {bx.shape[0]}')
+                #     for i in range(bx.shape[0]):
+                #         bx[i, :, :, 0] = bx[i, :, :, 0] * 100
+                #         bx[i, :, :, 1] = bx[i, :, :, 1] * 256
+                #         bx[i, :, :, 2] = bx[i, :, :, 2] * 256
+                #         bx[i] = cv2.cvtColor(bx[i], cv2.COLOR_LAB2RGB)
+                #         if i == 0:
+                #             print(bx[0, :, :, :]
 
                 bx = grid_transform(bx, xs.shape)
 
