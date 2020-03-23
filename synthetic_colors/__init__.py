@@ -283,25 +283,25 @@ class DataSampler(object):
         colors = [(0, 0, 0), (255, 255, 255), (255, 0, 0), (0, 255, 0), (0, 0, 255), (255, 255, 0), (0, 255, 255),
                   (255, 0, 255), (192, 192, 192)]
         for color in colors:
-            for i in range(8):
+            for i in range(36):
                 if color[0] == 255:
-                    r = (color[0] - random.randint(0, 10)) / 255
+                    r = (color[0] - random.randint(0, 5)) / 255
                 elif color[0] == 0:
-                    r = (color[0] + random.randint(0, 10)) / 255
+                    r = (color[0] + random.randint(0, 5)) / 255
                 else:
-                    r = (color[0] + random.randint(-5, 5)) / 255
+                    r = (color[0] + random.randint(-2, 2)) / 255
                 if color[1] == 255:
-                    g = (color[1] - random.randint(0, 10)) / 255
+                    g = (color[1] - random.randint(0, 5)) / 255
                 elif color[1] == 0:
-                    g = (color[1] + random.randint(0, 10)) / 255
+                    g = (color[1] + random.randint(0, 5)) / 255
                 else:
-                    g = (color[1] + random.randint(-5, 5)) / 255
+                    g = (color[1] + random.randint(-2, 2)) / 255
                 if color[2] == 255:
-                    b = (color[2] - random.randint(0, 10)) / 255
+                    b = (color[2] - random.randint(0, 5)) / 255
                 elif color[2] == 0:
-                    b = (color[2] + random.randint(0, 10)) / 255
+                    b = (color[2] + random.randint(0, 5)) / 255
                 else:
-                    b = (color[2] + random.randint(-5, 5)) / 255
+                    b = (color[2] + random.randint(-2, 2)) / 255
 
                 ima = np.array([[[r, g, b], [r, g, b], [r, g, b], [r, g, b], [r, g, b], [r, g, b], [r, g, b],
                                  [r, g, b], [r, g, b], [r, g, b], [r, g, b], [r, g, b], [r, g, b], [r, g, b],
