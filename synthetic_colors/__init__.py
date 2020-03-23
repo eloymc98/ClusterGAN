@@ -557,9 +557,9 @@ class DataSampler(object):
                                  [r, g, b], [r, g, b], [r, g, b], [r, g, b], [r, g, b], [r, g, b], [r, g, b],
                                  [r, g, b]]], dtype=np.float32)
                 ima = cv2.cvtColor(ima, cv2.COLOR_RGB2LAB)
-                # ima[:, :, 0] = ima[:, :, 0] / 100
-                # ima[:, :, 1] = ima[:, :, 1] / 256
-                # ima[:, :, 2] = ima[:, :, 2] / 256
+                ima[:, :, 0] = ima[:, :, 0] / 100
+                ima[:, :, 1] = ima[:, :, 1] / 256
+                ima[:, :, 2] = ima[:, :, 2] / 256
                 ima = np.reshape(ima, 32 * 32 * 3)
                 if first:
                     self.train_data = ima
