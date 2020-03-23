@@ -180,7 +180,7 @@ class clusGAN(object):
                      g_loss_beta_cycle_label))
                 print(f'd_: {out_d_[0]}')
 
-            if (t + 1) % 5000 == 0:
+            if (t + 1) % 200 == 0:
                 # Every 5000 iter, save an image of a batch of x_
                 bz, labels_indexx = self.z_sampler(batch_size, self.z_dim, self.sampler, self.num_classes, self.n_cat,
                                                    save_label=True)
@@ -194,6 +194,11 @@ class clusGAN(object):
                         bx[i, :, :, 1] = bx[i, :, :, 1] * 256
                         bx[i, :, :, 2] = bx[i, :, :, 2] * 256
                         bx[i] = cv2.cvtColor(bx[i], cv2.COLOR_LAB2RGB)
+                        if i == 0:
+                            print(bx[0, :, :, :])
+                        bx[i] = bx[i] / 255
+
+
                 bx = grid_transform(bx, xs.shape)
 
                 imwrite('logs/{}/{}/{}_z{}_cyc{}_gen{}/{}.png'.format(self.data, self.model, self.sampler,
