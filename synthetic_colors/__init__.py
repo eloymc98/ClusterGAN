@@ -285,23 +285,23 @@ class DataSampler(object):
         for color in colors:
             for i in range(36):
                 if color[0] == 255:
-                    r = (color[0] - random.randint(0, 5)) / 255
+                    r = (color[0] - random.randint(0, 5))
                 elif color[0] == 0:
-                    r = (color[0] + random.randint(0, 5)) / 255
+                    r = (color[0] + random.randint(0, 5))
                 else:
-                    r = (color[0] + random.randint(-2, 2)) / 255
+                    r = (color[0] + random.randint(-2, 2))
                 if color[1] == 255:
-                    g = (color[1] - random.randint(0, 5)) / 255
+                    g = (color[1] - random.randint(0, 5))
                 elif color[1] == 0:
-                    g = (color[1] + random.randint(0, 5)) / 255
+                    g = (color[1] + random.randint(0, 5))
                 else:
-                    g = (color[1] + random.randint(-2, 2)) / 255
+                    g = (color[1] + random.randint(-2, 2))
                 if color[2] == 255:
-                    b = (color[2] - random.randint(0, 5)) / 255
+                    b = (color[2] - random.randint(0, 5))
                 elif color[2] == 0:
-                    b = (color[2] + random.randint(0, 5)) / 255
+                    b = (color[2] + random.randint(0, 5))
                 else:
-                    b = (color[2] + random.randint(-2, 2)) / 255
+                    b = (color[2] + random.randint(-2, 2))
 
                 ima = np.array([[[r, g, b], [r, g, b], [r, g, b], [r, g, b], [r, g, b], [r, g, b], [r, g, b],
                                  [r, g, b], [r, g, b], [r, g, b], [r, g, b], [r, g, b], [r, g, b], [r, g, b],
@@ -555,7 +555,10 @@ class DataSampler(object):
                                  [r, g, b], [r, g, b], [r, g, b], [r, g, b], [r, g, b], [r, g, b], [r, g, b],
                                  [r, g, b],
                                  [r, g, b], [r, g, b], [r, g, b], [r, g, b], [r, g, b], [r, g, b], [r, g, b],
-                                 [r, g, b]]])
+                                 [r, g, b]]], dtype=np.float32)
+                ima = cv2.cvtColor(ima, cv2.COLOR_RGB2LAB)
+                ima = ima / 255
+
                 ima = np.reshape(ima, 32 * 32 * 3)
                 if first:
                     self.train_data = ima
