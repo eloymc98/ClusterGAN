@@ -180,7 +180,7 @@ class clusGAN(object):
                      g_loss_beta_cycle_label))
                 print(f'd_: {out_d_[0]}')
 
-            if (t + 1) % 200 == 0:
+            if (t + 1) % 5000 == 0:
                 # Every 5000 iter, save an image of a batch of x_
                 bz, labels_indexx = self.z_sampler(batch_size, self.z_dim, self.sampler, self.num_classes, self.n_cat,
                                                    save_label=True)
@@ -430,6 +430,9 @@ class clusGAN(object):
 
         elif query.is_dir():
             return None
+
+    def encoder_to_gen(self):
+        zhats_gen, zhats_label = self.sess.run([self.z_infer_gen, self.z_infer_label], feed_dict={self.x: xtrue})
 
 
 if __name__ == '__main__':
