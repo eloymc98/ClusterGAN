@@ -446,10 +446,10 @@ class clusGAN(object):
         print(f'bx_: {bx_.shape}')
         bx_ = xs.data2img(bx_)
         bx_ = grid_transform(bx_, xs.shape)
-        imwrite('logs/{}/{}/generated.png'.format(self.data, self.model), bx_)
+        imwrite('generated.png', bx_)
         bx = xs.data2img(bx)
         bx = grid_transform(bx, xs.shape)
-        imwrite('logs/{}/{}/inferred.png'.format(self.data, self.model), bx)
+        imwrite('inferred.png', bx)
 
 
 if __name__ == '__main__':
