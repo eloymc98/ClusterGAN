@@ -437,7 +437,17 @@ class clusGAN(object):
             [self.z_infer_gen, self.z_infer_label, self.z_infer_logits], feed_dict={self.x: bx})
         print(f'Shape: {zhats_gen.shape}, z_gen:  {zhats_gen}')
         print(f'Shape: {zhats_label.shape}, z_label:  {zhats_label}')
-        z = np.hstack((zhats_gen, np.eye(self.num_classes)[zhats_label]))
+        print(f'Shape: {zhats_logits.shape}, z_logits:  {zhats_logits}')
+        bz = np.hstack((zhats_gen, np.eye(self.num_classes)[zhats_label]))
+        print(f'z.shape: {bz.shape}')
+        bx_ = self.sess.run(self.x_, feed_dict={self.z: bz})
+        print(f'bx_: {bx_.shape}')
+        bx_ = xs.data2img(bx_)
+        bx_ = grid_transform(bx_, xs.shape)
+        imwrite('logs/{}/{}/generated.png'.format(self.data, self.model), bx_)
+        bx = xs.data2img(bx)
+        bx = grid_transform(bx, xs.shape)
+        imwrite('logs/{}/{}/inferred.png'.format(self.data, self.model), bx)
 
 
 if __name__ == '__main__':
@@ -456,6 +466,7 @@ if __name__ == '__main__':
     parser.add_argument('--path', type=str, default='')
     parser.add_argument('--modes', type=str, default='False')
     parser.add_argument('--from_checkpoint', type=str, default='False')
+    parser.add_argument('--reconstruct', type=str, default='False')
 
     args = parser.parse_args()
     data = importlib.import_module(args.data)
@@ -503,5 +514,7 @@ if __name__ == '__main__':
             cl_gan.label_img(args.path, km, latent)
         elif args.modes == 'True':
             cl_gan.gen_from_all_modes()
+        elif args.reconstruct == 'True':
+            cl_gan.encoder_to_gen()
         else:
             cl_gan.recon_enc(timestamp, val=False)
