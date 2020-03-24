@@ -18,23 +18,23 @@ def load_termisk_reduced():
             for label in classes:
                 class_path = subdir + '/' + label
                 count = 0
-                if label in ('5', '6', '8', '10', '11'):
-                    for image in os.listdir(class_path):
-                        if os.path.isfile(class_path + '/' + image) and image.endswith('.png'):
-                            img = cv2.imread(class_path + '/' + image, cv2.IMREAD_GRAYSCALE)
-                            img = cv2.resize(img, (28, 28), interpolation=cv2.INTER_AREA)
-                            img = np.reshape(img, 28 * 28)
-                            img = img / 255
-                            labels.append(index_label)
-                            if first:
-                                dataset = img
-                                first = False
-                            else:
-                                dataset = np.vstack((dataset, img))
-                            count += 1
-                        if count >= 1650:
-                            break
-                    index_label += 1
+                #if label in ('5', '6', '8', '10', '11'):
+                for image in os.listdir(class_path):
+                    if os.path.isfile(class_path + '/' + image) and image.endswith('.png'):
+                        img = cv2.imread(class_path + '/' + image, cv2.IMREAD_GRAYSCALE)
+                        img = cv2.resize(img, (28, 28), interpolation=cv2.INTER_AREA)
+                        img = np.reshape(img, 28 * 28)
+                        img = img / 255
+                        labels.append(index_label)
+                        if first:
+                            dataset = img
+                            first = False
+                        else:
+                            dataset = np.vstack((dataset, img))
+                        count += 1
+                    if count >= 1650:
+                        break
+                index_label += 1
     labels = np.asarray(labels)
     return dataset, labels
 
