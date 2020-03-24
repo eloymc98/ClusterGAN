@@ -434,6 +434,7 @@ class clusGAN(object):
     def encoder_to_gen(self):
         bx, bx_labels = self.x_sampler.test()
         # solo coger unas cuantas, no las 2758 imagenes
+        bx = bx[0]
         zhats_gen, zhats_label, zhats_logits = self.sess.run(
             [self.z_infer_gen, self.z_infer_label, self.z_infer_logits], feed_dict={self.x: bx})
         print(f'Shape: {zhats_gen.shape}, z_gen:  {zhats_gen}')
