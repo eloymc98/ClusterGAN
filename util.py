@@ -5,6 +5,7 @@ import cv2
 
 def load_termisk_reduced():
     path = "/content/termisk_dataset"
+    #path = "/Users/eloymarinciudad/Downloads/termisk_dataset"
     split_paths = os.listdir(path)
     print(split_paths)
     labels = []
@@ -15,6 +16,8 @@ def load_termisk_reduced():
         print(subdir)
         if os.path.isdir(subdir):
             classes = os.listdir(subdir)
+            classes = [s for s in classes if '.' not in s]
+            print(classes)
             for label in classes:
                 class_path = subdir + '/' + label
                 count = 0
@@ -218,5 +221,4 @@ def sample_info(batch, z_dim, sampler='one_hot', num_class=10, n_cat=1, label_in
 
 
 if __name__ == '__main__':
-    l = sample_Z(10, 22, 'mul_cat', 10, 2)
-    print(l)
+    load_termisk_reduced()
