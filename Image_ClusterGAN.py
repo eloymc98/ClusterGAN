@@ -432,7 +432,12 @@ class clusGAN(object):
             return None
 
     def encoder_to_gen(self):
-        zhats_gen, zhats_label = self.sess.run([self.z_infer_gen, self.z_infer_label], feed_dict={self.x: xtrue})
+        bx, bx_labels = self.x_sampler.test()
+        zhats_gen, zhats_label, zhats_logits = self.sess.run(
+            [self.z_infer_gen, self.z_infer_label, self.z_infer_logits], feed_dict={self.x: bx})
+        print(f'Shape: {zhats_gen.shape}, z_gen:  {zhats_gen}')
+        print(f'Shape: {zhats_label.shape}, z_label:  {zhats_label}')
+        z = np.hstack((zhats_gen, np.eye(self.num_classes)[zhats_label]))
 
 
 if __name__ == '__main__':
