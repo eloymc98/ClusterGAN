@@ -520,18 +520,19 @@ if __name__ == '__main__':
             bx, bx_labels = xs.test()
             bx = bx[0:100]
             cl_gan.encoder_to_gen(bx)
-            import cv2
-            img = cv2.imread('/content/termisk_dataset/test/2/323817_30_0_0.png', cv2.IMREAD_GRAYSCALE)
-            img = cv2.resize(img, (28, 28), interpolation=cv2.INTER_AREA)
-            img = np.reshape(img, 28 * 28)
-            img = img / 255
-            bx = img
-            img2 = cv2.imread('/content/termisk_dataset/test/1/51045_270_0_0.png', cv2.IMREAD_GRAYSCALE)
-            img2 = cv2.resize(img2, (28, 28), interpolation=cv2.INTER_AREA)
-            img2 = np.reshape(img2, 28 * 28)
-            img2 = img2 / 255
-            bx = np.vstack((bx, img2))
-            cl_gan.encoder_to_gen(bx)
+            if args.data == 'termisk':
+                import cv2
+                img = cv2.imread('/content/termisk_dataset/test/2/323817_30_0_0.png', cv2.IMREAD_GRAYSCALE)
+                img = cv2.resize(img, (28, 28), interpolation=cv2.INTER_AREA)
+                img = np.reshape(img, 28 * 28)
+                img = img / 255
+                bx = img
+                img2 = cv2.imread('/content/termisk_dataset/test/1/51045_270_0_0.png', cv2.IMREAD_GRAYSCALE)
+                img2 = cv2.resize(img2, (28, 28), interpolation=cv2.INTER_AREA)
+                img2 = np.reshape(img2, 28 * 28)
+                img2 = img2 / 255
+                bx = np.vstack((bx, img2))
+                cl_gan.encoder_to_gen(bx)
 
         else:
             cl_gan.recon_enc(timestamp, val=False)
