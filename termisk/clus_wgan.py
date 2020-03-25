@@ -115,6 +115,9 @@ class Generator(object):
                 activation_fn=tf.sigmoid
             )
             print(f'Generator conv2 before: {conv2.shape}')
+            # shape: (bs, 28, 28, 1)
+            # Para entrenar con imagenes más grandes, añadir más conv!!!
+            
             conv2 = tf.reshape(conv2, tf.stack([bs, self.x_dim]))
             print(f'Generator conv2 after: {conv2.shape}')
             return conv2
