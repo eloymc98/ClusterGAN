@@ -21,12 +21,12 @@ def load_termisk_reduced():
             for label in classes:
                 class_path = subdir + '/' + label
                 count = 0
-                if label not in ('17', '3'):
+                if label not in ('17', '3', '0', '1', '2', '4', '7', '9', '12', '13', '14', '16'):
                     for image in os.listdir(class_path):
                         if os.path.isfile(class_path + '/' + image) and image.endswith('.png'):
                             img = cv2.imread(class_path + '/' + image, cv2.IMREAD_GRAYSCALE)
-                            img = cv2.resize(img, (28, 28), interpolation=cv2.INTER_AREA)
-                            img = np.reshape(img, 28 * 28)
+                            img = cv2.resize(img, (64, 64), interpolation=cv2.INTER_AREA)
+                            img = np.reshape(img, 64 * 64)
                             img = img / 255
                             labels.append(index_label)
                             if first:
