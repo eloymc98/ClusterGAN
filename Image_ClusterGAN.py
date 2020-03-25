@@ -513,7 +513,9 @@ if __name__ == '__main__':
 
         if args.label == 'True':
             print('Labeling query image...')
-            km, latent = cl_gan.recon_enc(timestamp, val=False)
+            # km, latent = cl_gan.recon_enc(timestamp, val=False)
+            km = None
+            latent = None
             cl_gan.label_img(args.path, km, latent)
         elif args.modes == 'True':
             cl_gan.gen_from_all_modes()
