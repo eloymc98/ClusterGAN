@@ -22,7 +22,11 @@ class Discriminator(object):
                 vs.reuse_variables()
             bs = tf.shape(x)[0]
             # Reshape to 3d
+            print(f'Discriminator x before: {x.shape}')
+
             x = tf.reshape(x, [bs, 28, 28, 1])
+            print(f'Discriminator x after: {x.shape}')
+
             # output = conv2d(input, num_outputs, kernel_size, stride)
             # tf.indetity -> Return a tensor with the same shape and contents as input
             conv1 = tc.layers.convolution2d(
@@ -31,13 +35,17 @@ class Discriminator(object):
                 activation_fn=tf.identity
             )
             conv1 = leaky_relu(conv1)
+            print(f'Discriminator conv1: {conv1.shape}')
+
             conv2 = tc.layers.convolution2d(
                 conv1, 128, [4, 4], [2, 2],
                 weights_initializer=tf.random_normal_initializer(stddev=0.02),
                 activation_fn=tf.identity
             )
             conv2 = leaky_relu(conv2)
+            print(f'Discriminator conv2 before: {conv2.shape}')
             conv2 = tcl.flatten(conv2)
+            print(f'Discriminator conv2 after: {conv2.shape}')
             # Flatten conv2 output to use it as input for fc.
 
             # fc = fully_connected(input, num_outputs)
@@ -47,7 +55,9 @@ class Discriminator(object):
                 activation_fn=tf.identity
             )
             fc1 = leaky_relu(fc1)
+            print(f'Discriminator fc1: {fc1.shape}')
             fc2 = tc.layers.fully_connected(fc1, 1, activation_fn=tf.identity)
+            print(f'Discriminator fc2: {fc2.shape}')
             return fc2
 
     @property
@@ -64,6 +74,9 @@ class Generator(object):
     def __call__(self, z):
         with tf.variable_scope(self.name) as vs:
             bs = tf.shape(z)[0]
+            print(f'Generator bs : {bs}')
+            print(f'Generator z: {z.shape}')
+
             fc1 = tc.layers.fully_connected(
                 z, 1024,
                 weights_initializer=tf.random_normal_initializer(stddev=0.02),
@@ -72,15 +85,19 @@ class Generator(object):
             )
             fc1 = tc.layers.batch_norm(fc1)
             fc1 = tf.nn.relu(fc1)
+            print(f'Generator fc1: {fc1.shape}')
             fc2 = tc.layers.fully_connected(
                 fc1, 7 * 7 * 128,
                 weights_initializer=tf.random_normal_initializer(stddev=0.02),
                 weights_regularizer=tc.layers.l2_regularizer(2.5e-5),
                 activation_fn=tf.identity
             )
+            print(f'Generator fc2 before: {fc2.shape}')
             fc2 = tf.reshape(fc2, tf.stack([bs, 7, 7, 128]))
             fc2 = tc.layers.batch_norm(fc2)
             fc2 = tf.nn.relu(fc2)
+            print(f'Generator fc2 after: {fc2.shape}')
+
             conv1 = tc.layers.convolution2d_transpose(
                 fc2, 64, [4, 4], [2, 2],
                 weights_initializer=tf.random_normal_initializer(stddev=0.02),
@@ -89,13 +106,17 @@ class Generator(object):
             )
             conv1 = tc.layers.batch_norm(conv1)
             conv1 = tf.nn.relu(conv1)
+            print(f'Generator conv1: {conv1.shape}')
+
             conv2 = tc.layers.convolution2d_transpose(
                 conv1, 1, [4, 4], [2, 2],
                 weights_initializer=tf.random_normal_initializer(stddev=0.02),
                 weights_regularizer=tc.layers.l2_regularizer(2.5e-5),
                 activation_fn=tf.sigmoid
             )
+            print(f'Generator conv2 before: {conv2.shape}')
             conv2 = tf.reshape(conv2, tf.stack([bs, self.x_dim]))
+            print(f'Generator conv2 after: {conv2.shape}')
             return conv2
 
     @property
@@ -115,7 +136,9 @@ class Encoder(object):
             if reuse:
                 vs.reuse_variables()
             bs = tf.shape(x)[0]
+            print(f'Encoder x before: {x.shape}')
             x = tf.reshape(x, [bs, 28, 28, 1])
+            print(f'Encoder x after: {x.shape}')
             conv1 = tc.layers.convolution2d(
                 x, 64, [4, 4], [2, 2],
                 weights_initializer=tf.random_normal_initializer(stddev=0.02),
@@ -123,6 +146,7 @@ class Encoder(object):
                 activation_fn=tf.identity
             )
             conv1 = leaky_relu(conv1)
+            print(f'Encoder conv1: {conv1.shape}')
             conv2 = tc.layers.convolution2d(
                 conv1, 128, [4, 4], [2, 2],
                 weights_initializer=tf.random_normal_initializer(stddev=0.02),
@@ -130,7 +154,9 @@ class Encoder(object):
                 activation_fn=tf.identity
             )
             conv2 = leaky_relu(conv2)
+            print(f'Encoder conv2 before: {conv2.shape}')
             conv2 = tcl.flatten(conv2)
+            print(f'Encoder conv2 after: {conv2.shape}')
             fc1 = tc.layers.fully_connected(
                 conv2, 1024,
                 weights_initializer=tf.random_normal_initializer(stddev=0.02),
@@ -138,7 +164,9 @@ class Encoder(object):
                 activation_fn=tf.identity
             )
             fc1 = leaky_relu(fc1)
+            print(f'Encoder fc1: {fc1.shape}')
             fc2 = tc.layers.fully_connected(fc1, self.z_dim, activation_fn=tf.identity)
+            print(f'Encoder fc2: {fc2.shape}')
             logits = fc2[:, self.dim_gen:]
             y = tf.nn.softmax(logits)
             return fc2[:, 0:self.dim_gen], y, logits
