@@ -560,6 +560,7 @@ class DataSampler(object):
                 # ima[:, :, 0] = ima[:, :, 0] / 100
                 # ima[:, :, 1] = ima[:, :, 1] / 256
                 # ima[:, :, 2] = ima[:, :, 2] / 256
+                ima = ima / 255
                 ima = np.reshape(ima, 32 * 32 * 3)
                 if first:
                     self.train_data = ima
