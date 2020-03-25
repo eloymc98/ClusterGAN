@@ -431,10 +431,10 @@ class clusGAN(object):
         elif query.is_dir():
             return None
 
-    def encoder_to_gen(self):
-        bx, bx_labels = self.x_sampler.test()
+    def encoder_to_gen(self, bx):
+        # bx, bx_labels = self.x_sampler.test()
         # solo coger unas cuantas, no las 2758 imagenes
-        bx = bx[0:100]
+        # bx = bx[0:100]
         zhats_gen, zhats_label, zhats_logits = self.sess.run(
             [self.z_infer_gen, self.z_infer_label, self.z_infer_logits], feed_dict={self.x: bx})
         print(f'Shape: {zhats_gen.shape}, z_gen:  {zhats_gen}')
@@ -446,10 +446,10 @@ class clusGAN(object):
         print(f'bx_: {bx_.shape}')
         bx_ = xs.data2img(bx_)
         bx_ = grid_transform(bx_, xs.shape)
-        imwrite('generated.png', bx_)
+        imwrite(f'generated{bx[0,0,0,0]}.png', bx_)
         bx = xs.data2img(bx)
         bx = grid_transform(bx, xs.shape)
-        imwrite('inferred.png', bx)
+        imwrite(f'inferred{bx[0,0,0,0]}.png', bx)
 
 
 if __name__ == '__main__':
@@ -517,6 +517,21 @@ if __name__ == '__main__':
         elif args.modes == 'True':
             cl_gan.gen_from_all_modes()
         elif args.reconstruct == 'True':
-            cl_gan.encoder_to_gen()
+            bx, bx_labels = xs.test()
+            bx = bx[0:100]
+            cl_gan.encoder_to_gen(bx)
+            import cv2
+            img = cv2.imread('/content/termisk_dataset/test/2/323817_30_0_0.png', cv2.IMREAD_GRAYSCALE)
+            img = cv2.resize(img, (28, 28), interpolation=cv2.INTER_AREA)
+            img = np.reshape(img, 28 * 28)
+            img = img / 255
+            bx = img
+            img2 = cv2.imread('/content/termisk_dataset/test/1/51045_270_0_0.png', cv2.IMREAD_GRAYSCALE)
+            img2 = cv2.resize(img2, (28, 28), interpolation=cv2.INTER_AREA)
+            img2 = np.reshape(img2, 28 * 28)
+            img2 = img2 / 255
+            bx = np.vstack((bx, img2))
+            cl_gan.encoder_to_gen(bx)
+
         else:
             cl_gan.recon_enc(timestamp, val=False)
