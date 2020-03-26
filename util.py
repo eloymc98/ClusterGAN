@@ -5,6 +5,7 @@ from sklearn.feature_extraction import image
 import random
 import csv
 
+
 def load_termisk_reduced():
     path = "/content/termisk_dataset"
     # path = "/Users/eloymarinciudad/Downloads/termisk_dataset"
@@ -67,11 +68,16 @@ def load_colors_new():
                     mid_patches = patches[int(len(patches) / 2 - 500): int(len(patches) / 2 + 500)]
                     patch_index = random.randrange(len(mid_patches))
                     patch = mid_patches[patch_index]
+                    patch = cv2.cvtColor(patch, cv2.COLOR_RGB2LAB)
+                    patch[:, :, 0] = patch[:, :, 0] / 100
+                    patch[:, :, 1] = (patch[:, :, 1] + 128)/ 255
+                    patch[:, :, 2] = (patch[:, :, 2] + 128) / 255
                     img = np.reshape(patch, 32 * 32 * 3)
-                    img = img / 255
+                    # img = img / 255
                     labels.append(index_label)
                     # path, patch_index
-                    writer.writerow([subdir_class + '/' + imagen, patch_index + len(patches[:int(len(patches)/2 - 500)])])
+                    writer.writerow(
+                        [subdir_class + '/' + imagen, patch_index + len(patches[:int(len(patches) / 2 - 500)])])
                     if first:
                         dataset = img
                         first = False

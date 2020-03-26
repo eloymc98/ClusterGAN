@@ -186,16 +186,15 @@ class clusGAN(object):
                                                    save_label=True)
                 bx = self.sess.run(self.x_, feed_dict={self.z: bz})
                 bx = xs.data2img(bx)
-                # if args.data == 'synthetic_colors':
-                #     import cv2
-                #     print(f'SYNTHETIC! Bx: {bx.shape[0]}')
-                #     for i in range(bx.shape[0]):
-                #         bx[i, :, :, 0] = bx[i, :, :, 0] * 100
-                #         bx[i, :, :, 1] = bx[i, :, :, 1] * 256
-                #         bx[i, :, :, 2] = bx[i, :, :, 2] * 256
-                #         bx[i] = cv2.cvtColor(bx[i], cv2.COLOR_LAB2RGB)
-                #         if i == 0:
-                #             print(bx[0, :, :, :]
+                if 'colors' in args.data:
+                    import cv2
+                    print(f'CIE-LAB! Bx: {bx.shape[0]}')
+                    for i in range(bx.shape[0]):
+                        bx[i, :, :, 0] = bx[i, :, :, 0] * 100
+                        bx[i, :, :, 1] = bx[i, :, :, 1] * 255 - 128
+                        bx[i, :, :, 2] = bx[i, :, :, 2] * 255 - 128
+                        bx[i] = cv2.cvtColor(bx[i], cv2.COLOR_LAB2RGB)
+                        bx[i] = bx[i] / 255
 
                 bx = grid_transform(bx, xs.shape)
 
@@ -446,7 +445,7 @@ class clusGAN(object):
         print(f'bx_: {bx_.shape}')
         bx_ = xs.data2img(bx_)
         bx_ = grid_transform(bx_, xs.shape)
-        num = np.random.randint(0,1000)
+        num = np.random.randint(0, 1000)
         imwrite(f'generated{num}.png', bx_)
         bx = xs.data2img(bx)
         bx = grid_transform(bx, xs.shape)
@@ -525,6 +524,7 @@ if __name__ == '__main__':
             cl_gan.encoder_to_gen(bx)
             if args.data == 'termisk':
                 import cv2
+
                 img = cv2.imread('/content/termisk_dataset/test/2/323817_30_0_0.png', cv2.IMREAD_GRAYSCALE)
                 img = cv2.resize(img, (28, 28), interpolation=cv2.INTER_AREA)
                 img = np.reshape(img, 28 * 28)

@@ -8,7 +8,7 @@ from util import load_colors_new
 
 class DataSampler(object):
     def __init__(self):
-        self.shape = [128, 128, 3]
+        self.shape = [32, 32, 3]
         self.count = 0
         self.dataset_path = '/content/ClusterGAN/colors_new'
         # self.df = pd.read_csv('/content/ClusterGAN/colors/dataset.csv')
