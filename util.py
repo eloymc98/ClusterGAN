@@ -79,6 +79,7 @@ def load_colors_new():
                         dataset = np.vstack((dataset, img))
             index_label += 1
     labels = np.asarray(labels)
+    logs_file.close()
     return dataset, labels
 
 
