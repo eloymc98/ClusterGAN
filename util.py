@@ -69,9 +69,10 @@ def load_colors_new():
                     patch_index = random.randrange(len(mid_patches))
                     patch = mid_patches[patch_index]
                     patch = cv2.cvtColor(patch, cv2.COLOR_RGB2LAB)
-                    patch[:, :, 0] = patch[:, :, 0] / 100
-                    patch[:, :, 1] = (patch[:, :, 1] + 128)/ 255
-                    patch[:, :, 2] = (patch[:, :, 2] + 128) / 255
+                    # patch[:, :, 0] = patch[:, :, 0] / 100
+                    # patch[:, :, 1] = (patch[:, :, 1] + 128)/ 255
+                    # patch[:, :, 2] = (patch[:, :, 2] + 128) / 255
+                    patch = patch / 255
                     img = np.reshape(patch, 32 * 32 * 3)
                     # img = img / 255
                     labels.append(index_label)

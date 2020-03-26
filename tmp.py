@@ -222,19 +222,28 @@
 from sklearn.feature_extraction import image
 import cv2
 import random
+import numpy as np
 
 ima = cv2.imread('/Users/eloymarinciudad/Downloads/colors_new_original/orange/00000015.jpg')
+print(ima.dtype)
 
 cv2.imwrite('ima.jpg', ima)
 ima = ima[:, :, [2, 1, 0]]
 patches = image.extract_patches_2d(ima, (32, 32))
-print(len(patches))
-print(type(patches))
-print(patches.shape)
-mid_patches = patches[int(len(patches)/2 - 500): int(len(patches)/2 + 500)]
+mid_patches = patches[int(len(patches) / 2 - 500): int(len(patches) / 2 + 500)]
 # patch = random.choice(mid_patches)
 random_index = random.randrange(len(mid_patches))
 patch = mid_patches[random_index]
-patch = patch[:, :, [2, 1, 0]]
-print(random_index + len(patches[:int(len(patches)/2 - 500)]))
-cv2.imwrite('patch.jpg', patch)
+patch_bgr = patch[:, :, [2, 1, 0]]
+cv2.imwrite('patch.jpg', patch_bgr)
+print(patch_bgr.dtype)
+patch_lab = cv2.cvtColor(patch, cv2.COLOR_RGB2LAB)
+print(patch_lab.dtype)
+print(max(np.reshape(patch_lab, 32 * 32 * 3)))
+print(min(np.reshape(patch_lab, 32 * 32 * 3)))
+patch_lab_norm = patch_lab / 255
+print(patch_lab_norm.dtype)
+cv2.imwrite('patch_lab-norm.jpg', patch_lab_norm * 255)
+
+bgr_norm = cv2.cvtColor(patch_lab_nor, cv2.COLOR_LAB2BGR)
+cv2.imwrite('bgr-norm.jpg', bgr_norm)

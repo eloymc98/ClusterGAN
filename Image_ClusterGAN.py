@@ -190,10 +190,7 @@ class clusGAN(object):
                     import cv2
                     print(f'CIE-LAB! Bx: {bx.shape[0]}')
                     for i in range(bx.shape[0]):
-                        bx[i, :, :, 0] = bx[i, :, :, 0] * 100
-                        bx[i, :, :, 1] = bx[i, :, :, 1] * 255 - 128
-                        bx[i, :, :, 2] = bx[i, :, :, 2] * 255 - 128
-                        bx[i] = cv2.cvtColor(bx[i], cv2.COLOR_LAB2RGB)
+                        bx[i] = cv2.cvtColor((bx[i] * 255).astype(np.uint8), cv2.COLOR_LAB2RGB)
                         bx[i] = bx[i] / 255
 
                 bx = grid_transform(bx, xs.shape)
