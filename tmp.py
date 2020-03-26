@@ -91,47 +91,47 @@
 # print(batch)
 
 
-import pandas as pd
-import numpy as np
-import cv2
-
-# test: 95 imagenes por clase
-
-df = pd.read_csv('termisk/dataset.csv')
-
-df1 = df['label'] == 0
-df2 = df['label'] == 1
-df3 = df['label'] == 2
-df4 = df['label'] == 4
-df5 = df['label'] == 5
-df6 = df['label'] == 6
-df7 = df['label'] == 7
-df8 = df['label'] == 8
-df9 = df['label'] == 9
-df10 = df['label'] == 10
-df11 = df['label'] == 11
-df12 = df['label'] == 12
-df13 = df['label'] == 13
-df14 = df['label'] == 14
-df15 = df['label'] == 15
-df16 = df['label'] == 16
-print(f'Total images: {len(df)}')
-print(f'Label 0 size: {len(df[df1])}')
-print(f'Label 1 size: {len(df[df2])}')
-print(f'Label 2 size: {len(df[df3])}')
-print(f'Label 4 size: {len(df[df4])}')
-print(f'Label 5 size: {len(df[df5])}')
-print(f'Label 6 size: {len(df[df6])}')
-print(f'Label 7 size: {len(df[df7])}')
-print(f'Label 8 size: {len(df[df8])}')
-print(f'Label 9 size: {len(df[df9])}')
-print(f'Label 10 size: {len(df[df10])}')
-print(f'Label 11 size: {len(df[df11])}')
-print(f'Label 12 size: {len(df[df12])}')
-print(f'Label 13 size: {len(df[df13])}')
-print(f'Label 14 size: {len(df[df14])}')
-print(f'Label 15 size: {len(df[df15])}')
-print(f'Label 16 size: {len(df[df16])}')
+# import pandas as pd
+# import numpy as np
+# import cv2
+#
+# # test: 95 imagenes por clase
+#
+# df = pd.read_csv('termisk/dataset.csv')
+#
+# df1 = df['label'] == 0
+# df2 = df['label'] == 1
+# df3 = df['label'] == 2
+# df4 = df['label'] == 4
+# df5 = df['label'] == 5
+# df6 = df['label'] == 6
+# df7 = df['label'] == 7
+# df8 = df['label'] == 8
+# df9 = df['label'] == 9
+# df10 = df['label'] == 10
+# df11 = df['label'] == 11
+# df12 = df['label'] == 12
+# df13 = df['label'] == 13
+# df14 = df['label'] == 14
+# df15 = df['label'] == 15
+# df16 = df['label'] == 16
+# print(f'Total images: {len(df)}')
+# print(f'Label 0 size: {len(df[df1])}')
+# print(f'Label 1 size: {len(df[df2])}')
+# print(f'Label 2 size: {len(df[df3])}')
+# print(f'Label 4 size: {len(df[df4])}')
+# print(f'Label 5 size: {len(df[df5])}')
+# print(f'Label 6 size: {len(df[df6])}')
+# print(f'Label 7 size: {len(df[df7])}')
+# print(f'Label 8 size: {len(df[df8])}')
+# print(f'Label 9 size: {len(df[df9])}')
+# print(f'Label 10 size: {len(df[df10])}')
+# print(f'Label 11 size: {len(df[df11])}')
+# print(f'Label 12 size: {len(df[df12])}')
+# print(f'Label 13 size: {len(df[df13])}')
+# print(f'Label 14 size: {len(df[df14])}')
+# print(f'Label 15 size: {len(df[df15])}')
+# print(f'Label 16 size: {len(df[df16])}')
 
 # import os
 # import cv2
@@ -217,3 +217,24 @@ print(f'Label 16 size: {len(df[df16])}')
 # np.random.shuffle(data)
 # print(data.shape)
 # print(data[0])
+
+
+from sklearn.feature_extraction import image
+import cv2
+import random
+
+ima = cv2.imread('/Users/eloymarinciudad/Downloads/colors_new_original/orange/00000015.jpg')
+
+cv2.imwrite('ima.jpg', ima)
+ima = ima[:, :, [2, 1, 0]]
+patches = image.extract_patches_2d(ima, (32, 32))
+print(len(patches))
+print(type(patches))
+print(patches.shape)
+mid_patches = patches[int(len(patches)/2 - 500): int(len(patches)/2 + 500)]
+# patch = random.choice(mid_patches)
+random_index = random.randrange(len(mid_patches))
+patch = mid_patches[random_index]
+patch = patch[:, :, [2, 1, 0]]
+print(random_index + len(patches[:int(len(patches)/2 - 500)]))
+cv2.imwrite('patch.jpg', patch)

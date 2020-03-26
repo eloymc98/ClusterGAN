@@ -1,11 +1,13 @@
 import numpy as np
 import os
 import cv2
-
+from sklearn.feature_extraction import image
+import random
+import csv
 
 def load_termisk_reduced():
     path = "/content/termisk_dataset"
-    #path = "/Users/eloymarinciudad/Downloads/termisk_dataset"
+    # path = "/Users/eloymarinciudad/Downloads/termisk_dataset"
     split_paths = os.listdir(path)
     print(split_paths)
     labels = []
@@ -45,6 +47,8 @@ def load_termisk_reduced():
 def load_colors_new():
     path = "/content/colors_new"
     classes = os.listdir(path)
+    logs_file = open('/content/ClusterGAN/color_patches_logs.csv', 'w')
+    writer = csv.writer(logs_file)
     print(classes)
     labels = []
     index_label = 0
@@ -53,15 +57,21 @@ def load_colors_new():
         subdir_class = path + '/' + color
         print(subdir_class)
         if os.path.isdir(subdir_class):
-            for image in os.listdir(subdir_class):
-                if os.path.isfile(subdir_class + '/' + image):
-                    bgr = cv2.imread(subdir_class + '/' + image)
-                    bgr = cv2.resize(bgr, (128, 128), interpolation=cv2.INTER_AREA)
+            for imagen in os.listdir(subdir_class):
+                if os.path.isfile(subdir_class + '/' + imagen):
+                    bgr = cv2.imread(subdir_class + '/' + imagen)
+                    # bgr = cv2.resize(bgr, (128, 128), interpolation=cv2.INTER_AREA)
                     # img = cv2.cvtColor(bgr, cv2.COLOR_BGR2LAB)
                     img = bgr[:, :, [2, 1, 0]]
-                    img = np.reshape(img, 128 * 128 * 3)
+                    patches = image.extract_patches_2d(img, (32, 32))
+                    mid_patches = patches[int(len(patches) / 2 - 500): int(len(patches) / 2 + 500)]
+                    patch_index = random.randrange(len(mid_patches))
+                    patch = mid_patches[patch_index]
+                    img = np.reshape(patch, 32 * 32 * 3)
                     img = img / 255
                     labels.append(index_label)
+                    # path, patch_index
+                    writer.writerow([subdir_class + '/' + imagen, patch_index + len(patches[:int(len(patches)/2 - 500)])])
                     if first:
                         dataset = img
                         first = False
