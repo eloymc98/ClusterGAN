@@ -219,29 +219,29 @@
 # print(data[0])
 
 
-from sklearn.feature_extraction import image
-import cv2
-import random
-import numpy as np
-
-ima = cv2.imread('/Users/eloymarinciudad/Downloads/colors_new_original/orange/00000015.jpg')
-print(ima.dtype)
-
-cv2.imwrite('ima.jpg', ima)
-ima = ima[:, :, [2, 1, 0]]
-# patches = image.extract_patches_2d(ima, (32, 32))
-print(ima.shape)
-# (filas, columnas, canales)
-n = ima.shape[0]
-m = ima.shape[1]
-mid_ima = ima[int(n / 2 - n / 4): int(n / 2 + n / 4), int(m / 2 - m / 4): int(m / 2 + m / 4)]
-cv2.imwrite('mid_ima.jpg', mid_ima)
-
-patches = image.extract_patches_2d(mid_ima, (32, 32))
-random_index = random.randrange(len(patches))
-patch = patches[random_index]
-patch_bgr = patch[:, :, [2, 1, 0]]
-cv2.imwrite('patch.jpg', patch_bgr)
+# from sklearn.feature_extraction import image
+# import cv2
+# import random
+# import numpy as np
+#
+# ima = cv2.imread('/Users/eloymarinciudad/Downloads/colors_new_original/orange/00000015.jpg')
+# print(ima.dtype)
+#
+# cv2.imwrite('ima.jpg', ima)
+# ima = ima[:, :, [2, 1, 0]]
+# # patches = image.extract_patches_2d(ima, (32, 32))
+# print(ima.shape)
+# # (filas, columnas, canales)
+# n = ima.shape[0]
+# m = ima.shape[1]
+# mid_ima = ima[int(n / 2 - n / 4): int(n / 2 + n / 4), int(m / 2 - m / 4): int(m / 2 + m / 4)]
+# cv2.imwrite('mid_ima.jpg', mid_ima)
+#
+# patches = image.extract_patches_2d(mid_ima, (32, 32))
+# random_index = random.randrange(len(patches))
+# patch = patches[random_index]
+# patch_bgr = patch[:, :, [2, 1, 0]]
+# cv2.imwrite('patch.jpg', patch_bgr)
 # mid_patches = patches[intx(len(patches) / 2 - 500): int(len(patches) / 2 + 500)]
 # # patch = random.choice(mid_patches)
 # random_index = random.randrange(len(mid_patches))
@@ -259,3 +259,92 @@ cv2.imwrite('patch.jpg', patch_bgr)
 #
 # bgr_norm = cv2.cvtColor(patch_lab_nor, cv2.COLOR_LAB2BGR)
 # cv2.imwrite('bgr-norm.jpg', bgr_norm)
+
+import os
+import numpy as np
+import cv2
+import shutil
+import random
+from sklearn.feature_extraction import image
+
+
+def split_colors_new_dataset():
+    path = "/Users/eloymarinciudad/Downloads/colors_new_original"
+    classes = os.listdir(path)
+
+    print(classes)
+    num_of_images = 0
+    for color in classes:
+        subdir_class = path + '/' + color
+        print(subdir_class)
+        if os.path.isdir(subdir_class):
+            for imagen in os.listdir(subdir_class):
+                shutil.copy(subdir_class + '/' + imagen,
+                            f'/Users/eloymarinciudad/Downloads/colors_new/{color}_{imagen}')
+                num_of_images += 1
+
+    dest_path = '/Users/eloymarinciudad/Downloads/colors_new'
+    imagenes = os.listdir(dest_path)
+    random_index_list = random.sample(range(num_of_images), round(num_of_images * 0.2))
+    test_list = random_index_list[:round(len(random_index_list) / 2)]
+    val_list = random_index_list[round(len(random_index_list) / 2):]
+    ima_index = 0
+    for imagen in imagenes:
+        if imagen.endswith('.jpg'):
+            color = imagen.split(sep='_')[0]
+
+            if ima_index in test_list:
+                shutil.move(dest_path + '/' + imagen, dest_path + f'/test/{color}/' + imagen)
+            elif ima_index in val_list:
+                shutil.move(dest_path + '/' + imagen, dest_path + f'/validation/{color}/' + imagen)
+            else:
+                shutil.move(dest_path + '/' + imagen, dest_path + f'/train/{color}/' + imagen)
+
+            ima_index += 1
+
+
+def colors_new_train_patches_to_npy_file():
+    path = '/Users/eloymarinciudad/Downloads/colors_new/train'
+    label = {'black': 0, 'blue': 1, 'brown': 2, 'green': 3, 'grey': 4, 'orange': 5, 'pink': 6,
+             'purple': 7, 'red': 8, 'white': 9, 'yellow': 10}
+
+    labels = []
+    first = True
+    classes = os.listdir(path)
+    for color in classes:
+        subdir_class = path + '/' + color
+        print(subdir_class)
+        if os.path.isdir(subdir_class):
+            for imagen in os.listdir(subdir_class):
+                if os.path.isfile(subdir_class + '/' + imagen) and imagen.endswith('.jpg'):
+                    bgr = cv2.imread(subdir_class + '/' + imagen)
+
+                    img = bgr[:, :, [2, 1, 0]]
+                    n = img.shape[0]
+                    m = img.shape[1]
+                    mid_ima = img[int(n / 2 - n / 4): int(n / 2 + n / 4), int(m / 2 - m / 4): int(m / 2 + m / 4)]
+                    patches = image.extract_patches_2d(mid_ima, (32, 32))
+                    random_index = random.randrange(len(patches))
+                    patch = patches[random_index]
+                    patch = cv2.cvtColor(patch, cv2.COLOR_RGB2LAB)
+                    patch = patch / 255
+                    img = np.reshape(patch, 32 * 32 * 3)
+
+                    labels.append(label[color])
+
+                    if first:
+                        dataset = img
+                        first = False
+                    else:
+                        dataset = np.vstack((dataset, img))
+    labels = np.asarray(labels)
+    np.save('colors_new_train_patches_data.npy', dataset)
+    np.save('colors_new_train_patches_labels.npy', labels)
+
+
+
+data = np.load('colors_new_train_patches_data.npy')
+labels = np.load('colors_new_train_patches_labels.npy')
+
+print(data.shape)
+print(labels.shape)

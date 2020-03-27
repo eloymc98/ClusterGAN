@@ -4,6 +4,81 @@ import cv2
 from sklearn.feature_extraction import image
 import random
 import csv
+import shutil
+
+
+def colors_new_train_patches_to_npy_file():
+    path = '/Users/eloymarinciudad/Downloads/colors_new/train'
+    label = {'black': 0, 'blue': 1, 'brown': 2, 'green': 3, 'grey': 4, 'orange': 5, 'pink': 6,
+             'purple': 7, 'red': 8, 'white': 9, 'yellow': 10}
+
+    labels = []
+    first = True
+    classes = os.listdir(path)
+    for color in classes:
+        subdir_class = path + '/' + color
+        print(subdir_class)
+        if os.path.isdir(subdir_class):
+            for imagen in os.listdir(subdir_class):
+                if os.path.isfile(subdir_class + '/' + imagen) and imagen.endswith('.jpg'):
+                    bgr = cv2.imread(subdir_class + '/' + imagen)
+
+                    img = bgr[:, :, [2, 1, 0]]
+                    n = img.shape[0]
+                    m = img.shape[1]
+                    mid_ima = img[int(n / 2 - n / 4): int(n / 2 + n / 4), int(m / 2 - m / 4): int(m / 2 + m / 4)]
+                    patches = image.extract_patches_2d(mid_ima, (32, 32))
+                    random_index = random.randrange(len(patches))
+                    patch = patches[random_index]
+                    patch = cv2.cvtColor(patch, cv2.COLOR_RGB2LAB)
+                    patch = patch / 255
+                    img = np.reshape(patch, 32 * 32 * 3)
+
+                    labels.append(label[color])
+
+                    if first:
+                        dataset = img
+                        first = False
+                    else:
+                        dataset = np.vstack((dataset, img))
+    labels = np.asarray(labels)
+    np.save('colors_new_train_patches_data.npy', dataset)
+    np.save('colors_new_train_patches_labels.npy', labels)
+
+
+def split_colors_new_dataset():
+    path = "/Users/eloymarinciudad/Downloads/colors_new_original"
+    classes = os.listdir(path)
+
+    print(classes)
+    num_of_images = 0
+    for color in classes:
+        subdir_class = path + '/' + color
+        print(subdir_class)
+        if os.path.isdir(subdir_class):
+            for imagen in os.listdir(subdir_class):
+                shutil.copy(subdir_class + '/' + imagen,
+                            f'/Users/eloymarinciudad/Downloads/colors_new/{color}_{imagen}')
+                num_of_images += 1
+
+    dest_path = '/Users/eloymarinciudad/Downloads/colors_new'
+    imagenes = os.listdir(dest_path)
+    random_index_list = random.sample(range(num_of_images), round(num_of_images * 0.2))
+    test_list = random_index_list[:round(len(random_index_list) / 2)]
+    val_list = random_index_list[round(len(random_index_list) / 2):]
+    ima_index = 0
+    for imagen in imagenes:
+        if imagen.endswith('.jpg'):
+            color = imagen.split(sep='_')[0]
+
+            if ima_index in test_list:
+                shutil.move(dest_path + '/' + imagen, dest_path + f'/test/{color}/' + imagen)
+            elif ima_index in val_list:
+                shutil.move(dest_path + '/' + imagen, dest_path + f'/validation/{color}/' + imagen)
+            else:
+                shutil.move(dest_path + '/' + imagen, dest_path + f'/train/{color}/' + imagen)
+
+            ima_index += 1
 
 
 def load_termisk_reduced():
@@ -50,6 +125,7 @@ def load_colors_new():
     classes = os.listdir(path)
     logs_file = open('/content/ClusterGAN/color_patches_logs.csv', 'w')
     writer = csv.writer(logs_file)
+    writer.writerow(['ima_path', 'patch_index'])
     print(classes)
     labels = []
     index_label = 0
@@ -85,35 +161,6 @@ def load_colors_new():
             index_label += 1
     labels = np.asarray(labels)
     logs_file.close()
-    return dataset, labels
-
-
-def load_cub():
-    path = "/content/ClusterGAN/CUB_200_2011/CUB_200_2011/images"
-    classes = os.listdir(path)
-    print(classes)
-    labels = []
-    index_label = 0
-    first = True
-    for cub_class in classes:
-        subdir_class = path + '/' + cub_class
-        print(subdir_class)
-        if os.path.isdir(subdir_class):
-            for image in os.listdir(subdir_class):
-                if os.path.isfile(subdir_class + '/' + image):
-                    bgr = cv2.imread(subdir_class + '/' + image)
-                    bgr = cv2.resize(bgr, (94, 94), interpolation=cv2.INTER_AREA)
-                    img = bgr[:, :, [2, 1, 0]]
-                    img = np.reshape(img, 94 * 94 * 3)
-                    img = img / 255
-                    labels.append(index_label)
-                    if first:
-                        dataset = img
-                        first = False
-                    else:
-                        dataset = np.vstack((dataset, img))
-            index_label += 1
-    labels = np.asarray(labels)
     return dataset, labels
 
 

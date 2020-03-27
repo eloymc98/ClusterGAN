@@ -13,23 +13,24 @@ class DataSampler(object):
         self.dataset_path = '/content/ClusterGAN/colors_new'
         # self.df = pd.read_csv('/content/ClusterGAN/colors/dataset.csv')
         # np array de shape (len(dataset), 32*32*3)
-        data, labels = load_colors_new()
-        # split into train, validation, test
-        size = data.shape[0]
-        test_index = random.sample(range(0, data.shape[0]), floor(size * 0.1))
-        self.test_data = data[test_index]
-        self.test_labels = labels[test_index]
-
-        data = np.delete(data, test_index, axis=0)
-        labels = np.delete(labels, test_index)
-
-        val_index = random.sample(range(0, data.shape[0]), floor(size * 0.1))
-        self.val_data = data[val_index]
-        self.val_labels = labels[val_index]
-
-        self.train_data = np.delete(data, val_index, axis=0)
-        self.train_labels = np.delete(labels, val_index)
-
+        # data, labels = load_colors_new()
+        # # split into train, validation, test
+        # size = data.shape[0]
+        # test_index = random.sample(range(0, data.shape[0]), floor(size * 0.1))
+        # self.test_data = data[test_index]
+        # self.test_labels = labels[test_index]
+        #
+        # data = np.delete(data, test_index, axis=0)
+        # labels = np.delete(labels, test_index)
+        #
+        # val_index = random.sample(range(0, data.shape[0]), floor(size * 0.1))
+        # self.val_data = data[val_index]
+        # self.val_labels = labels[val_index]
+        #
+        # self.train_data = np.delete(data, val_index, axis=0)
+        # self.train_labels = np.delete(labels, val_index)
+        self.train_data = np.load('/content/colors_new_train_patches_data.npy')
+        self.train_labels = np.load('/content/colors_new_train_patches_labels.npy')
         np.random.shuffle(self.train_data)
 
     def load_label_names(self):
