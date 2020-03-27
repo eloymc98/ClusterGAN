@@ -70,9 +70,10 @@ def load_colors_new():
                     patches = image.extract_patches_2d(mid_ima, (32, 32))
                     random_index = random.randrange(len(patches))
                     patch = patches[random_index]
+                    patch = cv2.cvtColor(patch, cv2.COLOR_RGB2LAB)
                     patch = patch / 255
                     img = np.reshape(patch, 32 * 32 * 3)
-                    
+
                     labels.append(index_label)
                     # path, patch_index
                     writer.writerow([subdir_class + '/' + imagen, random_index])
