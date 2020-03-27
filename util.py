@@ -64,21 +64,18 @@ def load_colors_new():
                     # bgr = cv2.resize(bgr, (128, 128), interpolation=cv2.INTER_AREA)
                     # img = cv2.cvtColor(bgr, cv2.COLOR_BGR2LAB)
                     img = bgr[:, :, [2, 1, 0]]
-                    patches = image.extract_patches_2d(img, (32, 32))
-                    mid_patches = patches[int(len(patches) / 2 - 500): int(len(patches) / 2 + 500)]
-                    patch_index = random.randrange(len(mid_patches))
-                    patch = mid_patches[patch_index]
-                    patch = cv2.cvtColor(patch, cv2.COLOR_RGB2LAB)
-                    # patch[:, :, 0] = patch[:, :, 0] / 100
-                    # patch[:, :, 1] = (patch[:, :, 1] + 128)/ 255
-                    # patch[:, :, 2] = (patch[:, :, 2] + 128) / 255
+                    n = img.shape[0]
+                    m = img.shape[1]
+                    mid_ima = img[int(n / 2 - n / 4): int(n / 2 + n / 4), int(m / 2 - m / 4): int(m / 2 + m / 4)]
+                    patches = image.extract_patches_2d(mid_ima, (32, 32))
+                    random_index = random.randrange(len(patches))
+                    patch = patches[random_index]
                     patch = patch / 255
                     img = np.reshape(patch, 32 * 32 * 3)
-                    # img = img / 255
+                    
                     labels.append(index_label)
                     # path, patch_index
-                    writer.writerow(
-                        [subdir_class + '/' + imagen, patch_index + len(patches[:int(len(patches) / 2 - 500)])])
+                    writer.writerow([subdir_class + '/' + imagen, random_index])
                     if first:
                         dataset = img
                         first = False

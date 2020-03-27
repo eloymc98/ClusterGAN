@@ -229,21 +229,33 @@ print(ima.dtype)
 
 cv2.imwrite('ima.jpg', ima)
 ima = ima[:, :, [2, 1, 0]]
-patches = image.extract_patches_2d(ima, (32, 32))
-mid_patches = patches[int(len(patches) / 2 - 500): int(len(patches) / 2 + 500)]
-# patch = random.choice(mid_patches)
-random_index = random.randrange(len(mid_patches))
-patch = mid_patches[random_index]
+# patches = image.extract_patches_2d(ima, (32, 32))
+print(ima.shape)
+# (filas, columnas, canales)
+n = ima.shape[0]
+m = ima.shape[1]
+mid_ima = ima[int(n / 2 - n / 4): int(n / 2 + n / 4), int(m / 2 - m / 4): int(m / 2 + m / 4)]
+cv2.imwrite('mid_ima.jpg', mid_ima)
+
+patches = image.extract_patches_2d(mid_ima, (32, 32))
+random_index = random.randrange(len(patches))
+patch = patches[random_index]
 patch_bgr = patch[:, :, [2, 1, 0]]
 cv2.imwrite('patch.jpg', patch_bgr)
-print(patch_bgr.dtype)
-patch_lab = cv2.cvtColor(patch, cv2.COLOR_RGB2LAB)
-print(patch_lab.dtype)
-print(max(np.reshape(patch_lab, 32 * 32 * 3)))
-print(min(np.reshape(patch_lab, 32 * 32 * 3)))
-patch_lab_norm = patch_lab / 255
-print(patch_lab_norm.dtype)
-cv2.imwrite('patch_lab-norm.jpg', patch_lab_norm * 255)
-
-bgr_norm = cv2.cvtColor(patch_lab_nor, cv2.COLOR_LAB2BGR)
-cv2.imwrite('bgr-norm.jpg', bgr_norm)
+# mid_patches = patches[intx(len(patches) / 2 - 500): int(len(patches) / 2 + 500)]
+# # patch = random.choice(mid_patches)
+# random_index = random.randrange(len(mid_patches))
+# patch = mid_patches[random_index]
+# patch_bgr = patch[:, :, [2, 1, 0]]
+# cv2.imwrite('patch.jpg', patch_bgr)
+# print(patch_bgr.dtype)
+# patch_lab = cv2.cvtColor(patch, cv2.COLOR_RGB2LAB)
+# print(patch_lab.dtype)
+# print(max(np.reshape(patch_lab, 32 * 32 * 3)))
+# print(min(np.reshape(patch_lab, 32 * 32 * 3)))
+# patch_lab_norm = patch_lab / 255
+# print(patch_lab_norm.dtype)
+# cv2.imwrite('patch_lab-norm.jpg', patch_lab_norm * 255)
+#
+# bgr_norm = cv2.cvtColor(patch_lab_nor, cv2.COLOR_LAB2BGR)
+# cv2.imwrite('bgr-norm.jpg', bgr_norm)
