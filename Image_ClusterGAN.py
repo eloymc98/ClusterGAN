@@ -18,7 +18,8 @@ import shutil
 
 logger = logging.getLogger()
 
-tf.set_random_seed(0)
+# tf.set_random_seed(0)
+tf.random.set_seed(0)
 
 
 def copytree(src, dst, symlinks=False, ignore=None):
