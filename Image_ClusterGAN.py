@@ -19,7 +19,9 @@ import shutil
 logger = logging.getLogger()
 
 tf.set_random_seed(0)
-#tf.random.set_seed(0)
+
+
+# tf.random.set_seed(0)
 
 
 def copytree(src, dst, symlinks=False, ignore=None):
@@ -299,7 +301,12 @@ class clusGAN(object):
             bz = self.z_sampler(batch_size, self.z_dim, self.sampler, num_class=self.num_classes,
                                 n_cat=self.n_cat, label_index=label_index)
             bx = self.sess.run(self.x_, feed_dict={self.z: bz})
-
+            if 'colors' in args.data:
+                import cv2
+                print(f'CIE-LAB! Bx: {bx.shape[0]}')
+                for i in range(bx.shape[0]):
+                    bx[i] = cv2.cvtColor((bx[i] * 255).astype(np.uint8), cv2.COLOR_LAB2RGB)
+                    bx[i] = bx[i] / 255
             for m in range(self.num_classes):
                 print('Generating samples from mode {} ...'.format(m))
                 mode_index = np.where(label_index == m)[0]
