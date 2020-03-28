@@ -268,41 +268,6 @@ import random
 from sklearn.feature_extraction import image
 
 
-def split_colors_new_dataset():
-    path = "/Users/eloymarinciudad/Downloads/colors_new_original"
-    classes = os.listdir(path)
-
-    print(classes)
-    num_of_images = 0
-    for color in classes:
-        subdir_class = path + '/' + color
-        print(subdir_class)
-        if os.path.isdir(subdir_class):
-            for imagen in os.listdir(subdir_class):
-                shutil.copy(subdir_class + '/' + imagen,
-                            f'/Users/eloymarinciudad/Downloads/colors_new/{color}_{imagen}')
-                num_of_images += 1
-
-    dest_path = '/Users/eloymarinciudad/Downloads/colors_new'
-    imagenes = os.listdir(dest_path)
-    random_index_list = random.sample(range(num_of_images), round(num_of_images * 0.2))
-    test_list = random_index_list[:round(len(random_index_list) / 2)]
-    val_list = random_index_list[round(len(random_index_list) / 2):]
-    ima_index = 0
-    for imagen in imagenes:
-        if imagen.endswith('.jpg'):
-            color = imagen.split(sep='_')[0]
-
-            if ima_index in test_list:
-                shutil.move(dest_path + '/' + imagen, dest_path + f'/test/{color}/' + imagen)
-            elif ima_index in val_list:
-                shutil.move(dest_path + '/' + imagen, dest_path + f'/validation/{color}/' + imagen)
-            else:
-                shutil.move(dest_path + '/' + imagen, dest_path + f'/train/{color}/' + imagen)
-
-            ima_index += 1
-
-
 def colors_new_train_patches_to_npy_file():
     path = '/Users/eloymarinciudad/Downloads/colors_new/train'
     label = {'black': 0, 'blue': 1, 'brown': 2, 'green': 3, 'grey': 4, 'orange': 5, 'pink': 6,
@@ -322,10 +287,29 @@ def colors_new_train_patches_to_npy_file():
                     img = bgr[:, :, [2, 1, 0]]
                     n = img.shape[0]
                     m = img.shape[1]
-                    mid_ima = img[int(n / 2 - n / 4): int(n / 2 + n / 4), int(m / 2 - m / 4): int(m / 2 + m / 4)]
-                    patches = image.extract_patches_2d(mid_ima, (32, 32))
+                    # mid_ima = img[int(n / 2 - n / 4): int(n / 2 + n / 4), int(m / 2 - m / 4): int(m / 2 + m / 4)]
+                    patches = image.extract_patches_2d(img, (32, 32))
                     random_index = random.randrange(len(patches))
                     patch = patches[random_index]
+
+                    g_max = max(patch[:, :, 1])
+                    g_min = max(patch[:, :, 1])
+                    b_max = max(patch[:, :, 2])
+                    b_min = max(patch[:, :, 2])
+
+                    count = 0
+                    while g_max - g_min > 10 and b_max - b_min > 10:
+                        random_index = random.randrange(len(patches))
+                        patch = patches[random_index]
+                        g_max = max(patch[:, :, 1])
+                        g_min = max(patch[:, :, 1])
+                        b_max = max(patch[:, :, 2])
+                        b_min = max(patch[:, :, 2])
+                        count += 1
+                        if count == 1000:
+                            break
+                    if count > 0:
+                        print(count)
                     patch = cv2.cvtColor(patch, cv2.COLOR_RGB2LAB)
                     patch = patch / 255
                     img = np.reshape(patch, 32 * 32 * 3)
@@ -342,9 +326,24 @@ def colors_new_train_patches_to_npy_file():
     np.save('colors_new_train_patches_labels.npy', labels)
 
 
+bgr = cv2.imread('/Users/eloymarinciudad/Downloads/colors_new/train/yellow/yellow_00000006.jpg')
 
-data = np.load('colors_new_train_patches_data.npy')
-labels = np.load('colors_new_train_patches_labels.npy')
+img = bgr[:, :, [2, 1, 0]]
+patches = image.extract_patches_2d(img, (32, 32))
+random_index = random.randrange(len(patches))
+patch = patches[random_index]
+cv2.imwrite('patch.jpg', patch[:, :, [2, 1, 0]])
+r_max = max(patch[:, :, 0].flatten())
+r_min = min(patch[:, :, 0].flatten())
+g_max = max(patch[:, :, 1].flatten())
+g_min = max(patch[:, :, 1].flatten())
+b_max = max(patch[:, :, 2].flatten())
+b_min = max(patch[:, :, 2].flatten())
 
-print(data.shape)
-print(labels.shape)
+print(f'R: {r_min} to {r_max}\n G: {g_min} to {g_max}\n B: {b_min} to {b_max}\n')
+
+# pink: varia mucho el rojo, g y b identicos
+# blue: varia mucho el rojo, g y b identicos
+# red: varia mucho el rojo, g y b identicos
+# green: varia mucho el rojo, g y b identicos
+# yellow: varia mucho el rojo, g y b identicos
