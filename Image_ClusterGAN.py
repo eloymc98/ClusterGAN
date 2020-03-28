@@ -301,17 +301,17 @@ class clusGAN(object):
             bz = self.z_sampler(batch_size, self.z_dim, self.sampler, num_class=self.num_classes,
                                 n_cat=self.n_cat, label_index=label_index)
             bx = self.sess.run(self.x_, feed_dict={self.z: bz})
-            if 'colors' in args.data:
-                import cv2
-                print(f'CIE-LAB! Bx: {bx.shape[0]}')
-                for i in range(bx.shape[0]):
-                    bx[i] = cv2.cvtColor((bx[i] * 255).astype(np.uint8), cv2.COLOR_LAB2RGB)
-                    bx[i] = bx[i] / 255
             for m in range(self.num_classes):
                 print('Generating samples from mode {} ...'.format(m))
                 mode_index = np.where(label_index == m)[0]
                 mode_bx = bx[mode_index, :]
                 mode_bx = xs.data2img(mode_bx)
+                if 'colors' in args.data:
+                    import cv2
+                    print(f'CIE-LAB! Bx: {mode_bx.shape[0]}')
+                    for i in range(mode_bx.shape[0]):
+                        mode_bx[i] = cv2.cvtColor((mode_bx[i] * 255).astype(np.uint8), cv2.COLOR_LAB2RGB)
+                        mode_bx[i] = mode_bx[i] / 255
                 mode_bx = grid_transform(mode_bx, xs.shape)
 
                 if not os.path.exists('logs/'):
