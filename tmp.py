@@ -322,12 +322,13 @@ def colors_new_train_patches_to_npy_file():
                             repeat = True
                         else:
                             repeat = False
-                        if count == 1000:
+                        if count == 10000:
                             break
 
-                    if count > 0:
-                        print(count)
-                        cv2.imwrite(f'patch_{imagen}', patch[:, :, [2, 1, 0]])
+                    if count > 5000:
+                        print(
+                            f'Count: {count}\nR: {r_min} to {r_max}\n G: {g_min} to {g_max}\n B: {b_min} to {b_max}\n')
+                        cv2.imwrite(f'test_patch/patch_{imagen}', patch[:, :, [2, 1, 0]])
                     patch = cv2.cvtColor(patch, cv2.COLOR_RGB2LAB)
                     patch = patch / 255
                     img = np.reshape(patch, 32 * 32 * 3)
@@ -344,24 +345,23 @@ def colors_new_train_patches_to_npy_file():
     np.save('colors_new_train_patches_labels.npy', labels)
 
 
-# colors_new_train_patches_to_npy_file()
+colors_new_train_patches_to_npy_file()
 
-
-bgr = cv2.imread('/Users/eloymarinciudad/Downloads/colors_new/train/blue/blue_00000007.jpg')
-
-img = bgr[:, :, [2, 1, 0]]
-patches = image.extract_patches_2d(img, (32, 32))
-random_index = random.randrange(len(patches))
-patch = patches[random_index]
-cv2.imwrite('patch.jpg', patch[:, :, [2, 1, 0]])
-r_max = max(patch[:, :, 0].flatten())
-r_min = min(patch[:, :, 0].flatten())
-g_max = max(patch[:, :, 1].flatten())
-g_min = min(patch[:, :, 1].flatten())
-b_max = max(patch[:, :, 2].flatten())
-b_min = min(patch[:, :, 2].flatten())
-
-print(f'R: {r_min} to {r_max}\n G: {g_min} to {g_max}\n B: {b_min} to {b_max}\n')
+# bgr = cv2.imread('/Users/eloymarinciudad/Downloads/colors_new/train/blue/blue_00000007.jpg')
+#
+# img = bgr[:, :, [2, 1, 0]]
+# patches = image.extract_patches_2d(img, (32, 32))
+# random_index = random.randrange(len(patches))
+# patch = patches[random_index]
+# cv2.imwrite('patch.jpg', patch[:, :, [2, 1, 0]])
+# r_max = max(patch[:, :, 0].flatten())
+# r_min = min(patch[:, :, 0].flatten())
+# g_max = max(patch[:, :, 1].flatten())
+# g_min = min(patch[:, :, 1].flatten())
+# b_max = max(patch[:, :, 2].flatten())
+# b_min = min(patch[:, :, 2].flatten())
+#
+# print(f'R: {r_min} to {r_max}\n G: {g_min} to {g_max}\n B: {b_min} to {b_max}\n')
 
 # donde hay cambio de color varia completamente, si cambia > 100 almenos dos componentes, mal
 
