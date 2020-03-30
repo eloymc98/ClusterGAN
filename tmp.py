@@ -328,8 +328,8 @@ def colors_new_train_patches_to_npy_file():
                     if count > 5000:
                         print(
                             f'Count: {count}\nR: {r_min} to {r_max}\n G: {g_min} to {g_max}\n B: {b_min} to {b_max}\n')
-                        cv2.imwrite(f'test_patch/patch_{imagen}', patch[:, :, [2, 1, 0]])
-                    patch = cv2.cvtColor(patch, cv2.COLOR_RGB2LAB)
+                        # cv2.imwrite(f'test_patch/patch_{imagen}', patch[:, :, [2, 1, 0]])
+                    # patch = cv2.cvtColor(patch, cv2.COLOR_RGB2LAB)
                     patch = patch / 255
                     img = np.reshape(patch, 32 * 32 * 3)
 
@@ -341,8 +341,8 @@ def colors_new_train_patches_to_npy_file():
                     else:
                         dataset = np.vstack((dataset, img))
     labels = np.asarray(labels)
-    np.save('colors_new_train_patches_data.npy', dataset)
-    np.save('colors_new_train_patches_labels.npy', labels)
+    np.save('colors_train_rgb_data.npy', dataset)
+    np.save('colors_train_rgb_labels.npy', labels)
 
 
 colors_new_train_patches_to_npy_file()
