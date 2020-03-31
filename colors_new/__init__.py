@@ -29,10 +29,14 @@ class DataSampler(object):
         #
         # self.train_data = np.delete(data, val_index, axis=0)
         # self.train_labels = np.delete(labels, val_index)
+
+
         # self.train_data = np.load('/content/colors_new_train_patches_data.npy')
         # self.train_labels = np.load('/content/colors_new_train_patches_labels.npy')
-        self.train_data = np.load('/content/colors_train_rgb_data.npy')
-        self.train_labels = np.load('/content/colors_train_rgb_labels.npy')
+        # self.train_data = np.load('/content/colors_train_rgb_data.npy')
+        # self.train_labels = np.load('/content/colors_train_rgb_labels.npy')
+        self.train_data = np.load('/content/colors_train_labimg_data.npy')
+        self.train_labels = np.load('/content/colors_train_labimg_labels.npy')
         np.random.shuffle(self.train_data)
 
     def load_label_names(self):
