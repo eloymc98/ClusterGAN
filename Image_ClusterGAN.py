@@ -435,6 +435,17 @@ class clusGAN(object):
         elif query.is_dir():
             return None
 
+    def label_test_images(self):
+        import csv
+        import pandas as pd
+        data, labels, df_images = self.x_sampler.test()
+        zhats_gen, zhats_label, zhats_logits = self.sess.run(
+            [self.z_infer_gen, self.z_infer_label, self.z_infer_logits], feed_dict={self.x: data})
+
+        labels = np.argmax(zhats_label, axis=1)
+        df_images['cluster'] = labels.tolist()
+        df_images.to_csv('test_clusters.csv', index=False)
+
     def encoder_to_gen(self, bx):
         # bx, bx_labels = self.x_sampler.test()
         # solo coger unas cuantas, no las 2758 imagenes
@@ -516,11 +527,13 @@ if __name__ == '__main__':
             cl_gan.load(pre_trained=False, timestamp=timestamp)
 
         if args.label == 'True':
-            print('Labeling query image...')
-            # km, latent = cl_gan.recon_enc(timestamp, val=False)
-            km = None
-            latent = None
-            cl_gan.label_img(args.path, km, latent)
+            # print('Labeling query image...')
+            # # km, latent = cl_gan.recon_enc(timestamp, val=False)
+            # km = None
+            # latent = None
+            # cl_gan.label_img(args.path, km, latent)
+            cl_gan.label_test_images()
+
         elif args.modes == 'True':
             cl_gan.gen_from_all_modes()
         elif args.reconstruct == 'True':

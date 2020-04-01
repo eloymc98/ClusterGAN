@@ -263,6 +263,7 @@
 import os
 import numpy as np
 import cv2
+import csv
 import shutil
 import random
 from sklearn.feature_extraction import image
@@ -285,56 +286,53 @@ def colors_new_train_patches_to_npy_file():
                     bgr = cv2.imread(subdir_class + '/' + imagen)
 
                     img = bgr[:, :, [2, 1, 0]]
-                    # n = img.shape[0]
-                    # m = img.shape[1]
-                    # # mid_ima = img[int(n / 2 - n / 4): int(n / 2 + n / 4), int(m / 2 - m / 4): int(m / 2 + m / 4)]
-                    # patches = image.extract_patches_2d(img, (32, 32))
-                    # random_index = random.randrange(len(patches))
-                    # patch = patches[random_index]
-                    #
-                    # r_max = max(patch[:, :, 0].flatten())
-                    # r_min = min(patch[:, :, 0].flatten())
-                    # g_max = max(patch[:, :, 1].flatten())
-                    # g_min = min(patch[:, :, 1].flatten())
-                    # b_max = max(patch[:, :, 2].flatten())
-                    # b_min = min(patch[:, :, 2].flatten())
-                    #
-                    # count = 0
-                    # repeat = False
-                    # if (r_max - r_min >= 100 and g_max - g_min >= 100) or (
-                    #         r_max - r_min >= 100 and b_max - b_min >= 100) or (
-                    #         g_max - g_min >= 100 and b_max - b_min >= 100):
-                    #     repeat = True
-                    #
-                    # while repeat:
-                    #     random_index = random.randrange(len(patches))
-                    #     patch = patches[random_index]
-                    #     r_max = max(patch[:, :, 0].flatten())
-                    #     r_min = min(patch[:, :, 0].flatten())
-                    #     g_max = max(patch[:, :, 1].flatten())
-                    #     g_min = min(patch[:, :, 1].flatten())
-                    #     b_max = max(patch[:, :, 2].flatten())
-                    #     b_min = min(patch[:, :, 2].flatten())
-                    #     count += 1
-                    #     if (r_max - r_min >= 100 and g_max - g_min >= 100) or (
-                    #             r_max - r_min >= 100 and b_max - b_min >= 100) or (
-                    #             g_max - g_min >= 100 and b_max - b_min >= 100):
-                    #         repeat = True
-                    #     else:
-                    #         repeat = False
-                    #     if count == 10000:
-                    #         break
-                    #
-                    # if count > 5000:
-                    #     print(
-                    #         f'Count: {count}\nR: {r_min} to {r_max}\n G: {g_min} to {g_max}\n B: {b_min} to {b_max}\n')
-                    #     cv2.imwrite(f'test_patch/patch_{imagen}', patch[:, :, [2, 1, 0]])
-                    # patch = cv2.cvtColor(patch, cv2.COLOR_RGB2LAB)
-                    # patch = patch / 255
-                    img = cv2.resize(img, (32, 32), interpolation=cv2.INTER_CUBIC)
-                    img = cv2.cvtColor(img, cv2.COLOR_RGB2LAB)
-                    img = img / 255
-                    img = np.reshape(img, 32 * 32 * 3)
+                    n = img.shape[0]
+                    m = img.shape[1]
+                    # mid_ima = img[int(n / 2 - n / 4): int(n / 2 + n / 4), int(m / 2 - m / 4): int(m / 2 + m / 4)]
+                    patches = image.extract_patches_2d(img, (32, 32))
+                    random_index = random.randrange(len(patches))
+                    patch = patches[random_index]
+
+                    r_max = max(patch[:, :, 0].flatten())
+                    r_min = min(patch[:, :, 0].flatten())
+                    g_max = max(patch[:, :, 1].flatten())
+                    g_min = min(patch[:, :, 1].flatten())
+                    b_max = max(patch[:, :, 2].flatten())
+                    b_min = min(patch[:, :, 2].flatten())
+
+                    count = 0
+                    repeat = False
+                    if (r_max - r_min >= 100 and g_max - g_min >= 100) or (
+                            r_max - r_min >= 100 and b_max - b_min >= 100) or (
+                            g_max - g_min >= 100 and b_max - b_min >= 100):
+                        repeat = True
+
+                    while repeat:
+                        random_index = random.randrange(len(patches))
+                        patch = patches[random_index]
+                        r_max = max(patch[:, :, 0].flatten())
+                        r_min = min(patch[:, :, 0].flatten())
+                        g_max = max(patch[:, :, 1].flatten())
+                        g_min = min(patch[:, :, 1].flatten())
+                        b_max = max(patch[:, :, 2].flatten())
+                        b_min = min(patch[:, :, 2].flatten())
+                        count += 1
+                        if (r_max - r_min >= 100 and g_max - g_min >= 100) or (
+                                r_max - r_min >= 100 and b_max - b_min >= 100) or (
+                                g_max - g_min >= 100 and b_max - b_min >= 100):
+                            repeat = True
+                        else:
+                            repeat = False
+                        if count == 10000:
+                            break
+
+                    if count > 50000:
+                        print(
+                            f'Count: {count}\nR: {r_min} to {r_max}\n G: {g_min} to {g_max}\n B: {b_min} to {b_max}\n')
+                        cv2.imwrite(f'test_patch/patch_{imagen}', patch[:, :, [2, 1, 0]])
+                    patch = cv2.cvtColor(patch, cv2.COLOR_RGB2LAB)
+                    patch = patch / 255
+                    img = np.reshape(patch, 32 * 32 * 3)
 
                     labels.append(label[color])
 
@@ -344,11 +342,96 @@ def colors_new_train_patches_to_npy_file():
                     else:
                         dataset = np.vstack((dataset, img))
     labels = np.asarray(labels)
-    np.save('colors_train_labimg_data.npy', dataset)
-    np.save('colors_train_labimg_labels.npy', labels)
+    np.save('colors_new_train_patches_data.npy', dataset)
+    np.save('colors_new_train_patches_labels.npy', labels)
 
 
-colors_new_train_patches_to_npy_file()
+def colors_new_test_patches_to_npy_file():
+    path = '/Users/eloymarinciudad/Downloads/colors_new/test'
+    label = {'black': 0, 'blue': 1, 'brown': 2, 'green': 3, 'grey': 4, 'orange': 5, 'pink': 6,
+             'purple': 7, 'red': 8, 'white': 9, 'yellow': 10}
+
+    f = open('test_patches.csv', 'w')
+    writer = csv.writer(f)
+    labels = []
+    first = True
+    classes = os.listdir(path)
+    for color in classes:
+        subdir_class = path + '/' + color
+        print(subdir_class)
+        if os.path.isdir(subdir_class):
+            for imagen in os.listdir(subdir_class):
+                if os.path.isfile(subdir_class + '/' + imagen) and imagen.endswith('.jpg'):
+                    bgr = cv2.imread(subdir_class + '/' + imagen)
+
+                    img = bgr[:, :, [2, 1, 0]]
+                    patches = image.extract_patches_2d(img, (32, 32))
+                    for i in range(10):
+                        try:
+                            random_index = random.randrange(len(patches))
+                            patch = patches[random_index]
+                        except ValueError:
+                            print(imagen)
+                            continue
+
+                        r_max = max(patch[:, :, 0].flatten())
+                        r_min = min(patch[:, :, 0].flatten())
+                        g_max = max(patch[:, :, 1].flatten())
+                        g_min = min(patch[:, :, 1].flatten())
+                        b_max = max(patch[:, :, 2].flatten())
+                        b_min = min(patch[:, :, 2].flatten())
+
+                        count = 0
+                        repeat = False
+                        if (r_max - r_min >= 100 and g_max - g_min >= 100) or (
+                                r_max - r_min >= 100 and b_max - b_min >= 100) or (
+                                g_max - g_min >= 100 and b_max - b_min >= 100):
+                            repeat = True
+
+                        while repeat:
+                            random_index = random.randrange(len(patches))
+                            patch = patches[random_index]
+                            r_max = max(patch[:, :, 0].flatten())
+                            r_min = min(patch[:, :, 0].flatten())
+                            g_max = max(patch[:, :, 1].flatten())
+                            g_min = min(patch[:, :, 1].flatten())
+                            b_max = max(patch[:, :, 2].flatten())
+                            b_min = min(patch[:, :, 2].flatten())
+                            count += 1
+                            if (r_max - r_min >= 100 and g_max - g_min >= 100) or (
+                                    r_max - r_min >= 100 and b_max - b_min >= 100) or (
+                                    g_max - g_min >= 100 and b_max - b_min >= 100):
+                                repeat = True
+                            else:
+                                repeat = False
+                            if count == 10000:
+                                break
+
+                        if count > 50000:
+                            print(
+                                f'Count: {count}\nR: {r_min} to {r_max}\n G: {g_min} to {g_max}\n B: {b_min} to {b_max}\n')
+                            cv2.imwrite(f'test_patch/patch_{imagen}', patch[:, :, [2, 1, 0]])
+                        patch = cv2.cvtColor(patch, cv2.COLOR_RGB2LAB)
+                        patch = patch / 255
+                        img = np.reshape(patch, 32 * 32 * 3)
+
+                        labels.append(label[color])
+                        writer.writerow([subdir_class + '/' + imagen])
+                        if first:
+                            dataset = img
+                            first = False
+                        else:
+                            dataset = np.vstack((dataset, img))
+    labels = np.asarray(labels)
+    np.save('colors_new_test_patches_data.npy', dataset)
+    np.save('colors_new_test_patches_labels.npy', labels)
+    f.close()
+
+
+#im = cv2.imread('/Users/eloymarinciudad/Downloads/colors_new/test/brown/brown_00000365.jpg')
+# print(':)')
+
+colors_new_test_patches_to_npy_file()
 
 # bgr = cv2.imread('/Users/eloymarinciudad/Downloads/colors_new/train/blue/blue_00000007.jpg')
 #
