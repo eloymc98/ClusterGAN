@@ -444,7 +444,7 @@ class clusGAN(object):
 
         labels = np.argmax(zhats_label, axis=1)
         df_images['cluster'] = labels.tolist()
-        df_images.to_csv('test_clusters.csv', index=False)
+        df_images.to_csv('test_clusters_2.csv', index=False)
 
     def encoder_to_gen(self, bx):
         # bx, bx_labels = self.x_sampler.test()

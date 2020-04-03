@@ -38,9 +38,9 @@ class DataSampler(object):
         # self.train_data = np.load('/content/colors_train_labimg_data.npy')
         # self.train_labels = np.load('/content/colors_train_labimg_labels.npy')
 
-        self.test_data = np.load('/content/colors_new_test_patches_data.npy')
-        self.test_labels = np.load('/content/colors_new_test_patches_labels.npy')
-        self.test_img_names = pd.read_csv('/content/test_patches.csv', header=None, names=['path'])
+        self.test_data = np.load('/content/colors_new_test_patches_data_2.npy')
+        self.test_labels = np.load('/content/colors_new_test_patches_labels_2.npy')
+        self.test_img_names = pd.read_csv('/content/test_patches_2.csv', header=None, names=['path', 'patch_index'])
         np.random.shuffle(self.train_data)
 
     def load_label_names(self):

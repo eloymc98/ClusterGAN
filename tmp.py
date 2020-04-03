@@ -351,7 +351,7 @@ def colors_new_test_patches_to_npy_file():
     label = {'black': 0, 'blue': 1, 'brown': 2, 'green': 3, 'grey': 4, 'orange': 5, 'pink': 6,
              'purple': 7, 'red': 8, 'white': 9, 'yellow': 10}
 
-    f = open('test_patches.csv', 'w')
+    f = open('test_patches_2.csv', 'w')
     writer = csv.writer(f)
     labels = []
     first = True
@@ -416,15 +416,15 @@ def colors_new_test_patches_to_npy_file():
                         img = np.reshape(patch, 32 * 32 * 3)
 
                         labels.append(label[color])
-                        writer.writerow([subdir_class + '/' + imagen])
+                        writer.writerow([subdir_class + '/' + imagen, random_index])
                         if first:
                             dataset = img
                             first = False
                         else:
                             dataset = np.vstack((dataset, img))
     labels = np.asarray(labels)
-    np.save('colors_new_test_patches_data.npy', dataset)
-    np.save('colors_new_test_patches_labels.npy', labels)
+    np.save('colors_new_test_patches_data_2.npy', dataset)
+    np.save('colors_new_test_patches_labels_2.npy', labels)
     f.close()
 
 
