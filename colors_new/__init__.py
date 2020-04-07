@@ -38,7 +38,7 @@ class DataSampler(object):
         # self.train_labels = np.load('/content/colors_train_labimg_labels.npy')
 
         self.test_data = np.load('/content/colors_test_clustering_data.npy')
-        self.test_data = np.reshape(self.test_data, 32*32*3)
+        self.test_data = np.reshape(self.test_data, [self.test_data.shape[0], 32 * 32 * 3])
         self.test_labels = np.load('/content/colors_test_clustering_labels.npy')
         # self.test_img_names = pd.read_csv('/content/test_patches_2.csv', header=None, names=['path', 'patch_index'])
         np.random.shuffle(self.train_data)
