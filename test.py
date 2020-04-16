@@ -63,25 +63,36 @@ import numpy as np
 #
 #
 
-test_1 = np.load('colors_test_clustering_labels_80.npy')
-print(test_1.shape)
-test_2 = np.load('colors_test_clustering_labels_160.npy')
-print(test_2.shape)
+# test_1 = np.load('colors_test_clustering_labels_80.npy')
+# print(test_1.shape)
+# test_2 = np.load('colors_test_clustering_labels_160.npy')
+# print(test_2.shape)
+#
+# test = np.concatenate((test_1, test_2))
+# del test_1, test_2
+# test_3 = np.load('colors_test_clustering_labels_240.npy')
+# test_4 = np.load('colors_test_clustering_labels_320.npy')
+# test = np.concatenate((test, test_3))
+# del test_3
+# test = np.concatenate((test, test_4))
+# del test_4
+#
+# test_5 = np.load('colors_test_clustering_labels_400.npy')
+# test = np.concatenate((test, test_5))
+# del test_5
+# test_6 = np.load('colors_test_clustering_labels_436.npy')
+# test = np.concatenate((test, test_6))
+# del test_6
+#
+# np.save('colors_test_clustering_labels.npy', test)
 
-test = np.concatenate((test_1, test_2))
-del test_1, test_2
-test_3 = np.load('colors_test_clustering_labels_240.npy')
-test_4 = np.load('colors_test_clustering_labels_320.npy')
-test = np.concatenate((test, test_3))
-del test_3
-test = np.concatenate((test, test_4))
-del test_4
 
-test_5 = np.load('colors_test_clustering_labels_400.npy')
-test = np.concatenate((test, test_5))
-del test_5
-test_6 = np.load('colors_test_clustering_labels_436.npy')
-test = np.concatenate((test, test_6))
-del test_6
+labels_predicted = np.zeros(shape=(10))
 
-np.save('colors_test_clustering_labels.npy', test)
+dict = {0: 'hola'}
+print(dict)
+sasda = []
+for item in list(labels_predicted):
+    sasda.append(dict[item])
+
+print(sasda)
