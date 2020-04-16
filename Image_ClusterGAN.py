@@ -509,9 +509,9 @@ class clusGAN(object):
                 y_pred.append(labels_predicted_mapped[i][0])
 
         cm = confusion_matrix(true_labels_mapped, y_pred,
-                               labels=['black', 'blue', 'brown', 'green', 'grey', 'orange', 'pink', 'purple', 'red',
-                                       'white',
-                                       'yellow'])
+                              labels=['black', 'blue', 'brown', 'green', 'grey', 'orange', 'pink', 'purple', 'red',
+                                      'white',
+                                      'yellow'])
         print(cm)
 
 
@@ -532,6 +532,7 @@ if __name__ == '__main__':
     parser.add_argument('--modes', type=str, default='False')
     parser.add_argument('--from_checkpoint', type=str, default='False')
     parser.add_argument('--reconstruct', type=str, default='False')
+    parser.add_argument('--cm', type=str, default='False')
 
     args = parser.parse_args()
     data = importlib.import_module(args.data)
@@ -602,5 +603,7 @@ if __name__ == '__main__':
                 bx = np.vstack((bx, img2))
                 cl_gan.encoder_to_gen(bx)
 
+        elif args.cm == 'True':
+            cl_gan.colors_confusion_matrix()
         else:
             cl_gan.recon_enc(timestamp, val=False)
