@@ -497,7 +497,9 @@ class clusGAN(object):
 
             labels_predicted[pt_indx] = np.argmax(zhats_label, axis=1)
             print(np.argmax(zhats_label, axis=1))
-            labels_predicted_mapped.append(mode_labels[np.argmax(zhats_label, axis=1)])
+            x = np.argmax(zhats_label, axis=1)
+            for value in list(x):
+                labels_predicted_mapped.append(mode_labels[value])
 
         # tengo labels reales y label generadas y el mapeo correspondiente
         from sklearn.metrics import confusion_matrix
