@@ -87,12 +87,9 @@ import numpy as np
 # np.save('colors_test_clustering_labels.npy', test)
 
 
-labels_predicted = np.zeros(shape=(10))
-
-dict = {0: 'hola'}
-print(dict)
+x = np.argmax([1, 0, 0, 0], axis=0)
 sasda = []
-for item in list(labels_predicted):
-    sasda.append(dict[item])
+dict = {0: 'hla'}
+sasda.append(dict[x])
 
 print(sasda)
