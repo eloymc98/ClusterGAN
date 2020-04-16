@@ -516,6 +516,13 @@ class clusGAN(object):
                                       'white',
                                       'yellow'])
         print(cm)
+        import seaborn as sn
+        import pandas as pd
+        df_cm = pd.DataFrame(cm, range(11), range(11))
+        sn.set(font_scale=1.4)  # for label size
+        sn.heatmap(df_cm, annot=True, annot_kws={"size": 16})  # font size
+        plt.savefig("cm.png")
+
 
 
 if __name__ == '__main__':
