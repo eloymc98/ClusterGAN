@@ -508,10 +508,11 @@ class clusGAN(object):
             else:
                 y_pred.append(labels_predicted_mapped[i][0])
 
-        print(confusion_matrix(true_labels_mapped, y_pred,
+        cm = confusion_matrix(true_labels_mapped, y_pred,
                                labels=['black', 'blue', 'brown', 'green', 'grey', 'orange', 'pink', 'purple', 'red',
                                        'white',
-                                       'yellow']))
+                                       'yellow'])
+        print(cm)
 
 
 if __name__ == '__main__':
