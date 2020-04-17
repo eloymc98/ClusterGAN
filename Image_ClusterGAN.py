@@ -470,6 +470,8 @@ class clusGAN(object):
     def colors_confusion_matrix(self):
 
         import pandas as pd
+        import seaborn as sn
+
         data_recon, label_recon = self.x_sampler.test()
         # data_recon, label_recon = self.x_sampler.load_all()
         label_recon_labels = {0: 'black', 1: 'blue', 2: 'brown', 3: 'green', 4: 'grey', 5: 'orange', 6: 'pink',
@@ -506,9 +508,13 @@ class clusGAN(object):
         # hacer dataframe con columnas y_real, y_pred
         df = pd.DataFrame(columns=['true', 'pred'])
         df['true'] = true_labels_mapped
-        df['pred'] = labels_predicted
+        df['pred'] = labels_predicted.astype(np.uint8)
         print(df.head())
 
+        co_mat = pd.crosstab(df.true, df.pred)
+        sn.set(font_scale=1.4)
+        sn.heatmap(co_mat, annot=True, annot_kws={"size": 16})
+        plt.savefig('co-ocurrence.png')
         # tengo labels reales y label generadas y el mapeo correspondiente
         # from sklearn.metrics import confusion_matrix
         # y_pred = []
