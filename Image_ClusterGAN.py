@@ -472,10 +472,10 @@ class clusGAN(object):
         # data_recon, label_recon = self.x_sampler.load_all()
         label_recon_labels = {0: 'black', 1: 'blue', 2: 'brown', 3: 'green', 4: 'grey', 5: 'orange', 6: 'pink',
                               7: 'purple', 8: 'red', 9: 'white', 10: 'yellow'}
-        mode_labels = {0: ['yellow', 'orange'], 1: ['green', 'brown'], 2: ['pink', 'purple' 'blue'], 3: ['grey'],
-                       4: ['black'],
-                       5: ['white'], 6: ['black'], 7: ['red', 'orange'], 8: ['grey', 'pink'], 9: ['blue', 'brown'],
-                       10: ['white']}
+        # mode_labels = {0: ['yellow', 'orange'], 1: ['green', 'brown'], 2: ['pink', 'purple' 'blue'], 3: ['grey'],
+        #                4: ['black'],
+        #                5: ['white'], 6: ['black'], 7: ['red', 'orange'], 8: ['grey', 'pink'], 9: ['blue', 'brown'],
+        #                10: ['white']}
 
         true_labels_mapped = []
         for item in list(label_recon):
@@ -485,7 +485,7 @@ class clusGAN(object):
         recon_batch_size = self.batch_size
 
         labels_predicted = np.zeros(shape=(num_pts_to_plot))
-        labels_predicted_mapped = []
+        # labels_predicted_mapped = []
         for b in range(int(np.ceil(num_pts_to_plot * 1.0 / recon_batch_size))):
             if (b + 1) * recon_batch_size > num_pts_to_plot:
                 pt_indx = np.arange(b * recon_batch_size, num_pts_to_plot)
@@ -496,29 +496,26 @@ class clusGAN(object):
             zhats_gen, zhats_label = self.sess.run([self.z_infer_gen, self.z_infer_label], feed_dict={self.x: xtrue})
 
             labels_predicted[pt_indx] = np.argmax(zhats_label, axis=1)
-            print(np.argmax(zhats_label, axis=1))
-            x = np.argmax(zhats_label, axis=1)
-            for value in list(x):
-                labels_predicted_mapped.append(mode_labels[value])
+            # print(np.argmax(zhats_label, axis=1))
+            # x = np.argmax(zhats_label, axis=1)
+            # for value in list(x):
+            #     labels_predicted_mapped.append(mode_labels[value])
 
         # tengo labels reales y label generadas y el mapeo correspondiente
         from sklearn.metrics import confusion_matrix
         y_pred = []
-        for i in range(len(true_labels_mapped)):
-            y_true = true_labels_mapped[i]
-            if y_true in labels_predicted_mapped[i]:
-                y_pred.append(y_true)
-            else:
-                y_pred.append(labels_predicted_mapped[i][0])
-
-        cm = confusion_matrix(true_labels_mapped, y_pred,
-                              labels=['black', 'blue', 'brown', 'green', 'grey', 'orange', 'pink', 'purple', 'red',
-                                      'white',
-                                      'yellow'])
+        for i in range(len(labels_predicted)):
+            y_pred.append(labels_predicted[i])
+            
+        labels = ['black', 'blue', 'brown', 'green', 'grey', 'orange', 'pink', 'purple', 'red',
+                  'white',
+                  'yellow']
+        cm = confusion_matrix(true_labels_mapped, y_pred)
         print(cm)
         import seaborn as sn
         import pandas as pd
         df_cm = pd.DataFrame(cm, range(11), range(11))
+        print(df_cm.head())
         sn.set(font_scale=1.4)  # for label size
         sn.heatmap(df_cm, annot=True, annot_kws={"size": 16})  # font size
         plt.savefig("cm.png")
