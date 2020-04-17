@@ -468,6 +468,8 @@ class clusGAN(object):
         imwrite(f'inferred{num}.png', bx)
 
     def colors_confusion_matrix(self):
+
+        import pandas as pd
         data_recon, label_recon = self.x_sampler.test()
         # data_recon, label_recon = self.x_sampler.load_all()
         label_recon_labels = {0: 'black', 1: 'blue', 2: 'brown', 3: 'green', 4: 'grey', 5: 'orange', 6: 'pink',
@@ -501,25 +503,30 @@ class clusGAN(object):
             # for value in list(x):
             #     labels_predicted_mapped.append(mode_labels[value])
 
+        # hacer dataframe con columnas y_real, y_pred
+        df = pd.DataFrame(columns=['true', 'pred'])
+        df['true'] = true_labels_mapped
+        df['pred'] = labels_predicted
+        print(df.head())
+
         # tengo labels reales y label generadas y el mapeo correspondiente
-        from sklearn.metrics import confusion_matrix
-        y_pred = []
-        for i in range(len(labels_predicted)):
-            y_pred.append(str(labels_predicted[i]))
-
-        labels = ['black', 'blue', 'brown', 'green', 'grey', 'orange', 'pink', 'purple', 'red',
-                  'white',
-                  'yellow']
-        cm = confusion_matrix(true_labels_mapped, y_pred)
-        print(cm)
-        import seaborn as sn
-        import pandas as pd
-        df_cm = pd.DataFrame(cm, range(11), range(11))
-        print(df_cm.head())
-        sn.set(font_scale=1.4)  # for label size
-        sn.heatmap(df_cm, annot=True, annot_kws={"size": 16})  # font size
-        plt.savefig("cm.png")
-
+        # from sklearn.metrics import confusion_matrix
+        # y_pred = []
+        # for i in range(len(labels_predicted)):
+        #     y_pred.append(labels_predicted[i])
+        #
+        # labels = ['black', 'blue', 'brown', 'green', 'grey', 'orange', 'pink', 'purple', 'red',
+        #           'white',
+        #           'yellow']
+        # cm = confusion_matrix(true_labels_mapped, y_pred)
+        # print(cm)
+        # import seaborn as sn
+        # import pandas as pd
+        # df_cm = pd.DataFrame(cm, range(11), range(11))
+        # print(df_cm.head())
+        # sn.set(font_scale=1.4)  # for label size
+        # sn.heatmap(df_cm, annot=True, annot_kws={"size": 16})  # font size
+        # plt.savefig("cm.png")
 
 
 if __name__ == '__main__':
