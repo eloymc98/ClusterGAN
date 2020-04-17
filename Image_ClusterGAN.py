@@ -505,8 +505,8 @@ class clusGAN(object):
         from sklearn.metrics import confusion_matrix
         y_pred = []
         for i in range(len(labels_predicted)):
-            y_pred.append(labels_predicted[i])
-            
+            y_pred.append(str(labels_predicted[i]))
+
         labels = ['black', 'blue', 'brown', 'green', 'grey', 'orange', 'pink', 'purple', 'red',
                   'white',
                   'yellow']
