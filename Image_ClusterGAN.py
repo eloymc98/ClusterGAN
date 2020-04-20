@@ -289,7 +289,7 @@ class clusGAN(object):
                 batch_size = 1008
             elif self.num_classes == 5:
                 batch_size = 1000
-            elif self.num_classes == 11:
+            elif self.num_classes in (11,13):
                 batch_size = 1001
             elif self.num_classes == 9:
                 batch_size = 1008
