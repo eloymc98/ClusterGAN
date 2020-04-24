@@ -613,7 +613,7 @@ if __name__ == '__main__':
             cl_gan.gen_from_all_modes()
         elif args.reconstruct == 'True':
             bx, bx_labels = xs.test()
-            bx = bx[250]
+            bx = bx[250:252]
             cl_gan.encoder_to_gen(bx)
             if args.data == 'termisk':
                 import cv2
