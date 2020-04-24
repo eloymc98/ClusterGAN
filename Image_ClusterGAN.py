@@ -456,6 +456,7 @@ class clusGAN(object):
         print(f'Shape: {zhats_label.shape}, z_label:  {zhats_label}')
         print(f'Shape: {zhats_logits.shape}, z_logits:  {zhats_logits}')
         bz = np.hstack((zhats_gen, zhats_label))
+        print(np.argmax(zhats_label, axis=1))
         print(f'z.shape: {bz.shape}')
         bx_ = self.sess.run(self.x_, feed_dict={self.z: bz})
         print(f'bx_: {bx_.shape}')
@@ -612,7 +613,7 @@ if __name__ == '__main__':
             cl_gan.gen_from_all_modes()
         elif args.reconstruct == 'True':
             bx, bx_labels = xs.test()
-            bx = bx[0:100]
+            bx = bx[250]
             cl_gan.encoder_to_gen(bx)
             if args.data == 'termisk':
                 import cv2
