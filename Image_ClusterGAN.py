@@ -460,6 +460,12 @@ class clusGAN(object):
         bx_ = self.sess.run(self.x_, feed_dict={self.z: bz})
         print(f'bx_: {bx_.shape}')
         bx_ = xs.data2img(bx_)
+        if 'colors' in args.data:
+            import cv2
+            print(f'CIE-LAB! Bx: {bx_.shape[0]}')
+            for i in range(bx.shape[0]):
+                bx_[i] = cv2.cvtColor((bx_[i] * 255).astype(np.uint8), cv2.COLOR_LAB2RGB)
+                bx_[i] = bx_[i] / 255
         bx_ = grid_transform(bx_, xs.shape)
         num = np.random.randint(0, 1000)
         imwrite(f'generated{num}.png', bx_)
