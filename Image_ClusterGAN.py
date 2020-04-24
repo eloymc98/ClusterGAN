@@ -615,6 +615,10 @@ if __name__ == '__main__':
             bx, bx_labels = xs.test()
             bx = bx[250:252]
             cl_gan.encoder_to_gen(bx)
+
+            
+            bx, bx_labels = xs.test()
+            cl_gan.encoder_to_gen(bx)
             if args.data == 'termisk':
                 import cv2
 
