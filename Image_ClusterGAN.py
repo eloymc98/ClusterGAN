@@ -453,7 +453,7 @@ class clusGAN(object):
         zhats_gen, zhats_label, zhats_logits = self.sess.run(
             [self.z_infer_gen, self.z_infer_label, self.z_infer_logits], feed_dict={self.x: bx})
         print(f'Shape: {zhats_gen.shape}, z_gen:  {zhats_gen}')
-        print(f'Shape: {zhats_label.shape}, z_label:  {zhats_label}')
+        print(f'Shape: {zhats_label.shape}, z_label:  {np.around(zhats_label, decimals=0)}')
         print(f'Shape: {zhats_logits.shape}, z_logits:  {zhats_logits}')
         bz = np.hstack((zhats_gen, np.around(zhats_label, decimals=0)))
         print(np.argmax(zhats_label, axis=1))
