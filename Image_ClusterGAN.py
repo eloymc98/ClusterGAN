@@ -289,7 +289,7 @@ class clusGAN(object):
                 batch_size = 1008
             elif self.num_classes == 5:
                 batch_size = 1000
-            elif self.num_classes in (11,13):
+            elif self.num_classes in (11, 13):
                 batch_size = 1001
             elif self.num_classes == 9:
                 batch_size = 1008
@@ -455,7 +455,7 @@ class clusGAN(object):
         print(f'Shape: {zhats_gen.shape}, z_gen:  {zhats_gen}')
         print(f'Shape: {zhats_label.shape}, z_label:  {zhats_label}')
         print(f'Shape: {zhats_logits.shape}, z_logits:  {zhats_logits}')
-        bz = np.hstack((zhats_gen, round(zhats_label)))
+        bz = np.hstack((zhats_gen, np.around(zhats_label, decimals=0)))
         print(np.argmax(zhats_label, axis=1))
         print(f'z.shape: {bz.shape}')
         bx_ = self.sess.run(self.x_, feed_dict={self.z: bz})
@@ -615,7 +615,6 @@ if __name__ == '__main__':
             bx, bx_labels = xs.test()
             bx = bx[250:252]
             cl_gan.encoder_to_gen(bx)
-
 
             bx, bx_labels = xs.test()
             cl_gan.encoder_to_gen(bx)
