@@ -550,7 +550,7 @@ class clusGAN(object):
         if 'colors' in args.data:
             import cv2
             print(f'CIE-LAB! Bx: {examples.shape[0]}')
-            for i in range(bx.shape[0]):
+            for i in range(examples.shape[0]):
                 examples[i] = cv2.cvtColor((examples[i] * 255).astype(np.uint8), cv2.COLOR_LAB2RGB)
                 examples[i] = examples[i] / 255
         # plot images
