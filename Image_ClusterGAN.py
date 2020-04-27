@@ -619,6 +619,7 @@ if __name__ == '__main__':
     parser.add_argument('--from_checkpoint', type=str, default='False')
     parser.add_argument('--reconstruct', type=str, default='False')
     parser.add_argument('--cm', type=str, default='False')
+    parser.add_argument('--interpolate', type=str, default='False')
 
     args = parser.parse_args()
     data = importlib.import_module(args.data)
@@ -694,5 +695,7 @@ if __name__ == '__main__':
 
         elif args.cm == 'True':
             cl_gan.colors_confusion_matrix()
+        elif args.interpolate == 'True':
+            cl_gan.interpolate_latent_space()
         else:
             cl_gan.recon_enc(timestamp, val=False)
