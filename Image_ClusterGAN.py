@@ -553,11 +553,12 @@ class clusGAN(object):
             batch_size = 1008
         else:
             batch_size = 1000
+        ## list of len 1001
+        label_index = np.tile(np.arange(self.num_classes), n_samples)
 
-        label_index = np.tile(np.arange(self.num_classes), int(np.ceil(batch_size * 1.0 / self.num_classes)))
-
-        x_input = self.z_sampler(batch_size, self.z_dim, self.sampler, num_class=self.num_classes,
-                                 n_cat=self.n_cat, label_index=label_index)
+        x_input = self.z_sampler(n_samples, self.z_dim, self.sampler, num_class=self.num_classes,
+                                 n_cat=self.n_cat)
+        print(f'x_input shape: {x_input.shape}')
         z_input = x_input.reshape(n_samples, latent_dim)
         return z_input
 
