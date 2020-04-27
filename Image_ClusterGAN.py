@@ -548,7 +548,9 @@ class clusGAN(object):
 
     def plot_generated(self, examples, n):
         print(examples.shape)
+
         if 'colors' in args.data:
+            examples = examples.reshape((examples.shape[0], 32, 32, 3))
             import cv2
             print(f'CIE-LAB! Bx: {examples.shape[0]}')
             for i in range(examples.shape[0]):
