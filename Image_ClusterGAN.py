@@ -541,6 +541,65 @@ class clusGAN(object):
         # sn.heatmap(df_cm, annot=True, annot_kws={"size": 16})  # font size
         # plt.savefig("cm.png")
 
+    def generate_latent_points(self, latent_dim, n_samples):
+        x_input = np.random.rand(latent_dim * n_samples)
+        z_input = x_input.reshape(n_samples, latent_dim)
+        return z_input
+
+    def plot_generated(self, examples, n):
+        if 'colors' in args.data:
+            import cv2
+            print(f'CIE-LAB! Bx: {examples.shape[0]}')
+            for i in range(bx.shape[0]):
+                examples[i] = cv2.cvtColor((examples[i] * 255).astype(np.uint8), cv2.COLOR_LAB2RGB)
+                examples[i] = examples[i] / 255
+        # plot images
+        for i in range(n * n):
+            # define subplot
+            plt.subplot(n, n, 1 + i)
+            # turn off axis
+            plt.axis('off')
+            # plot raw pixel data
+            plt.imshow(examples[i, :, :])
+        plt.savefig('interpolation.png')
+
+    # uniform interpolation between two points in latent space
+    def interpolate_points(self, p1, p2, n_steps=10):
+        # interpolate ratios between the points
+        ratios = np.linspace(0, 1, num=n_steps)
+        # linear interpolate vectors
+        vectors = list()
+        for ratio in ratios:
+            v = (1.0 - ratio) * p1 + ratio * p2
+            vectors.append(v)
+        return np.asarray(vectors)
+
+    # spherical linear interpolation (slerp)
+    def slerp(self, val, low, high):
+        omega = np.arccos(np.clip(np.dot(low / np.linalg.norm(low), high / np.linalg.norm(high)), -1, 1))
+        so = np.sin(omega)
+        if so == 0:
+            # L'Hopital's rule/LERP
+            return (1.0 - val) * low + val * high
+        return np.sin((1.0 - val) * omega) / so * low + np.sin(val * omega) / so * high
+
+    def interpolate_latent_space(self):
+        # generate points in latent space
+        n = 20
+        pts = self.generate_latent_points(self.dim_gen + self.num_classes, n)
+        # interpolate pairs
+        results = None
+        for i in range(0, n, 2):
+            # interpolate points in latent space
+            interpolated = self.interpolate_points(pts[i], pts[i + 1])
+            X = self.sess.run(self.x_, feed_dict={self.z: interpolated})
+            if results is None:
+                results = X
+            else:
+                results = np.vstack((results, X))
+        # plot the result
+        self.plot_generated(results, 10)
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser('')
