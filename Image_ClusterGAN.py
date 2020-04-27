@@ -542,7 +542,22 @@ class clusGAN(object):
         # plt.savefig("cm.png")
 
     def generate_latent_points(self, latent_dim, n_samples):
-        x_input = np.random.rand(latent_dim * n_samples)
+        # x_input = np.random.rand(latent_dim * n_samples)
+        if self.num_classes in (16, 12, 14):
+            batch_size = 1008
+        elif self.num_classes == 5:
+            batch_size = 1000
+        elif self.num_classes in (11, 13):
+            batch_size = 1001
+        elif self.num_classes == 9:
+            batch_size = 1008
+        else:
+            batch_size = 1000
+
+        label_index = np.tile(np.arange(self.num_classes), int(np.ceil(batch_size * 1.0 / self.num_classes)))
+
+        x_input = self.z_sampler(batch_size, self.z_dim, self.sampler, num_class=self.num_classes,
+                                 n_cat=self.n_cat, label_index=label_index)
         z_input = x_input.reshape(n_samples, latent_dim)
         return z_input
 
