@@ -584,13 +584,23 @@ class clusGAN(object):
         plt.savefig('interpolation.png')
 
     # uniform interpolation between two points in latent space
+    # def interpolate_points(self, p1, p2, n_steps=10):
+    #     # interpolate ratios between the points
+    #     ratios = np.linspace(0, 1, num=n_steps)
+    #     # linear interpolate vectors
+    #     vectors = list()
+    #     for ratio in ratios:
+    #         v = (1.0 - ratio) * p1 + ratio * p2
+    #         vectors.append(v)
+    #     return np.asarray(vectors)
+
     def interpolate_points(self, p1, p2, n_steps=10):
         # interpolate ratios between the points
         ratios = np.linspace(0, 1, num=n_steps)
         # linear interpolate vectors
         vectors = list()
         for ratio in ratios:
-            v = (1.0 - ratio) * p1 + ratio * p2
+            v = self.slerp(ratio, p1, p2)
             vectors.append(v)
         return np.asarray(vectors)
 
