@@ -594,10 +594,6 @@ class clusGAN(object):
     #         vectors.append(v)
     #     return np.asarray(vectors)
 
-
-
-
-
     # TODO: interpolar solo la parte one-hot
 
     def interpolate_points(self, p1, p2, n_steps=10):
@@ -609,6 +605,16 @@ class clusGAN(object):
             v = self.slerp(ratio, p1, p2)
             vectors.append(v)
         return np.asarray(vectors)
+
+    def interpolate_classes(self, c1, c2, n_steps=10):
+        points = list()
+        for i in range(n_steps + 1):
+            mu = (n_steps - i) / n_steps
+            p1 = np.eye(self.num_classes)[c1] * mu
+            p2 = np.eye(self.num_classes)[c2] * (1 - mu)
+            p = p1 + p2
+            points.append(p)
+        return np.asarray(points)
 
     # spherical linear interpolation (slerp)
     def slerp(self, val, low, high):
@@ -624,20 +630,34 @@ class clusGAN(object):
         n = 2
         num_points = 10
         # pts = self.generate_latent_points(self.dim_gen + self.num_classes, n)
-        label_index = np.random.randint(low=0, high=self.num_classes, size=n)
-        pts = np.hstack((0 * np.random.randn(n, z_dim - self.num_classes), np.eye(self.num_classes)[label_index]))
+        class_1 = np.random.randint(low=0, high=self.num_classes)
+        # con el np.eye me quedo la file donde el one-hot se corresponde a la clase
+        pts_1 = np.hstack((0 * np.random.randn(1, z_dim - self.num_classes), np.eye(self.num_classes)[class_1]))
+        class_2 = np.random.randint(low=0, high=self.num_classes)
+        pts_2 = np.hstack((0 * np.random.randn(1, z_dim - self.num_classes), np.eye(self.num_classes)[class_2]))
+        while class_2 == class_1:
+            class_2 = np.random.randint(low=0, high=self.num_classes)
+
+        # label_index = np.random.randint(low=0, high=self.num_classes, size=n)
+        # pts = np.hstack((0 * np.random.randn(n, z_dim - self.num_classes), np.eye(self.num_classes)[label_index]))
         # interpolate pairs
         results = None
-        for i in range(0, num_points, 2):
-            # interpolate points in latent space
-            interpolated = self.interpolate_points(pts[i], pts[i + 1])
-            X = self.sess.run(self.x_, feed_dict={self.z: interpolated})
-            if results is None:
-                results = X
-            else:
-                results = np.vstack((results, X))
+        interpolated = self.interpolate_classes(class_1, class_2)
+        X = self.sess.run(self.x_, feed_dict={self.z: interpolated})
+        if results is None:
+            results = X
+        else:
+            results = np.vstack((results, X))
+        # for i in range(0, num_points, 2):
+        #     # interpolate points in latent space
+        #     interpolated = self.interpolate_points(pts[i], pts[i + 1])
+        #     X = self.sess.run(self.x_, feed_dict={self.z: interpolated})
+        #     if results is None:
+        #         results = X
+        #     else:
+        #         results = np.vstack((results, X))
         # plot the result
-        self.plot_generated(results, num_points)
+        self.plot_generated(results, num_points + 1)
 
 
 if __name__ == '__main__':

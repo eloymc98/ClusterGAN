@@ -87,9 +87,9 @@ import numpy as np
 # np.save('colors_test_clustering_labels.npy', test)
 
 
-x = np.argmax([1, 0, 0, 0], axis=0)
-sasda = []
-dict = {0: 'hla'}
-sasda.append(dict[x])
 
-print(sasda)
+mu = 0.7
+p1 = np.eye(11)[2] * mu
+p2 = np.eye(11)[5] * (1 - mu)
+p = p1 + p2
+print(p)
