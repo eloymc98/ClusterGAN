@@ -610,8 +610,8 @@ class clusGAN(object):
         points = list()
         for i in range(n_steps + 1):
             mu = (n_steps - i) / n_steps
-            p1 = np.eye(self.num_classes)[c1] * mu
-            p2 = np.eye(self.num_classes)[c2] * (1 - mu)
+            p1 = np.hstack((np.zeros(z_dim - self.num_classes), np.eye(self.num_classes)[c1] * mu))
+            p2 = np.hstack((np.zeros(z_dim - self.num_classes), np.eye(self.num_classes)[c2] * (1 - mu)))
             p = p1 + p2
             points.append(p)
         return np.asarray(points)
@@ -632,9 +632,9 @@ class clusGAN(object):
         # pts = self.generate_latent_points(self.dim_gen + self.num_classes, n)
         class_1 = np.random.randint(low=0, high=self.num_classes)
         # con el np.eye me quedo la file donde el one-hot se corresponde a la clase
-        pts_1 = np.hstack((0 * np.random.randn(1, z_dim - self.num_classes), np.eye(self.num_classes)[class_1]))
+        # pts_1 = np.hstack((0 * np.random.randn(1, z_dim - self.num_classes), np.eye(self.num_classes)[class_1]))
         class_2 = np.random.randint(low=0, high=self.num_classes)
-        pts_2 = np.hstack((0 * np.random.randn(1, z_dim - self.num_classes), np.eye(self.num_classes)[class_2]))
+        # pts_2 = np.hstack((0 * np.random.randn(1, z_dim - self.num_classes), np.eye(self.num_classes)[class_2]))
         while class_2 == class_1:
             class_2 = np.random.randint(low=0, high=self.num_classes)
 
