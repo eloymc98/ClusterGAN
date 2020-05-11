@@ -594,6 +594,12 @@ class clusGAN(object):
     #         vectors.append(v)
     #     return np.asarray(vectors)
 
+
+
+
+
+    # TODO: interpolar solo la parte one-hot
+
     def interpolate_points(self, p1, p2, n_steps=10):
         # interpolate ratios between the points
         ratios = np.linspace(0, 1, num=n_steps)
@@ -615,11 +621,14 @@ class clusGAN(object):
 
     def interpolate_latent_space(self):
         # generate points in latent space
-        n = 20
-        pts = self.generate_latent_points(self.dim_gen + self.num_classes, n)
+        n = 2
+        num_points = 10
+        # pts = self.generate_latent_points(self.dim_gen + self.num_classes, n)
+        label_index = np.random.randint(low=0, high=self.num_classes, size=n)
+        pts = np.hstack((0 * np.random.randn(n, z_dim - self.num_classes), np.eye(self.num_classes)[label_index]))
         # interpolate pairs
         results = None
-        for i in range(0, n, 2):
+        for i in range(0, num_points, 2):
             # interpolate points in latent space
             interpolated = self.interpolate_points(pts[i], pts[i + 1])
             X = self.sess.run(self.x_, feed_dict={self.z: interpolated})
@@ -628,7 +637,7 @@ class clusGAN(object):
             else:
                 results = np.vstack((results, X))
         # plot the result
-        self.plot_generated(results, 10)
+        self.plot_generated(results, num_points)
 
 
 if __name__ == '__main__':
