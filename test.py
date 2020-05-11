@@ -86,10 +86,12 @@ import numpy as np
 #
 # np.save('colors_test_clustering_labels.npy', test)
 
-
-mu = 0.7
-p1 = np.hstack((np.zeros(20 - 11), np.eye(11)[2] * mu))
-p2 = np.hstack((np.zeros(20 - 11), np.eye(11)[5] * (1 - mu)))
-p = p1 + p2
-print(p)
+ppp = []
+for i in range(11):
+    mu = 0.7
+    p1 = np.hstack((np.zeros(20 - 11), np.eye(11)[2] * mu))
+    p2 = np.hstack((np.zeros(20 - 11), np.eye(11)[5] * (1 - mu)))
+    p = p1 + p2
+    ppp.append(p)
+print(len(ppp))
 

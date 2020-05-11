@@ -574,9 +574,9 @@ class clusGAN(object):
                 examples[i] = cv2.cvtColor((examples[i] * 255).astype(np.uint8), cv2.COLOR_LAB2RGB)
                 examples[i] = examples[i] / 255
         # plot images
-        for i in range(n * n):
+        for i in range(n):
             # define subplot
-            plt.subplot(n, n, 1 + i)
+            plt.subplot(np.ceil(n/2), np.floor(n/2), 1 + i)
             # turn off axis
             plt.axis('off')
             # plot raw pixel data
@@ -657,7 +657,7 @@ class clusGAN(object):
         #     else:
         #         results = np.vstack((results, X))
         # plot the result
-        self.plot_generated(results, num_points + 1)
+        self.plot_generated(results, num_points+1)
 
 
 if __name__ == '__main__':
