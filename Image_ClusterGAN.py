@@ -657,6 +657,7 @@ class clusGAN(object):
         #     else:
         #         results = np.vstack((results, X))
         # plot the result
+        print(f'CLASS 1: {class_1}, CLASS 2: {class_2}')
         self.plot_generated(results, num_points+1)
 
 
