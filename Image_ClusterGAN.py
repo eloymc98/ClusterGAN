@@ -630,10 +630,12 @@ class clusGAN(object):
         n = 2
         num_points = 10
         # pts = self.generate_latent_points(self.dim_gen + self.num_classes, n)
-        class_1 = np.random.randint(low=0, high=self.num_classes)
+        #class_1 = np.random.randint(low=0, high=self.num_classes)
+        class_1 = 1
         # con el np.eye me quedo la file donde el one-hot se corresponde a la clase
         # pts_1 = np.hstack((0 * np.random.randn(1, z_dim - self.num_classes), np.eye(self.num_classes)[class_1]))
-        class_2 = np.random.randint(low=0, high=self.num_classes)
+        #class_2 = np.random.randint(low=0, high=self.num_classes)
+        class_2 = 3
         # pts_2 = np.hstack((0 * np.random.randn(1, z_dim - self.num_classes), np.eye(self.num_classes)[class_2]))
         while class_2 == class_1:
             class_2 = np.random.randint(low=0, high=self.num_classes)
