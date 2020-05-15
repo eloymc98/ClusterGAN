@@ -576,7 +576,7 @@ class clusGAN(object):
 
         co_mat = pd.crosstab(df.true, df.pred)
         sn.set(font_scale=1.4)
-        sn.heatmap(co_mat, annot=True, annot_kws={"size": 16})
+        sn.heatmap(co_mat)
         plt.savefig('co-ocurrence.png')
         # tengo labels reales y label generadas y el mapeo correspondiente
         # from sklearn.metrics import confusion_matrix
