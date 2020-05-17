@@ -474,6 +474,77 @@ class clusGAN(object):
         bx = grid_transform(bx, xs.shape)
         imwrite(f'inferred{num}.png', bx)
 
+
+    def co_matrix(self):
+
+        import pandas as pd
+        import seaborn as sn
+
+        data_recon, label_recon = self.x_sampler.test()
+        # data_recon, label_recon = self.x_sampler.load_all()
+        if self.data == "fashion" and self.num_classes == 10:
+            label_recon_labels = {0: 't-shirt/top', 1: 'trouser', 2: 'pullover', 3: 'dress', 4: 'coat', 5: 'sandal',
+                              6: 'shirt', 7: 'sneaker', 8: 'bag', 9: 'ankle boot'}
+        # mode_labels = {0: ['yellow', 'orange'], 1: ['green', 'brown'], 2: ['pink', 'purple' 'blue'], 3: ['grey'],
+        #                4: ['black'],
+        #                5: ['white'], 6: ['black'], 7: ['red', 'orange'], 8: ['grey', 'pink'], 9: ['blue', 'brown'],
+        #                10: ['white']}
+
+        true_labels_mapped = []
+        for item in list(label_recon):
+            true_labels_mapped.append(label_recon_labels[item])
+
+        num_pts_to_plot = data_recon.shape[0]  # num of images
+        recon_batch_size = self.batch_size
+
+        labels_predicted = np.zeros(shape=(num_pts_to_plot))
+        # labels_predicted_mapped = []
+        for b in range(int(np.ceil(num_pts_to_plot * 1.0 / recon_batch_size))):
+            if (b + 1) * recon_batch_size > num_pts_to_plot:
+                pt_indx = np.arange(b * recon_batch_size, num_pts_to_plot)
+            else:
+                pt_indx = np.arange(b * recon_batch_size, (b + 1) * recon_batch_size)
+            xtrue = data_recon[pt_indx, :]
+
+            zhats_gen, zhats_label = self.sess.run([self.z_infer_gen, self.z_infer_label], feed_dict={self.x: xtrue})
+
+            labels_predicted[pt_indx] = np.argmax(zhats_label, axis=1)
+            # print(np.argmax(zhats_label, axis=1))
+            # x = np.argmax(zhats_label, axis=1)
+            # for value in list(x):
+            #     labels_predicted_mapped.append(mode_labels[value])
+
+        # hacer dataframe con columnas y_real, y_pred
+        df = pd.DataFrame(columns=['label', 'cluster'])
+        df['label'] = true_labels_mapped
+        df['cluster'] = labels_predicted.astype(np.uint8)
+        print(df.head())
+
+        co_mat = pd.crosstab(df.label, df.cluster)
+        sn.set(font_scale=1.4)
+        sn.heatmap(co_mat)
+        plt.savefig(f'{self.data}_{self.num_classes}_matrix.png')
+        # tengo labels reales y label generadas y el mapeo correspondiente
+        # from sklearn.metrics import confusion_matrix
+        # y_pred = []
+        # for i in range(len(labels_predicted)):
+        #     y_pred.append(labels_predicted[i])
+        #
+        # labels = ['black', 'blue', 'brown', 'green', 'grey', 'orange', 'pink', 'purple', 'red',
+        #           'white',
+        #           'yellow']
+        # cm = confusion_matrix(true_labels_mapped, y_pred)
+        # print(cm)
+        # import seaborn as sn
+        # import pandas as pd
+        # df_cm = pd.DataFrame(cm, range(11), range(11))
+        # print(df_cm.head())
+        # sn.set(font_scale=1.4)  # for label size
+        # sn.heatmap(df_cm, annot=True, annot_kws={"size": 16})  # font size
+        # plt.savefig("cm.png")
+
+
+
     def colors_confusion_matrix(self):
 
         import pandas as pd
@@ -548,7 +619,7 @@ class clusGAN(object):
 
         data_recon, label_recon = self.x_sampler.test()
 
-        num_pts_to_plot = data_recon.shape[0]   # num of images
+        num_pts_to_plot = data_recon.shape[0]  # num of images
         recon_batch_size = self.batch_size
 
         labels_predicted = np.zeros(shape=(num_pts_to_plot))
@@ -632,7 +703,7 @@ class clusGAN(object):
         # plot images
         for i in range(n):
             # define subplot
-            plt.subplot(np.ceil(n/2), np.floor(n/2), 1 + i)
+            plt.subplot(np.ceil(n / 2), np.floor(n / 2), 1 + i)
             # turn off axis
             plt.axis('off')
             # plot raw pixel data
@@ -686,11 +757,11 @@ class clusGAN(object):
         n = 2
         num_points = 10
         # pts = self.generate_latent_points(self.dim_gen + self.num_classes, n)
-        #class_1 = np.random.randint(low=0, high=self.num_classes)
+        # class_1 = np.random.randint(low=0, high=self.num_classes)
         class_1 = 1
         # con el np.eye me quedo la file donde el one-hot se corresponde a la clase
         # pts_1 = np.hstack((0.1 * np.random.randn(1, z_dim - self.num_classes), np.eye(self.num_classes)[class_1]))
-        #class_2 = np.random.randint(low=0, high=self.num_classes)
+        # class_2 = np.random.randint(low=0, high=self.num_classes)
         class_2 = 3
         # pts_2 = np.hstack((0 * np.random.randn(1, z_dim - self.num_classes), np.eye(self.num_classes)[class_2]))
         while class_2 == class_1:
@@ -716,7 +787,7 @@ class clusGAN(object):
         #         results = np.vstack((results, X))
         # plot the result
         print(f'CLASS 1: {class_1}, CLASS 2: {class_2}')
-        self.plot_generated(results, num_points+1)
+        self.plot_generated(results, num_points + 1)
 
 
 if __name__ == '__main__':
@@ -813,8 +884,10 @@ if __name__ == '__main__':
 
         elif args.cm == 'True' and args.data == 'colors_new':
             cl_gan.colors_confusion_matrix()
-        elif args.cm == 'True':
+        elif args.cm == 'True' and args.data == 'mnist':
             cl_gan.mnist_confusion_matrix()
+        elif args.cm == 'True' and args.data == 'fashion' and num_classes == 10:
+            cl_gan.confusion_matrix()
         elif args.interpolate == 'True':
             cl_gan.interpolate_latent_space()
         else:
