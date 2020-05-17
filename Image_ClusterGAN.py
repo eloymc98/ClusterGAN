@@ -813,7 +813,7 @@ if __name__ == '__main__':
 
         elif args.cm == 'True' and args.data == 'colors_new':
             cl_gan.colors_confusion_matrix()
-        elif args.cm == 'True' and args.data == 'mnist':
+        elif args.cm == 'True':
             cl_gan.mnist_confusion_matrix()
         elif args.interpolate == 'True':
             cl_gan.interpolate_latent_space()
