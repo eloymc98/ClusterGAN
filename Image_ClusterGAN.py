@@ -574,7 +574,7 @@ class clusGAN(object):
         df['cluster'] = labels_predicted.astype(np.uint8)
         print(df.head())
 
-        co_mat = pd.crosstab(df.true, df.pred)
+        co_mat = pd.crosstab(df.label, df.cluster)
         sn.set(font_scale=1.4)
         sn.heatmap(co_mat)
         plt.savefig('co-ocurrence.png')
