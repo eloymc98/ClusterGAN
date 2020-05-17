@@ -569,9 +569,9 @@ class clusGAN(object):
             #     labels_predicted_mapped.append(mode_labels[value])
 
         # hacer dataframe con columnas y_real, y_pred
-        df = pd.DataFrame(columns=['true', 'pred'])
-        df['true'] = label_recon
-        df['pred'] = labels_predicted.astype(np.uint8)
+        df = pd.DataFrame(columns=['label', 'cluster'])
+        df['label'] = label_recon
+        df['cluster'] = labels_predicted.astype(np.uint8)
         print(df.head())
 
         co_mat = pd.crosstab(df.true, df.pred)
