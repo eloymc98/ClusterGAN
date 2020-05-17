@@ -886,8 +886,8 @@ if __name__ == '__main__':
             cl_gan.colors_confusion_matrix()
         elif args.cm == 'True' and args.data == 'mnist':
             cl_gan.mnist_confusion_matrix()
-        elif args.cm == 'True' and args.data == 'fashion' and num_classes == 10:
-            cl_gan.confusion_matrix()
+        elif args.cm == 'True':
+            cl_gan.co_matrix()
         elif args.interpolate == 'True':
             cl_gan.interpolate_latent_space()
         else:
