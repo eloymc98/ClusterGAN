@@ -474,7 +474,6 @@ class clusGAN(object):
         bx = grid_transform(bx, xs.shape)
         imwrite(f'inferred{num}.png', bx)
 
-
     def co_matrix(self):
 
         import pandas as pd
@@ -484,7 +483,7 @@ class clusGAN(object):
         # data_recon, label_recon = self.x_sampler.load_all()
         if self.data == "fashion" and self.num_classes == 10:
             label_recon_labels = {0: 't-shirt/top', 1: 'trouser', 2: 'pullover', 3: 'dress', 4: 'coat', 5: 'sandal',
-                              6: 'shirt', 7: 'sneaker', 8: 'bag', 9: 'ankle boot'}
+                                  6: 'shirt', 7: 'sneaker', 8: 'bag', 9: 'ankle boot'}
         # mode_labels = {0: ['yellow', 'orange'], 1: ['green', 'brown'], 2: ['pink', 'purple' 'blue'], 3: ['grey'],
         #                4: ['black'],
         #                5: ['white'], 6: ['black'], 7: ['red', 'orange'], 8: ['grey', 'pink'], 9: ['blue', 'brown'],
@@ -522,6 +521,7 @@ class clusGAN(object):
 
         co_mat = pd.crosstab(df.label, df.cluster)
         sn.set(font_scale=1.4)
+        plt.figure(figsize=(100, 100))
         sn.heatmap(co_mat)
         plt.savefig(f'{self.data}_{self.num_classes}_matrix.png')
         # tengo labels reales y label generadas y el mapeo correspondiente
@@ -542,8 +542,6 @@ class clusGAN(object):
         # sn.set(font_scale=1.4)  # for label size
         # sn.heatmap(df_cm, annot=True, annot_kws={"size": 16})  # font size
         # plt.savefig("cm.png")
-
-
 
     def colors_confusion_matrix(self):
 
