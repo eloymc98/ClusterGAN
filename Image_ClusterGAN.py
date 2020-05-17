@@ -521,7 +521,7 @@ class clusGAN(object):
 
         co_mat = pd.crosstab(df.label, df.cluster)
         sn.set(font_scale=1.4)
-        plt.figure(figsize=(20, 20))
+        plt.figure(figsize=(8, 6))
         sn.heatmap(co_mat)
         plt.savefig(f'{self.data}_{self.num_classes}_matrix.png')
         # tengo labels reales y label generadas y el mapeo correspondiente
