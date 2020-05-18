@@ -489,6 +489,9 @@ class clusGAN(object):
                                   3: 't-shirt/top,dress',
                                   4: 'pullover,coat,shirt', 5: 'sandal,sneaker,boot', 6: 'pullover,coat,shirt',
                                   7: 'sandal,sneaker,boot', 8: 'bag', 9: 'sandal,sneaker,boot'}
+        elif self.data == "cifar":
+            label_recon_labels = {0: 'airplane', 1: 'automobile', 2: 'bird', 3: 'cat', 4: 'deer', 5: 'dog',
+                                  6: 'frog', 7: 'horse', 8: 'ship', 9: 'truck'}
         # mode_labels = {0: ['yellow', 'orange'], 1: ['green', 'brown'], 2: ['pink', 'purple' 'blue'], 3: ['grey'],
         #                4: ['black'],
         #                5: ['white'], 6: ['black'], 7: ['red', 'orange'], 8: ['grey', 'pink'], 9: ['blue', 'brown'],
