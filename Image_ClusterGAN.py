@@ -484,6 +484,9 @@ class clusGAN(object):
         if self.data == "fashion" and self.num_classes == 10:
             label_recon_labels = {0: 't-shirt/top', 1: 'trouser', 2: 'pullover', 3: 'dress', 4: 'coat', 5: 'sandal',
                                   6: 'shirt', 7: 'sneaker', 8: 'bag', 9: 'ankle boot'}
+        elif self.data == "fashion" and self.num_classes == 5:
+            label_recon_labels = {0: 't-shirt/top,dress', 1: 'trouser', 2: 'pullover,coat,shirt', 3: 'bag',
+                                  4: 'sandal,sneaker,boot'}
         # mode_labels = {0: ['yellow', 'orange'], 1: ['green', 'brown'], 2: ['pink', 'purple' 'blue'], 3: ['grey'],
         #                4: ['black'],
         #                5: ['white'], 6: ['black'], 7: ['red', 'orange'], 8: ['grey', 'pink'], 9: ['blue', 'brown'],
@@ -521,6 +524,7 @@ class clusGAN(object):
 
         co_mat = pd.crosstab(df.label, df.cluster)
         sn.set(font_scale=2)
+        plt.tight_layout()
         plt.figure(figsize=(14.4, 10.8))
         sn.heatmap(co_mat)
         plt.savefig(f'{self.data}_{self.num_classes}_matrix.png')
