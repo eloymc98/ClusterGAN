@@ -306,12 +306,12 @@ class clusGAN(object):
                 mode_index = np.where(label_index == m)[0]
                 mode_bx = bx[mode_index, :]
                 mode_bx = xs.data2img(mode_bx)
-                if 'colors' in args.data:
-                    import cv2
-                    print(f'CIE-LAB! Bx: {mode_bx.shape[0]}')
-                    for i in range(mode_bx.shape[0]):
-                        mode_bx[i] = cv2.cvtColor((mode_bx[i] * 255).astype(np.uint8), cv2.COLOR_LAB2RGB)
-                        mode_bx[i] = mode_bx[i] / 255
+                # if 'colors' in args.data:
+                #     import cv2
+                #     print(f'CIE-LAB! Bx: {mode_bx.shape[0]}')
+                #     for i in range(mode_bx.shape[0]):
+                #         mode_bx[i] = cv2.cvtColor((mode_bx[i] * 255).astype(np.uint8), cv2.COLOR_LAB2RGB)
+                #         mode_bx[i] = mode_bx[i] / 255
                 mode_bx = grid_transform(mode_bx, xs.shape)
 
                 if not os.path.exists('logs/'):
