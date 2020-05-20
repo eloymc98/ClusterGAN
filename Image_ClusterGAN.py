@@ -328,10 +328,12 @@ class clusGAN(object):
             data_recon, label_recon, ima_names = self.x_sampler.test(index=True)
             if 'colors' in args.data:
                 import cv2
-                print(f'CIE-LAB! Bx: {data_recon.shape[0]} {type(data_recon)}')
+                data_recon = xs.data2img(data_recon)
+                print(f'CIE-LAB! Bx: {data_recon.shape[0]}')
                 for i in range(data_recon.shape[0]):
                     data_recon[i] = cv2.cvtColor((data_recon[i] * 255).astype(np.uint8), cv2.COLOR_RGB2LAB)
                     data_recon[i] = data_recon[i] / 255
+                data_recon = np.reshape(data_recon, 32 * 32 * 3)
             # data_recon, label_recon = self.x_sampler.load_all()
         else:
             data_recon, label_recon = self.x_sampler.test()
@@ -371,7 +373,6 @@ class clusGAN(object):
             ima_predictions.append(label_pred)
             past_true_label = true_label
             past_ima_index = ima_index
-
 
         label_recon = np.asarray(final_true_labels)
         labelsss = np.asarray(final_labels_predicted)
@@ -413,7 +414,8 @@ class clusGAN(object):
               .format(self.data, self.model, self.sampler, self.z_dim, self.beta_cycle_label, self.beta_cycle_gen))
         print(
             ' #Points = {}, K = {}, Purity = {},  NMI = {}, ARI = {}, Latent space shape = {}, P2={}, nmi2={}, ari2={} '
-                .format(latent_rep.shape[0], self.num_classes, purity2, nmi2, ari2, latent_rep.shape, purity2, nmi2, ari2))
+                .format(latent_rep.shape[0], self.num_classes, purity2, nmi2, ari2, latent_rep.shape, purity2, nmi2,
+                        ari2))
 
         print('Latent')
         # Esto es un punto en el espacio n-dim.
@@ -597,10 +599,12 @@ class clusGAN(object):
 
         if 'colors' in args.data:
             import cv2
+            data_recon = xs.data2img(data_recon)
             print(f'CIE-LAB! Bx: {data_recon.shape[0]}')
             for i in range(data_recon.shape[0]):
                 data_recon[i] = cv2.cvtColor((data_recon[i] * 255).astype(np.uint8), cv2.COLOR_RGB2LAB)
                 data_recon[i] = data_recon[i] / 255
+            data_recon = np.reshape(data_recon, 32 * 32 * 3)
 
         # data_recon, label_recon = self.x_sampler.load_all()
         label_recon_labels = {0: 'black', 1: 'blue', 2: 'brown', 3: 'green', 4: 'grey', 5: 'orange', 6: 'pink',
