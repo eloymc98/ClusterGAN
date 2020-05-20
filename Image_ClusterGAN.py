@@ -15,6 +15,7 @@ from visualize import *
 import util
 import logging
 import shutil
+from collections import Counter
 
 logger = logging.getLogger()
 
@@ -529,11 +530,11 @@ class clusGAN(object):
 
         co_mat = pd.crosstab(df.label, df.cluster)
         sn.set(font_scale=2)
-        #plt.tight_layout()
-        #plt.figure(figsize=(14.4, 10.8))
-        fig = plt.figure(figsize=(8,6))
-        ax1 = fig.add_axes([0.4,0.2,0.5,0.6])
-        sn.heatmap(co_mat, ax =ax1)
+        # plt.tight_layout()
+        # plt.figure(figsize=(14.4, 10.8))
+        fig = plt.figure(figsize=(8, 6))
+        ax1 = fig.add_axes([0.4, 0.2, 0.5, 0.6])
+        sn.heatmap(co_mat, ax=ax1)
         plt.savefig(f'{self.data}_{self.num_classes}_matrix.png')
         # tengo labels reales y label generadas y el mapeo correspondiente
         # from sklearn.metrics import confusion_matrix
@@ -554,12 +555,16 @@ class clusGAN(object):
         # sn.heatmap(df_cm, annot=True, annot_kws={"size": 16})  # font size
         # plt.savefig("cm.png")
 
+    def most_frequent(self, x):
+        occurence_count = Counter(x)
+        return occurence_count.most_common(1)[0][0]
+
     def colors_confusion_matrix(self):
 
         import pandas as pd
         import seaborn as sn
 
-        data_recon, label_recon = self.x_sampler.test()
+        data_recon, label_recon, ima_names = self.x_sampler.test(index=True)
 
         # if 'colors' in args.data:
         #     import cv2
@@ -584,29 +589,51 @@ class clusGAN(object):
         recon_batch_size = self.batch_size
 
         labels_predicted = np.zeros(shape=(num_pts_to_plot))
+        zhats_gen, zhats_label = self.sess.run([self.z_infer_gen, self.z_infer_label], feed_dict={self.x: data_recon})
+        labels_predicted = np.argmax(zhats_label, axis=1)
+        print(f'Labels predicted co-mat shape:!!!!!! {labels_predicted.shape}')
+
+        final_labels_predicted = []
+        final_true_labels = []
+        past_true_label = true_labels_mapped[0]
+        past_ima_index = ima_names[0]
+        ima_predictions = []
+        for i in range(num_pts_to_plot):
+            label_pred = labels_predicted[i]
+            true_label = true_labels_mapped[i]
+            ima_index = ima_names[i]
+            if ima_index != past_ima_index:
+                final_labels_predicted.append(self.most_frequent(ima_predictions))
+                final_true_labels.append(past_true_label)
+                ima_predictions = []
+            ima_predictions.append(label_pred)
+            past_true_label = true_label
+            past_ima_index = ima_index
+        print(f'Labels predicted finaaal len:!!!!!! {len(final_labels_predicted)}')
+
         # labels_predicted_mapped = []
-        for b in range(int(np.ceil(num_pts_to_plot * 1.0 / recon_batch_size))):
-            if (b + 1) * recon_batch_size > num_pts_to_plot:
-                pt_indx = np.arange(b * recon_batch_size, num_pts_to_plot)
-            else:
-                pt_indx = np.arange(b * recon_batch_size, (b + 1) * recon_batch_size)
-            xtrue = data_recon[pt_indx, :]
-
-            zhats_gen, zhats_label = self.sess.run([self.z_infer_gen, self.z_infer_label], feed_dict={self.x: xtrue})
-
-            labels_predicted[pt_indx] = np.argmax(zhats_label, axis=1)
-            # print(np.argmax(zhats_label, axis=1))
-            # x = np.argmax(zhats_label, axis=1)
-            # for value in list(x):
-            #     labels_predicted_mapped.append(mode_labels[value])
+        # for b in range(int(np.ceil(num_pts_to_plot * 1.0 / recon_batch_size))):
+        #     if (b + 1) * recon_batch_size > num_pts_to_plot:
+        #         pt_indx = np.arange(b * recon_batch_size, num_pts_to_plot)
+        #     else:
+        #         pt_indx = np.arange(b * recon_batch_size, (b + 1) * recon_batch_size)
+        #     xtrue = data_recon[pt_indx, :]
+        #
+        #     zhats_gen, zhats_label = self.sess.run([self.z_infer_gen, self.z_infer_label], feed_dict={self.x: xtrue})
+        #
+        #     labels_predicted[pt_indx] = np.argmax(zhats_label, axis=1)
+        # print(np.argmax(zhats_label, axis=1))
+        # x = np.argmax(zhats_label, axis=1)
+        # for value in list(x):
+        #     labels_predicted_mapped.append(mode_labels[value])
 
         # hacer dataframe con columnas y_real, y_pred
-        df = pd.DataFrame(columns=['true', 'pred'])
-        df['true'] = true_labels_mapped
-        df['pred'] = labels_predicted.astype(np.uint8)
+        df = pd.DataFrame(columns=['label', 'cluster'])
+        df['label'] = final_true_labels
+        df['cluster'] = final_labels_predicted
         print(df.head())
 
-        co_mat = pd.crosstab(df.true, df.pred)
+        co_mat = pd.crosstab(df.label, df.cluster)
         sn.set(font_scale=1.4)
         sn.heatmap(co_mat)
         plt.savefig('co-ocurrence.png')

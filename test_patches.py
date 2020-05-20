@@ -14,7 +14,8 @@ class_labels = {'black': 0, 'blue': 1, 'brown': 2, 'green': 3, 'grey': 4, 'orang
 f = open('/Users/eloymarinciudad/Downloads/ebay/test_images.txt')
 data = []
 labels = []
-patch_number = 0
+ima_numbers = []
+ima_number = 0
 first = True
 for line in f:
     line = line.replace('./', '')
@@ -34,7 +35,7 @@ for line in f:
     res = cv2.bitwise_and(img, img, mask=mask)
     # plt.imsave('res.png', res)
     patches = image.extract_patches_2d(res, (1, 1))
-    for i in range(10):
+    for i in range(50):
         random_index = random.randrange(len(patches))
         patch = patches[random_index]
         count = 0
@@ -52,6 +53,7 @@ for line in f:
         patch = cv2.resize(patch, dsize=(32, 32), interpolation=cv2.INTER_NEAREST)
         # plt.imsave('prueba2.png', patch)
         labels.append(label)
+        ima_numbers.append(ima_number)
         patch = patch / 255
         patch = np.reshape(patch, 32 * 32 * 3)
         if first:
@@ -59,11 +61,11 @@ for line in f:
             first = False
         else:
             dataset = np.vstack((dataset, patch))
-        patch_number += 1
-
-print(patch_number)
+    ima_number += 1
 
 labels = np.asarray(labels)
+ima_numbers = np.asarray(ima_number)
 np.save('colors_new_test_point_data_rgb.npy', dataset)
 np.save('colors_new_test_point_labels_rgb.npy', labels)
+np.save('colors_new_test_point_imanumbers_rgb.npy', ima_numbers)
 f.close()
