@@ -324,9 +324,11 @@ class clusGAN(object):
 
         if val:
             data_recon, label_recon = self.x_sampler.validation()
+        elif 'colors' in self.data:
+            data_recon, label_recon, ima_names = self.x_sampler.test(index=True)
+            # data_recon, label_recon = self.x_sampler.load_all()
         else:
             data_recon, label_recon = self.x_sampler.test()
-            # data_recon, label_recon = self.x_sampler.load_all()
 
         num_pts_to_plot = data_recon.shape[0]  # num of images
         recon_batch_size = self.batch_size
@@ -346,6 +348,27 @@ class clusGAN(object):
             if b == 1:
                 print(f'labels {labelsss}')
             latent[pt_indx, :] = np.concatenate((zhats_gen, zhats_label), axis=1)
+
+        final_labels_predicted = []
+        final_true_labels = []
+        past_true_label = label_recon[0]
+        past_ima_index = ima_names[0]
+        ima_predictions = []
+        for i in range(num_pts_to_plot):
+            label_pred = labelsss[i]
+            true_label = label_recon[i]
+            ima_index = ima_names[i]
+            if ima_index != past_ima_index:
+                final_labels_predicted.append(self.most_frequent(ima_predictions))
+                final_true_labels.append(past_true_label)
+                ima_predictions = []
+            ima_predictions.append(label_pred)
+            past_true_label = true_label
+            past_ima_index = ima_index
+
+
+        label_recon = final_true_labels
+        labelsss = final_labels_predicted
 
         if self.beta_cycle_gen == 0:
             km = self._eval_cluster(latent[:, self.dim_gen:], label_recon, timestamp, val, labelsss)
