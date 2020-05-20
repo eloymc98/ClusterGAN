@@ -44,7 +44,7 @@ class DataSampler(object):
         self.test_data = np.load('/content/colors_new_test_point_data_rgb.npy')
         # self.test_data = np.reshape(self.test_data, [self.test_data.shape[0], 32 * 32 * 3])
         self.test_labels = np.load('/content/colors_new_test_point_labels_rgb.npy')
-        self.test_ima_names = np.load('colors_new_test_point_imanumbers_rgb.npy')
+        self.test_ima_names = np.load('/content/colors_new_test_point_imanumbers_rgb.npy')
         # self.test_img_names = pd.read_csv('/content/test_patches_2.csv', header=None, names=['path', 'patch_index'])
         np.random.shuffle(self.train_data)
 
