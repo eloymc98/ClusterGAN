@@ -567,6 +567,7 @@ class clusGAN(object):
         #     for i in range(data_recon.shape[0]):
         #         data_recon[i] = cv2.cvtColor((data_recon[i] * 255).astype(np.uint8), cv2.COLOR_RGB2LAB)
         #         data_recon[i] = data_recon[i] / 255
+
         # data_recon, label_recon = self.x_sampler.load_all()
         label_recon_labels = {0: 'black', 1: 'blue', 2: 'brown', 3: 'green', 4: 'grey', 5: 'orange', 6: 'pink',
                               7: 'purple', 8: 'red', 9: 'white', 10: 'yellow'}
@@ -607,7 +608,7 @@ class clusGAN(object):
 
         co_mat = pd.crosstab(df.true, df.pred)
         sn.set(font_scale=1.4)
-        sn.heatmap(co_mat, annot=True, annot_kws={"size": 16})
+        sn.heatmap(co_mat)
         plt.savefig('co-ocurrence.png')
         # tengo labels reales y label generadas y el mapeo correspondiente
         # from sklearn.metrics import confusion_matrix
