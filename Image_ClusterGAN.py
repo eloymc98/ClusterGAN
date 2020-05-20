@@ -367,8 +367,8 @@ class clusGAN(object):
             past_ima_index = ima_index
 
 
-        label_recon = final_true_labels
-        labelsss = final_labels_predicted
+        label_recon = np.asarray(final_true_labels)
+        labelsss = np.asarray(final_labels_predicted)
 
         if self.beta_cycle_gen == 0:
             km = self._eval_cluster(latent[:, self.dim_gen:], label_recon, timestamp, val, labelsss)
