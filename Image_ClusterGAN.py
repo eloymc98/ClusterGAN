@@ -326,6 +326,12 @@ class clusGAN(object):
             data_recon, label_recon = self.x_sampler.validation()
         elif 'colors' in self.data:
             data_recon, label_recon, ima_names = self.x_sampler.test(index=True)
+            if 'colors' in args.data:
+                import cv2
+                print(f'CIE-LAB! Bx: {data_recon.shape[0]}')
+                for i in range(data_recon.shape[0]):
+                    data_recon[i] = cv2.cvtColor((data_recon[i] * 255).astype(np.uint8), cv2.COLOR_RGB2LAB)
+                    data_recon[i] = data_recon[i] / 255
             # data_recon, label_recon = self.x_sampler.load_all()
         else:
             data_recon, label_recon = self.x_sampler.test()
@@ -423,7 +429,7 @@ class clusGAN(object):
                 '{}, {} : K = {}, z_dim = {}, beta_label = {}, beta_gen = {}, sampler = {}, Purity = {}, NMI = {}, ARI = {}\n'
                     .format(timestamp, data_split, self.num_classes, self.z_dim, self.beta_cycle_label,
                             self.beta_cycle_gen,
-                            self.sampler, purity, nmi, ari))
+                            self.sampler, purity2, nmi2, ari2))
             f.flush()
 
         return km
@@ -589,12 +595,12 @@ class clusGAN(object):
 
         data_recon, label_recon, ima_names = self.x_sampler.test(index=True)
 
-        # if 'colors' in args.data:
-        #     import cv2
-        #     print(f'CIE-LAB! Bx: {data_recon.shape[0]}')
-        #     for i in range(data_recon.shape[0]):
-        #         data_recon[i] = cv2.cvtColor((data_recon[i] * 255).astype(np.uint8), cv2.COLOR_RGB2LAB)
-        #         data_recon[i] = data_recon[i] / 255
+        if 'colors' in args.data:
+            import cv2
+            print(f'CIE-LAB! Bx: {data_recon.shape[0]}')
+            for i in range(data_recon.shape[0]):
+                data_recon[i] = cv2.cvtColor((data_recon[i] * 255).astype(np.uint8), cv2.COLOR_RGB2LAB)
+                data_recon[i] = data_recon[i] / 255
 
         # data_recon, label_recon = self.x_sampler.load_all()
         label_recon_labels = {0: 'black', 1: 'blue', 2: 'brown', 3: 'green', 4: 'grey', 5: 'orange', 6: 'pink',
