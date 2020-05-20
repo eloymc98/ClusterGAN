@@ -560,6 +560,13 @@ class clusGAN(object):
         import seaborn as sn
 
         data_recon, label_recon = self.x_sampler.test()
+
+        if 'colors' in args.data:
+            import cv2
+            print(f'CIE-LAB! Bx: {data_recon.shape[0]}')
+            for i in range(data_recon.shape[0]):
+                data_recon[i] = cv2.cvtColor((data_recon[i] * 255).astype(np.uint8), cv2.COLOR_RGB2LAB)
+                data_recon[i] = data_recon[i] / 255
         # data_recon, label_recon = self.x_sampler.load_all()
         label_recon_labels = {0: 'black', 1: 'blue', 2: 'brown', 3: 'green', 4: 'grey', 5: 'orange', 6: 'pink',
                               7: 'purple', 8: 'red', 9: 'white', 10: 'yellow'}
