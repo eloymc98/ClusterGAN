@@ -328,7 +328,7 @@ class clusGAN(object):
             data_recon, label_recon, ima_names = self.x_sampler.test(index=True)
             if 'colors' in args.data:
                 import cv2
-                print(f'CIE-LAB! Bx: {data_recon.shape[0]}')
+                print(f'CIE-LAB! Bx: {data_recon.shape[0]} {type(data_recon)}')
                 for i in range(data_recon.shape[0]):
                     data_recon[i] = cv2.cvtColor((data_recon[i] * 255).astype(np.uint8), cv2.COLOR_RGB2LAB)
                     data_recon[i] = data_recon[i] / 255
