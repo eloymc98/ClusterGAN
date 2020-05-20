@@ -596,6 +596,8 @@ class clusGAN(object):
         final_labels_predicted = []
         final_true_labels = []
         past_true_label = true_labels_mapped[0]
+        print(ima_names)
+        print(ima_names.shape)
         past_ima_index = ima_names[0]
         ima_predictions = []
         for i in range(num_pts_to_plot):
