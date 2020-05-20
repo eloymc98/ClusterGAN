@@ -35,7 +35,7 @@ for line in f:
     res = cv2.bitwise_and(img, img, mask=mask)
     # plt.imsave('res.png', res)
     patches = image.extract_patches_2d(res, (1, 1))
-    for i in range(50):
+    for i in range(25):
         random_index = random.randrange(len(patches))
         patch = patches[random_index]
         count = 0
@@ -64,7 +64,7 @@ for line in f:
     ima_number += 1
 
 labels = np.asarray(labels)
-ima_numbers = np.asarray(ima_number)
+ima_numbers = np.asarray(ima_numbers)
 np.save('colors_new_test_point_data_rgb.npy', dataset)
 np.save('colors_new_test_point_labels_rgb.npy', labels)
 np.save('colors_new_test_point_imanumbers_rgb.npy', ima_numbers)
