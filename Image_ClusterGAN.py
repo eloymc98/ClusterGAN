@@ -579,7 +579,7 @@ class clusGAN(object):
         sn.heatmap(co_mat, ax=ax1)
         plt.savefig(f'{self.data}_{self.num_classes}_matrix.png')
 
-        co_mat2 = pd.crosstab(df.label, df.cluster, normalize='index')
+        co_mat2 = pd.crosstab(df.label, df.cluster, normalize='all')
         sn.set(font_scale=2)
         # plt.tight_layout()
         # plt.figure(figsize=(14.4, 10.8))
