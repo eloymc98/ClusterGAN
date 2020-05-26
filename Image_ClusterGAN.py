@@ -569,7 +569,7 @@ class clusGAN(object):
         df['label'] = true_labels_mapped
         df['cluster'] = labels_predicted.astype(np.uint8)
         print(df.head())
-
+        df2 = df
         co_mat = pd.crosstab(df.label, df.cluster, normalize='index')
         sn.set(font_scale=2)
         # plt.tight_layout()
@@ -579,7 +579,7 @@ class clusGAN(object):
         sn.heatmap(co_mat, ax=ax1)
         plt.savefig(f'{self.data}_{self.num_classes}_matrix.png')
 
-        co_mat2 = pd.crosstab(df.label, df.cluster, normalize='all')
+        co_mat2 = pd.crosstab(df2.label, df2.cluster, normalize='all')
         sn.set(font_scale=2)
         # plt.tight_layout()
         # plt.figure(figsize=(14.4, 10.8))
