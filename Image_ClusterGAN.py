@@ -692,6 +692,12 @@ class clusGAN(object):
         sn.set(font_scale=1.4)
         sn.heatmap(co_mat)
         plt.savefig('co-ocurrence.png')
+
+        from scipy.optimize import linear_sum_assignment
+        print(co_mat.head())
+        row_ind, col_ind = linear_sum_assignment(co_mat.values)
+        print(f'Row_ind: {row_ind}')
+        print(f'Col_ind: {col_ind}')
         # tengo labels reales y label generadas y el mapeo correspondiente
         # from sklearn.metrics import confusion_matrix
         # y_pred = []
