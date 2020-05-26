@@ -404,9 +404,15 @@ class clusGAN(object):
         # ari = adjusted_rand_score(labels_true, labels_pred)
         # nmi = normalized_mutual_info_score(labels_true, labels_pred)
 
+        random_labels = np.random.randint(low=0, high=self.num_classes - 1, size=len(labels_predicted))
+
         purity2 = metric.compute_purity(labels_predicted, labels_true)
         ari2 = adjusted_rand_score(labels_true, labels_predicted)
         nmi2 = normalized_mutual_info_score(labels_true, labels_predicted)
+
+        purity_random = metric.compute_purity(random_labels, labels_true)
+        ari_random = adjusted_rand_score(labels_true, random_labels)
+        nmi_random = normalized_mutual_info_score(labels_true, random_labels)
 
         if val:
             data_split = 'Validation'
@@ -420,6 +426,7 @@ class clusGAN(object):
             ' #Points = {}, K = {}, Purity = {},  NMI = {}, ARI = {}, Latent space shape = {}, P2={}, nmi2={}, ari2={} '
                 .format(latent_rep.shape[0], self.num_classes, purity2, nmi2, ari2, latent_rep.shape, purity2, nmi2,
                         ari2))
+        print(' RANDOM!!!!!!!  Purity = {},  NMI = {}, ARI = {}'.format(purity_random, nmi_random, ari_random))
 
         print('Latent')
         # Esto es un punto en el espacio n-dim.
