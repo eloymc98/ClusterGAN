@@ -390,6 +390,8 @@ class clusGAN(object):
         if self.data == 'fashion' and self.num_classes == 5:
             map_labels = {0: 0, 1: 1, 2: 2, 3: 0, 4: 2, 5: 3, 6: 2, 7: 3, 8: 4, 9: 3}
             labels_true = np.array([map_labels[i] for i in labels_true])
+        elif self.data == 'colors':
+            map_labels = {}
 
         km = KMeans(n_clusters=max(self.num_classes, len(np.unique(labels_true))), random_state=0, verbose=1).fit(
             latent_rep)
@@ -726,7 +728,7 @@ class clusGAN(object):
         df['cluster'] = labels_predicted.astype(np.uint8)
         print(df.head())
 
-        co_mat = pd.crosstab(df.label, df.cluster)
+        co_mat = pd.crosstab(df.label, df.cluster, normalize='all')
         sn.set(font_scale=1.4)
         sn.heatmap(co_mat)
         plt.savefig('co-ocurrence.png')
