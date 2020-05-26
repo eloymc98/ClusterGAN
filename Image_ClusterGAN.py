@@ -578,6 +578,15 @@ class clusGAN(object):
         ax1 = fig.add_axes([0.4, 0.2, 0.5, 0.6])
         sn.heatmap(co_mat, ax=ax1)
         plt.savefig(f'{self.data}_{self.num_classes}_matrix.png')
+
+        co_mat2 = pd.crosstab(df.label, df.cluster, normalize='index')
+        sn.set(font_scale=2)
+        # plt.tight_layout()
+        # plt.figure(figsize=(14.4, 10.8))
+        fig = plt.figure(figsize=(8, 6))
+        ax1 = fig.add_axes([0.4, 0.2, 0.5, 0.6])
+        sn.heatmap(co_mat2, ax=ax1)
+        plt.savefig(f'{self.data}_{self.num_classes}_matrix_all.png')
         # tengo labels reales y label generadas y el mapeo correspondiente
         # from sklearn.metrics import confusion_matrix
         # y_pred = []
