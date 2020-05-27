@@ -617,7 +617,7 @@ class clusGAN(object):
         import pandas as pd
         from scipy.optimize import linear_sum_assignment
 
-        data_recon, label_recon = self.x_sampler.train(label=True)
+        data_recon, label_recon = self.x_sampler.load_all_train()
         num_pts_to_plot = data_recon.shape[0]  # num of images
         recon_batch_size = self.batch_size
 

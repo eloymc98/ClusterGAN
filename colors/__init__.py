@@ -70,8 +70,8 @@ class DataSampler(object):
         #                        batch size       [32,32,3]
         return np.reshape(data, [data.shape[0]] + self.shape)
 
-    def load_all(self):
-        pass
+    def load_all_train(self):
+        return self.train_data, self.train_labels
 
 # class NoiseSampler(object):
 #
