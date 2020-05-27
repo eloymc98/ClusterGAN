@@ -531,7 +531,7 @@ class clusGAN(object):
                                     'v28': zhats_gen[:, 28], 'v29': zhats_gen[:, 29], 'v30': zhats_label[:, 0], 'v31': zhats_label[:, 1],
                                     'v32': zhats_label[:, 2], 'v33': zhats_label[:, 3], 'v34': zhats_label[:, 4], 'v35': zhats_label[:, 5],
                                     'v36': zhats_label[:, 6], 'v37': zhats_label[:, 7], 'v38': zhats_label[:, 8], 'v39': zhats_label[:, 9],
-                                    'label': training_labels
+                                    'label': np.argmax(zhats_label, axis=1)
                                     })
         
         df_test = pd.DataFrame({'v0': test_zhats_gen[:, 0], 'v1': test_zhats_gen[:, 1], 'v2': test_zhats_gen[:, 2], 'v3': test_zhats_gen[:, 3],
@@ -549,6 +549,7 @@ class clusGAN(object):
         neigh = KNeighborsClassifier(n_neighbors=5)
         neigh.fit(df_training.iloc[:, 0:40], df_training['label'])
         knn_predictions = neigh.predict(df_test.iloc[:, 0:40])
+        knn_predictions = np.array([cluster_to_label_mapping[c] for c in knn_predictions])
         print(knn_predictions.shape)
         acc_knn = accuracy_score(true_labels, knn_predictions)
         print(f'ACCURACY with knn: {acc_knn}')
@@ -557,7 +558,7 @@ class clusGAN(object):
         print(df_cm2.head())
         sn.set(font_scale=1.4)  # for label size
         sn.heatmap(df_cm2)  # font size
-        plt.savefig("confusion_matrix_knn.png")
+        plt.savefig("confusion_matrix_knn2.png")
 
 
 
