@@ -44,6 +44,9 @@ class DataSampler(object):
 
         return X, Y.flatten()
 
+    def load_all_train(self):
+        return mnist.train.images, mnist.train.labels
+
 
 class NoiseSampler(object):
 

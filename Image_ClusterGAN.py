@@ -509,6 +509,26 @@ class clusGAN(object):
         sn.heatmap(df_cm)  # font size
         plt.savefig("confusion_matrix_argmax.png")
 
+        training_data, training_labels = self.x_sampler.load_all_train()
+        zhats_gen, zhats_label = self.sess.run([self.z_infer_gen, self.z_infer_label], feed_dict={self.x: training_data})
+
+        #crear un dataframe con training data, 1 column por dim + col de label
+        df_training = pd.DataFrame({'v0': zhats_gen[:, 0], 'v1': zhats_gen[:, 1], 'v2': zhats_gen[:, 2], 'v3': zhats_gen[:, 3],
+                                    'v4': zhats_gen[:, 4], 'v5': zhats_gen[:, 5], 'v6': zhats_gen[:, 6], 'v7': zhats_gen[:, 7],
+                                    'v8': zhats_gen[:, 8], 'v9': zhats_gen[:, 9], 'v10': zhats_gen[:, 10], 'v11': zhats_gen[:, 11],
+                                    'v12': zhats_gen[:, 12], 'v13': zhats_gen[:, 13], 'v14': zhats_gen[:, 14], 'v15': zhats_gen[:, 15],
+                                    'v16': zhats_gen[:, 16], 'v17': zhats_gen[:, 17], 'v18': zhats_gen[:, 18], 'v19': zhats_gen[:, 19],
+                                    'v20': zhats_gen[:, 20], 'v21': zhats_gen[:, 21], 'v22': zhats_gen[:, 22], 'v23': zhats_gen[:, 23],
+                                    'v24': zhats_gen[:, 24], 'v25': zhats_gen[:, 25], 'v26': zhats_gen[:, 26], 'v27': zhats_gen[:, 27],
+                                    'v28': zhats_gen[:, 28], 'v29': zhats_gen[:, 29], 'v30': zhats_label[:, 0], 'v31': zhats_label[:, 1],
+                                    'v32': zhats_label[:, 2], 'v33': zhats_label[:, 3], 'v34': zhats_label[:, 4], 'v35': zhats_label[:, 5],
+                                    'v36': zhats_label[:, 6], 'v37': zhats_label[:, 7], 'v38': zhats_label[:, 8], 'v39': zhats_label[:, 9],
+                                    'label': training_labels
+                                    })
+        print(df_training.head())
+
+
+
     def encoder_to_gen(self, bx):
         # bx, bx_labels = self.x_sampler.test()
         # solo coger unas cuantas, no las 2758 imagenes
