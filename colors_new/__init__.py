@@ -36,17 +36,17 @@ class DataSampler(object):
         #self.train_data = np.load('/content/colors_new_train_patches_data.npy')
         #self.train_labels = np.load('/content/colors_new_train_patches_labels.npy')
 
-        self.train_data = np.load('/content/colors_train_rgb_data.npy')
-        self.train_labels = np.load('/content/colors_train_rgb_labels.npy')
-        # self.train_data = np.load('/content/colors_train_labimg_data.npy')
-        # self.train_labels = np.load('/content/colors_train_labimg_labels.npy')
+        #self.train_data = np.load('/content/colors_train_rgb_data.npy')
+        #self.train_labels = np.load('/content/colors_train_rgb_labels.npy')
+        self.train_data = np.load('/content/colors_train_labimg_data.npy')
+        self.train_labels = np.load('/content/colors_train_labimg_labels.npy')
 
         self.test_data = np.load('/content/colors_new_test_patch5_data_rgb.npy')
         # self.test_data = np.reshape(self.test_data, [self.test_data.shape[0], 32 * 32 * 3])
         self.test_labels = np.load('/content/colors_new_test_patch5_labels_rgb.npy')
         self.test_ima_names = np.load('/content/colors_new_test_patch5_imanumbers_rgb.npy')
         # self.test_img_names = pd.read_csv('/content/test_patches_2.csv', header=None, names=['path', 'patch_index'])
-        np.random.shuffle(self.train_data)
+        # np.random.shuffle(self.train_data)
 
     def load_label_names(self):
         return ['black', 'blue', 'brown', 'green', 'grey', 'orange', 'pink', 'purple', 'red', 'white', 'yellow']
@@ -63,22 +63,22 @@ class DataSampler(object):
         self.count += 1
         if batch_size * self.count <= self.train_data.shape[0]:
             features = self.train_data[(self.count - 1) * batch_size:batch_size * self.count]
-            # labels = self.train_labels[(self.count - 1) * batch_size:batch_size * self.count]
+            labels = self.train_labels[(self.count - 1) * batch_size:batch_size * self.count]
         else:
             features1 = self.train_data[(self.count - 1) * batch_size:]
-            # labels1 = self.train_labels[(self.count - 1) * batch_size:]
+            labels1 = self.train_labels[(self.count - 1) * batch_size:]
             f2 = self.train_data[:batch_size * self.count - self.train_data.shape[0]]
-            # l2 = self.train_labels[:batch_size * self.count - self.train_data.shape[0]]
+            l2 = self.train_labels[:batch_size * self.count - self.train_data.shape[0]]
             features = np.vstack((features1, f2))
-            # labels = np.append(labels1, l2)
+            labels = np.append(labels1, l2)
             self.count = 0
 
-        return features
+        #return features
 
-        # if label:
-        #     return features, labels
-        # else:
-        #     return features
+        if label:
+            return features, labels
+        else:
+            return features
 
     def test(self, index=False):
         # return self.test_data, self.test_labels, self.test_img_names

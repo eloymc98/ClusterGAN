@@ -359,25 +359,26 @@ class clusGAN(object):
                 print(f'labels {labelsss}')
             latent[pt_indx, :] = np.concatenate((zhats_gen, zhats_label), axis=1)
 
-        # final_labels_predicted = []
-        # final_true_labels = []
-        # past_true_label = label_recon[0]
-        # past_ima_index = ima_names[0]
-        # ima_predictions = []
-        # for i in range(num_pts_to_plot):
-        #     label_pred = labelsss[i]
-        #     true_label = label_recon[i]
-        #     ima_index = ima_names[i]
-        #     if ima_index != past_ima_index:
-        #         final_labels_predicted.append(self.most_frequent(ima_predictions))
-        #         final_true_labels.append(past_true_label)
-        #         ima_predictions = []
-        #     ima_predictions.append(label_pred)
-        #     past_true_label = true_label
-        #     past_ima_index = ima_index
-        #
-        # label_recon = np.asarray(final_true_labels)
-        # labelsss = np.asarray(final_labels_predicted)
+        if 'colors' in self.data:
+            final_labels_predicted = []
+            final_true_labels = []
+            past_true_label = label_recon[0]
+            past_ima_index = ima_names[0]
+            ima_predictions = []
+            for i in range(num_pts_to_plot):
+                label_pred = labelsss[i]
+                true_label = label_recon[i]
+                ima_index = ima_names[i]
+                if ima_index != past_ima_index:
+                    final_labels_predicted.append(self.most_frequent(ima_predictions))
+                    final_true_labels.append(past_true_label)
+                    ima_predictions = []
+                ima_predictions.append(label_pred)
+                past_true_label = true_label
+                past_ima_index = ima_index
+
+            label_recon = np.asarray(final_true_labels)
+            labelsss = np.asarray(final_labels_predicted)
 
         if self.beta_cycle_gen == 0:
             km = self._eval_cluster(latent[:, self.dim_gen:], label_recon, timestamp, val, labelsss)
@@ -392,6 +393,8 @@ class clusGAN(object):
             labels_true = np.array([map_labels[i] for i in labels_true])
         elif self.data == 'colors':
             map_labels = {}
+            # Row_ind: [0  1  2  3  4  5  6  7  8  9 10]
+            # Col_ind: [10  8  5  7  6  4  1  0  9  2  3]
 
         km = KMeans(n_clusters=max(self.num_classes, len(np.unique(labels_true))), random_state=0, verbose=1).fit(
             latent_rep)
@@ -609,6 +612,30 @@ class clusGAN(object):
     def most_frequent(self, x):
         occurence_count = Counter(x)
         return occurence_count.most_common(1)[0][0]
+
+    def assignment_problem(self):
+        import pandas as pd
+        from scipy.optimize import linear_sum_assignment
+
+        data_recon, label_recon = self.x_sampler.train(label=True)
+        num_pts_to_plot = data_recon.shape[0]  # num of images
+        recon_batch_size = self.batch_size
+
+        labels_predicted = np.zeros(shape=(num_pts_to_plot))
+        zhats_gen, zhats_label = self.sess.run([self.z_infer_gen, self.z_infer_label], feed_dict={self.x: data_recon})
+        labels_predicted = np.argmax(zhats_label, axis=1)
+        print(f'Labels predicted co-mat shape:!!!!!! {labels_predicted.shape}')
+
+        df = pd.DataFrame(columns=['label', 'cluster'])
+        df['label'] = label_recon
+        df['cluster'] = labels_predicted
+        print(df.head())
+
+        co_mat = pd.crosstab(df.label, df.cluster, normalize='all')
+        print(co_mat.head())
+        row_ind, col_ind = linear_sum_assignment(co_mat.values)
+        print(f'Row_ind: {row_ind}')
+        print(f'Col_ind: {col_ind}')
 
     def colors_confusion_matrix(self):
 
