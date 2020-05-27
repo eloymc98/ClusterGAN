@@ -322,7 +322,7 @@ class clusGAN(object):
 
                 imwrite('logs/{}_mode{}_samples.png'.format(self.data, m), mode_bx)
 
-    def recon_enc(self, timestamp, val=True):
+    def recon_enc(self, timestamp, val=True, mapping=None):
 
         if val:
             data_recon, label_recon = self.x_sampler.validation()
@@ -381,17 +381,18 @@ class clusGAN(object):
             labelsss = np.asarray(final_labels_predicted)
 
         if self.beta_cycle_gen == 0:
-            km = self._eval_cluster(latent[:, self.dim_gen:], label_recon, timestamp, val, labelsss)
+            km = self._eval_cluster(latent[:, self.dim_gen:], label_recon, timestamp, val, labelsss, mapping)
         else:
-            km = self._eval_cluster(latent, label_recon, timestamp, val, labelsss)
+            km = self._eval_cluster(latent, label_recon, timestamp, val, labelsss, mapping)
         return km, latent
 
-    def _eval_cluster(self, latent_rep, labels_true, timestamp, val, labels_predicted):
+    def _eval_cluster(self, latent_rep, labels_true, timestamp, val, labels_predicted, mapping):
 
         if self.data == 'fashion' and self.num_classes == 5:
             map_labels = {0: 0, 1: 1, 2: 2, 3: 0, 4: 2, 5: 3, 6: 2, 7: 3, 8: 4, 9: 3}
             labels_true = np.array([map_labels[i] for i in labels_true])
         elif self.data == 'colors':
+            # si ha caido en el cluster 0 es para el color 10, cluster 1 para el color 8, ...
             map_labels = {}
             # Row_ind: [0  1  2  3  4  5  6  7  8  9 10]
             # Col_ind: [10  8  5  7  6  4  1  0  9  2  3]
@@ -416,6 +417,11 @@ class clusGAN(object):
         purity_random = metric.compute_purity(random_labels, labels_true)
         ari_random = adjusted_rand_score(labels_true, random_labels)
         nmi_random = normalized_mutual_info_score(labels_true, random_labels)
+
+        if mapping:
+            acc = metric.compute_purity_assigned(labels_predicted, labels_true, mapping)
+
+            print(f'ACCURACYYYYY! {acc}')
 
         if val:
             data_split = 'Validation'
@@ -633,9 +639,15 @@ class clusGAN(object):
 
         co_mat = pd.crosstab(df.label, df.cluster, normalize='all')
         print(co_mat.head())
-        row_ind, col_ind = linear_sum_assignment(co_mat.values)
-        print(f'Row_ind: {row_ind}')
-        print(f'Col_ind: {col_ind}')
+        class_ind, cluster_ind = linear_sum_assignment(co_mat.values)
+        print(f'Row_ind: {class_ind}')
+        print(f'Col_ind: {cluster_ind}')
+        mapping = dict(zip(class_ind, cluster_ind))
+        print(mapping)
+
+        #Row_ind: [0  1  2  3  4  5  6  7  8  9 10]
+        #Col_ind: [10  8 11  1  2  3  0 12  4  9  5]
+        return mapping
 
     def colors_confusion_matrix(self):
 
@@ -1022,7 +1034,8 @@ if __name__ == '__main__':
         elif args.cm == 'True':
             cl_gan.co_matrix()
         elif args.ap == 'True':
-            cl_gan.assignment_problem()
+            mapping = cl_gan.assignment_problem()
+            cl_gan.recon_enc(timestamp, val=False, mapping=mapping)
         elif args.interpolate == 'True':
             cl_gan.interpolate_latent_space()
         else:
