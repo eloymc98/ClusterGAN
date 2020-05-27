@@ -941,6 +941,7 @@ if __name__ == '__main__':
     parser.add_argument('--reconstruct', type=str, default='False')
     parser.add_argument('--cm', type=str, default='False')
     parser.add_argument('--interpolate', type=str, default='False')
+    parser.add_argument('--ap', type=str, default='False')
 
     args = parser.parse_args()
     data = importlib.import_module(args.data)
@@ -1020,6 +1021,8 @@ if __name__ == '__main__':
             cl_gan.mnist_confusion_matrix()
         elif args.cm == 'True':
             cl_gan.co_matrix()
+        elif args.cm == 'True':
+            cl_gan.assignment_problem()
         elif args.interpolate == 'True':
             cl_gan.interpolate_latent_space()
         else:
