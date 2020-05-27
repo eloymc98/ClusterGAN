@@ -36,10 +36,10 @@ class DataSampler(object):
         #self.train_data = np.load('/content/colors_new_train_patches_data.npy')
         #self.train_labels = np.load('/content/colors_new_train_patches_labels.npy')
 
-        #self.train_data = np.load('/content/colors_train_rgb_data.npy')
-        #self.train_labels = np.load('/content/colors_train_rgb_labels.npy')
-        self.train_data = np.load('/content/colors_train_labimg_data.npy')
-        self.train_labels = np.load('/content/colors_train_labimg_labels.npy')
+        self.train_data = np.load('/content/colors_train_rgb_data.npy')
+        self.train_labels = np.load('/content/colors_train_rgb_labels.npy')
+        #self.train_data = np.load('/content/colors_train_labimg_data.npy')
+        #self.train_labels = np.load('/content/colors_train_labimg_labels.npy')
 
         self.test_data = np.load('/content/colors_new_test_patch5_data_rgb.npy')
         # self.test_data = np.reshape(self.test_data, [self.test_data.shape[0], 32 * 32 * 3])
