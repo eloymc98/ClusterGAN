@@ -487,18 +487,26 @@ class clusGAN(object):
         elif query.is_dir():
             return None
 
+    def euclidean_distance(row1, row2):
+        from math import sqrt
+        distance = 0.0
+        for i in range(len(row1) - 1):
+            distance += (row1[i] - row2[i]) ** 2
+        return sqrt(distance)
+
     def label_test_images(self):
         from sklearn.metrics import accuracy_score, confusion_matrix
         import seaborn as sn
         import pandas as pd
+        from sklearn.neighbors import KNeighborsClassifier
 
         data, true_labels = self.x_sampler.test()
-        zhats_gen, zhats_label, zhats_logits = self.sess.run(
+        test_zhats_gen, test_zhats_label, zhats_logits = self.sess.run(
             [self.z_infer_gen, self.z_infer_label, self.z_infer_logits], feed_dict={self.x: data})
 
         cluster_to_label_mapping = {0: 1, 1: 7, 2: 2, 3: 4, 4: 0, 5: 3, 6: 8, 7: 6, 8: 5, 9: 9}
 
-        pred_labels_argmax = np.argmax(zhats_label, axis=1)
+        pred_labels_argmax = np.argmax(test_zhats_label, axis=1)
         labels_pred_argmax = np.array([cluster_to_label_mapping[c] for c in pred_labels_argmax])
         acc_argmax = accuracy_score(true_labels, labels_pred_argmax)
         print(f'ACCURACY with argmax: {acc_argmax}')
@@ -525,7 +533,31 @@ class clusGAN(object):
                                     'v36': zhats_label[:, 6], 'v37': zhats_label[:, 7], 'v38': zhats_label[:, 8], 'v39': zhats_label[:, 9],
                                     'label': training_labels
                                     })
+        
+        df_test = pd.DataFrame({'v0': test_zhats_gen[:, 0], 'v1': test_zhats_gen[:, 1], 'v2': test_zhats_gen[:, 2], 'v3': test_zhats_gen[:, 3],
+                                    'v4': test_zhats_gen[:, 4], 'v5': test_zhats_gen[:, 5], 'v6': test_zhats_gen[:, 6], 'v7': test_zhats_gen[:, 7],
+                                    'v8': test_zhats_gen[:, 8], 'v9': test_zhats_gen[:, 9], 'v10': test_zhats_gen[:, 10], 'v11': test_zhats_gen[:, 11],
+                                    'v12': test_zhats_gen[:, 12], 'v13': test_zhats_gen[:, 13], 'v14': test_zhats_gen[:, 14], 'v15': test_zhats_gen[:, 15],
+                                    'v16': test_zhats_gen[:, 16], 'v17': test_zhats_gen[:, 17], 'v18': test_zhats_gen[:, 18], 'v19': test_zhats_gen[:, 19],
+                                    'v20': test_zhats_gen[:, 20], 'v21': test_zhats_gen[:, 21], 'v22': test_zhats_gen[:, 22], 'v23': test_zhats_gen[:, 23],
+                                    'v24': test_zhats_gen[:, 24], 'v25': test_zhats_gen[:, 25], 'v26': test_zhats_gen[:, 26], 'v27': test_zhats_gen[:, 27],
+                                    'v28': test_zhats_gen[:, 28], 'v29': test_zhats_gen[:, 29], 'v30': test_zhats_label[:, 0], 'v31': test_zhats_label[:, 1],
+                                    'v32': test_zhats_label[:, 2], 'v33': test_zhats_label[:, 3], 'v34': test_zhats_label[:, 4], 'v35': test_zhats_label[:, 5],
+                                    'v36': test_zhats_label[:, 6], 'v37': test_zhats_label[:, 7], 'v38': test_zhats_label[:, 8], 'v39': test_zhats_label[:, 9]
+                                    })
         print(df_training.head())
+        neigh = KNeighborsClassifier(n_neighbors=5)
+        neigh.fit(df_training.iloc[:, 0:39], df_training['label'])
+        knn_predictions = neigh.predict(df_test.iloc[:])
+        print(knn_predictions.shape)
+        acc_knn = accuracy_score(true_labels, knn_predictions)
+        print(f'ACCURACY with knn: {acc_knn}')
+        cm2 = confusion_matrix(true_labels, knn_predictions)
+        df_cm2 = pd.DataFrame(cm2, range(self.num_classes), range(self.num_classes))
+        print(df_cm2.head())
+        sn.set(font_scale=1.4)  # for label size
+        sn.heatmap(df_cm2)  # font size
+        plt.savefig("confusion_matrix_knn.png")
 
 
 
