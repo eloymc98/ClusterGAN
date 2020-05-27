@@ -548,7 +548,7 @@ class clusGAN(object):
         print(df_training.head())
         neigh = KNeighborsClassifier(n_neighbors=5)
         neigh.fit(df_training.iloc[:, 0:39], df_training['label'])
-        knn_predictions = neigh.predict(df_test.iloc[:])
+        knn_predictions = neigh.predict(df_test.iloc[:, 0:39])
         print(knn_predictions.shape)
         acc_knn = accuracy_score(true_labels, knn_predictions)
         print(f'ACCURACY with knn: {acc_knn}')
