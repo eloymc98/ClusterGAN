@@ -488,15 +488,26 @@ class clusGAN(object):
             return None
 
     def label_test_images(self):
-        import csv
+        from sklearn.metrics import accuracy_score, confusion_matrix
+        import seaborn as sn
         import pandas as pd
-        data, labels, df_images = self.x_sampler.test()
+
+        data, true_labels = self.x_sampler.test()
         zhats_gen, zhats_label, zhats_logits = self.sess.run(
             [self.z_infer_gen, self.z_infer_label, self.z_infer_logits], feed_dict={self.x: data})
 
-        labels = np.argmax(zhats_label, axis=1)
-        df_images['cluster'] = labels.tolist()
-        df_images.to_csv('test_clusters_2.csv', index=False)
+        cluster_to_label_mapping = {0: 1, 1: 7, 2: 2, 3: 4, 4: 0, 5: 3, 6: 8, 7: 6, 8: 5, 9: 9}
+
+        pred_labels_argmax = np.argmax(zhats_label, axis=1)
+        labels_pred_argmax = np.array([cluster_to_label_mapping[c] for c in pred_labels_argmax])
+        acc_argmax = accuracy_score(true_labels, labels_pred_argmax)
+        print(f'ACCURACY with argmax: {acc_argmax}')
+        cm = confusion_matrix(true_labels, labels_pred_argmax)
+        df_cm = pd.DataFrame(cm, range(self.num_classes), range(self.num_classes))
+        print(df_cm.head())
+        sn.set(font_scale=1.4)  # for label size
+        sn.heatmap(df_cm)  # font size
+        plt.savefig("confusion_matrix_argmax.png")
 
     def encoder_to_gen(self, bx):
         # bx, bx_labels = self.x_sampler.test()
