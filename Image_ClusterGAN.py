@@ -642,11 +642,11 @@ class clusGAN(object):
         class_ind, cluster_ind = linear_sum_assignment(co_mat.values)
         print(f'Row_ind: {class_ind}')
         print(f'Col_ind: {cluster_ind}')
-        mapping = dict(zip(class_ind, cluster_ind))
+        mapping = dict(zip(cluster_ind, class_ind))
         print(mapping)
 
-        #Row_ind: [0  1  2  3  4  5  6  7  8  9 10]
-        #Col_ind: [10  8 11  1  2  3  0 12  4  9  5]
+        # Row_ind: [0  1  2  3  4  5  6  7  8  9 10]
+        # Col_ind: [10  8 11  1  2  3  0 12  4  9  5]
         return mapping
 
     def colors_confusion_matrix(self):
