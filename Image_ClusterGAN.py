@@ -309,12 +309,12 @@ class clusGAN(object):
                 mode_index = np.where(label_index == m)[0]
                 mode_bx = bx[mode_index, :]
                 mode_bx = xs.data2img(mode_bx)
-                # if 'colors' in args.data:
-                #     import cv2
-                #     print(f'CIE-LAB! Bx: {mode_bx.shape[0]}')
-                #     for i in range(mode_bx.shape[0]):
-                #         mode_bx[i] = cv2.cvtColor((mode_bx[i] * 255).astype(np.uint8), cv2.COLOR_LAB2RGB)
-                #         mode_bx[i] = mode_bx[i] / 255
+                if 'colors' in args.data:
+                    import cv2
+                    print(f'CIE-LAB! Bx: {mode_bx.shape[0]}')
+                    for i in range(mode_bx.shape[0]):
+                        mode_bx[i] = cv2.cvtColor((mode_bx[i] * 255).astype(np.uint8), cv2.COLOR_LAB2RGB)
+                        mode_bx[i] = mode_bx[i] / 255
                 mode_bx = grid_transform(mode_bx, xs.shape)
 
                 if not os.path.exists('logs/'):
@@ -656,14 +656,14 @@ class clusGAN(object):
 
         data_recon, label_recon, ima_names = self.x_sampler.test(index=True)
 
-        # if 'colors' in args.data:
-        #     import cv2
-        #     data_recon = xs.data2img(data_recon)
-        #     print(f'CIE-LAB! Bx: {data_recon.shape[0]}')
-        #     for i in range(data_recon.shape[0]):
-        #         data_recon[i] = cv2.cvtColor((data_recon[i] * 255).astype(np.uint8), cv2.COLOR_RGB2LAB)
-        #         data_recon[i] = data_recon[i] / 255
-        #     data_recon = np.reshape(data_recon, [data_recon.shape[0]] + [32 * 32 * 3])
+        if 'colors' in args.data:
+            import cv2
+            data_recon = xs.data2img(data_recon)
+            print(f'CIE-LAB! Bx: {data_recon.shape[0]}')
+            for i in range(data_recon.shape[0]):
+                data_recon[i] = cv2.cvtColor((data_recon[i] * 255).astype(np.uint8), cv2.COLOR_RGB2LAB)
+                data_recon[i] = data_recon[i] / 255
+            data_recon = np.reshape(data_recon, [data_recon.shape[0]] + [32 * 32 * 3])
 
         # data_recon, label_recon = self.x_sampler.load_all()
         label_recon_labels = {0: 'black', 1: 'blue', 2: 'brown', 3: 'green', 4: 'grey', 5: 'orange', 6: 'pink',

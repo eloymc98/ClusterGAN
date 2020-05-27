@@ -36,17 +36,17 @@ class DataSampler(object):
         #self.train_data = np.load('/content/colors_new_train_patches_data.npy')
         #self.train_labels = np.load('/content/colors_new_train_patches_labels.npy')
 
-        self.train_data = np.load('/content/colors_train_rgb_data.npy')
-        self.train_labels = np.load('/content/colors_train_rgb_labels.npy')
-        #self.train_data = np.load('/content/colors_train_labimg_data.npy')
-        #self.train_labels = np.load('/content/colors_train_labimg_labels.npy')
+        #self.train_data = np.load('/content/colors_train_rgb_data.npy')
+        #self.train_labels = np.load('/content/colors_train_rgb_labels.npy')
+        self.train_data = np.load('/content/colors_train_labimg_data.npy')
+        self.train_labels = np.load('/content/colors_train_labimg_labels.npy')
 
         self.test_data = np.load('/content/colors_new_test_patch5_data_rgb.npy')
         # self.test_data = np.reshape(self.test_data, [self.test_data.shape[0], 32 * 32 * 3])
         self.test_labels = np.load('/content/colors_new_test_patch5_labels_rgb.npy')
         self.test_ima_names = np.load('/content/colors_new_test_patch5_imanumbers_rgb.npy')
         # self.test_img_names = pd.read_csv('/content/test_patches_2.csv', header=None, names=['path', 'patch_index'])
-        # np.random.shuffle(self.train_data)
+        np.random.shuffle(self.train_data)
 
     def load_label_names(self):
         return ['black', 'blue', 'brown', 'green', 'grey', 'orange', 'pink', 'purple', 'red', 'white', 'yellow']
