@@ -1021,7 +1021,7 @@ if __name__ == '__main__':
             cl_gan.mnist_confusion_matrix()
         elif args.cm == 'True':
             cl_gan.co_matrix()
-        elif args.cm == 'True':
+        elif args.ap == 'True':
             cl_gan.assignment_problem()
         elif args.interpolate == 'True':
             cl_gan.interpolate_latent_space()
